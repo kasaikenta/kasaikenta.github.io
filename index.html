@@ -29,11 +29,17 @@
             width: 150px;
             border-radius: 50%;
         }
+        .file-date {
+            color: #555;
+            font-size: 0.9em;
+            margin-left: 10px;
+        }
     </style>
     <script>
         async function fetchFiles() {
             const user = "kasaikenta";
             const repo = "kasaikenta.github.io";
+            const branch = "main";  // ブランチ名に応じて修正
             const apiUrl = `https://api.github.com/repos/${user}/${repo}/contents/`;
 
             try {
@@ -44,11 +50,24 @@
 
                 for (const file of data) {
                     if (file.type === "file" && file.name.endsWith(".pdf")) {
+                        // 各ファイルの最終更新日時を取得
+                        const commitsApi = `https://api.github.com/repos/${user}/${repo}/commits?path=${file.path}&sha=${branch}&per_page=1`;
+                        const commitRes = await fetch(commitsApi);
+                        const commitData = await commitRes.json();
+                        const dateStr = commitData[0]?.commit?.committer?.date;
+                        const formattedDate = dateStr ? new Date(dateStr).toLocaleDateString('ja-JP') : "不明";
+
                         const li = document.createElement("li");
                         const a = document.createElement("a");
                         a.href = `https://${user}.github.io/${file.path}`;
                         a.textContent = file.name;
+
+                        const span = document.createElement("span");
+                        span.className = "file-date";
+                        span.textContent = `（更新日: ${formattedDate}）`;
+
                         li.appendChild(a);
+                        li.appendChild(span);
                         fileList.appendChild(li);
                     }
                 }
@@ -75,8 +94,11 @@
     <h2>公開資料</h2>
     <ul id="file-list"></ul>
     <hr>
+    <h2>プレプリント</h2>
+    <p><a href="https://arxiv.org/search/cs?searchtype=author&query=Kasai,+Kenta" target="_blank">arXiv 上のプレプリント一覧</a></p>
+    <hr>
     <h2>連絡先</h2>
     <p>Email: <a href="mailto:kenta@ict.eng.isct.ac.jp">kenta@ict.eng.isct.ac.jp</a></p>
-    <p>居室: 東京科学大学 大岡山キャンパス南3号館418号室 〒152-8550 東京都目黒区大岡山2-12-1 S3-61
+    <p>居室: 東京科学大学 大岡山キャンパス南3号館418号室 〒152-8550 東京都目黒区大岡山2-12-1 S3-61</p>
 </body>
 </html>
