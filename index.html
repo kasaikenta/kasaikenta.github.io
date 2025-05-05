@@ -43,7 +43,25 @@
             font-size: 0.9em;
             margin-left: 10px;
         }
-    </style>
+    
+    .lang-switch {
+      text-align: right;
+      margin-bottom: 20px;
+    }
+    .lang-switch a {
+      background-color: #2980b9;
+      color: white;
+      padding: 8px 14px;
+      text-decoration: none;
+      border-radius: 5px;
+      font-size: 0.95em;
+      transition: background-color 0.3s ease;
+    }
+    .lang-switch a:hover {
+      background-color: #1c5985;
+    }
+
+</style>
     <script>
         async function fetchFiles() {
             const user = "kasaikenta";
@@ -89,6 +107,9 @@
     </script>
 </head>
 <body>
+  <div class="lang-switch">
+    <a href="en.html">English</a>
+  </div>
     <h1>笠井健太</h1>
     <div class="profile">
         <img src="kasai_ume_photo_small.jpg" alt="笠井健太の写真">
