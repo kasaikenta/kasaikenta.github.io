@@ -51,31 +51,6 @@
   <hr>
   <p><a href="https://scholar.google.com/citations?user=CHJLpOkAAAAJ">Google Scholar Profile</a></p>
   <hr>
-
-  <h2>Recent Research</h2>
-  <p>
-    My recent research focuses on quantum error correction using low-density parity-check (LDPC) codes, 
-    particularly the construction and decoding of Calderbank-Shor-Steane (CSS) quantum codes based on sparse binary or non-binary matrices.
-    We aim to design quantum codes that approach the hashing bound under practical decoding algorithms.
-  </p>
-
-  <p>
-    One of our major achievements is the development of explicit quantum LDPC codes constructed from permutation matrices,
-    which demonstrate excellent error-correcting performance over depolarizing and erasure channels.
-    These constructions are designed to avoid short cycles in the Tanner graph to suppress the error floor phenomenon.
-  </p>
-
-  <p>
-    We are also working on decoding algorithms that handle degeneracy in quantum noise models, 
-    including syndrome-based decoding and belief propagation methods adapted for Galois fields.
-    Recent results suggest that combining dual codes with appropriate post-processing significantly improves the decoding success rate.
-  </p>
-
-  <p>
-    This line of work contributes to the long-term goal of realizing scalable and fault-tolerant quantum communication and computation.
-  </p>
-
-  <hr>
   <h2>Preprints</h2>
   <p><a href="https://arxiv.org/search/cs?searchtype=author&query=Kasai,+Kenta" target="_blank">List of preprints on arXiv</a></p>
   <hr>
