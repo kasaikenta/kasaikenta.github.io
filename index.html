@@ -1,64 +1,63 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-<!-- Matomo -->
-<script>
-  var _paq = window._paq = window._paq || [];
-  /* tracker methods like "setCustomDimension" should be called before "trackPageView" */
-  _paq.push(['trackPageView']);
-  _paq.push(['enableLinkTracking']);
-  (function() {
-    var u="https://kasaikenta.matomo.cloud/";
-    _paq.push(['setTrackerUrl', u+'matomo.php']);
-    _paq.push(['setSiteId', '1']);
-    var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
-    g.async=true; g.src='https://cdn.matomo.cloud/kasaikenta.matomo.cloud/matomo.js'; s.parentNode.insertBefore(g,s);
-  })();
-</script>
-<!-- End Matomo Code -->
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-YY8X0H44J2"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
+  <!-- Matomo -->
+  <script>
+    var _paq = window._paq = window._paq || [];
+    _paq.push(['trackPageView']);
+    _paq.push(['enableLinkTracking']);
+    (function() {
+      var u="https://kasaikenta.matomo.cloud/";
+      _paq.push(['setTrackerUrl', u+'matomo.php']);
+      _paq.push(['setSiteId', '1']);
+      var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+      g.async=true; g.src='https://cdn.matomo.cloud/kasaikenta.matomo.cloud/matomo.js'; s.parentNode.insertBefore(g,s);
+    })();
+  </script>
+  <!-- End Matomo Code -->
 
-  gtag('config', 'G-YY8X0H44J2');
-</script>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>笠井健太のホームページ</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 40px;
-            line-height: 1.6;
-        }
-        h1 {
-            color: #2c3e50;
-        }
-        a {
-            color: #2980b9;
-            text-decoration: none;
-        }
-        a:hover {
-            text-decoration: underline;
-        }
-        .profile {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-        }
-        .profile img {
-            width: 150px;
-            border-radius: 50%;
-        }
-        .file-date {
-            color: #555;
-            font-size: 0.9em;
-            margin-left: 10px;
-        }
-    
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-YY8X0H44J2"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-YY8X0H44J2');
+  </script>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>笠井健太のホームページ</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 40px;
+      line-height: 1.6;
+    }
+    h1 {
+      color: #2c3e50;
+    }
+    a {
+      color: #2980b9;
+      text-decoration: none;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+    .profile {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+    .profile img {
+      width: 150px;
+      border-radius: 50%;
+    }
+    .file-date {
+      color: #555;
+      font-size: 0.9em;
+      margin-left: 10px;
+    }
     .lang-switch {
       text-align: right;
       margin-bottom: 20px;
@@ -75,75 +74,159 @@
     .lang-switch a:hover {
       background-color: #1c5985;
     }
+    .news-item {
+      margin-bottom: 30px;
+      padding: 10px 15px;
+      background-color: #f9f9f9;
+      border-left: 5px solid #2980b9;
+      border-radius: 5px;
+    }
+    .news-item h3 {
+      margin-top: 0;
+      color: #2c3e50;
+    }
+  </style>
 
-</style>
-    <script>
-        async function fetchFiles() {
-            const user = "kasaikenta";
-            const repo = "kasaikenta.github.io";
-            const branch = "main";  // ブランチ名に応じて修正
-            const apiUrl = `https://api.github.com/repos/${user}/${repo}/contents/`;
+  <script>
+    async function fetchFiles() {
+      const user = "kasaikenta";
+      const repo = "kasaikenta.github.io";
+      const branch = "main";
+      const apiUrl = `https://api.github.com/repos/${user}/${repo}/contents/`;
 
-            try {
-                const response = await fetch(apiUrl);
-                const data = await response.json();
-                const fileList = document.getElementById("file-list");
-                fileList.innerHTML = "";
+      try {
+        const response = await fetch(apiUrl);
+        const data = await response.json();
+        const fileList = document.getElementById("file-list");
+        fileList.innerHTML = "";
 
-                for (const file of data) {
-                    if (file.type === "file" && file.name.endsWith(".pdf")) {
-                        // 各ファイルの最終更新日時を取得
-                        const commitsApi = `https://api.github.com/repos/${user}/${repo}/commits?path=${file.path}&sha=${branch}&per_page=1`;
-                        const commitRes = await fetch(commitsApi);
-                        const commitData = await commitRes.json();
-                        const dateStr = commitData[0]?.commit?.committer?.date;
-                        const formattedDate = dateStr ? new Date(dateStr).toLocaleDateString('ja-JP') : "不明";
+        for (const file of data) {
+          if (file.type === "file" && file.name.endsWith(".pdf")) {
+            const commitsApi = `https://api.github.com/repos/${user}/${repo}/commits?path=${file.path}&sha=${branch}&per_page=1`;
+            const commitRes = await fetch(commitsApi);
+            const commitData = await commitRes.json();
+            const dateStr = commitData[0]?.commit?.committer?.date;
+            const formattedDate = dateStr ? new Date(dateStr).toLocaleDateString('ja-JP') : "不明";
 
-                        const li = document.createElement("li");
-                        const a = document.createElement("a");
-                        a.href = `https://${user}.github.io/${file.path}`;
-                        a.textContent = file.name;
+            const li = document.createElement("li");
+            const a = document.createElement("a");
+            a.href = `https://${user}.github.io/${file.path}`;
+            a.textContent = file.name;
 
-                        const span = document.createElement("span");
-                        span.className = "file-date";
-                        span.textContent = `（更新日: ${formattedDate}）`;
+            const span = document.createElement("span");
+            span.className = "file-date";
+            span.textContent = `（更新日: ${formattedDate}）`;
 
-                        li.appendChild(a);
-                        li.appendChild(span);
-                        fileList.appendChild(li);
-                    }
-                }
-            } catch (error) {
-                console.error("Error fetching files:", error);
-            }
+            li.appendChild(a);
+            li.appendChild(span);
+            fileList.appendChild(li);
+          }
         }
+      } catch (error) {
+        console.error("Error fetching files:", error);
+      }
+    }
 
-        window.onload = fetchFiles;
-    </script>
+    window.onload = fetchFiles;
+  </script>
 </head>
+
 <body>
   <div class="lang-switch">
     <a href="en.html">English</a>
   </div>
-    <h1>笠井健太</h1>
-    <div class="profile">
-        <img src="kasai_ume_photo_small.jpg" alt="笠井健太の写真">
-        <ul>
-            <li>東京科学大学 工学院情報通信系 准教授</li>
-            <li>専門: 量子誤り訂正、符号理論、情報理論</li>
-        </ul>
-    </div>
-    <hr>
-    <p><a href="https://scholar.google.com/citations?user=CHJLpOkAAAAJ">Google Scholar プロフィール</a></p>
-    <hr>
-    <h2>公開資料</h2>
-    <ul id="file-list"></ul>
-    <hr>
-    <h2>プレプリント</h2>
-    <p><a href="https://arxiv.org/search/cs?searchtype=author&query=Kasai,+Kenta" target="_blank">arXiv 上のプレプリント一覧</a></p>
-    <hr>
-    <h2>連絡先</h2>
-    <p>Email: <a href="mailto:kenta@ict.eng.isct.ac.jp">kenta@ict.eng.isct.ac.jp</a></p>
-    <p>居室: 東京科学大学 大岡山キャンパス南3号館418号室 〒152-8550 東京都目黒区大岡山2-12-1 S3-61</p>
+
+  <h1>笠井健太</h1>
+  <div class="profile">
+    <img src="kasai_ume_photo_small.jpg" alt="笠井健太の写真">
+    <ul>
+      <li>東京科学大学 工学院情報通信系 准教授</li>
+      <li>専門: 量子誤り訂正、符号理論、情報理論</li>
+    </ul>
+  </div>
+
+  <hr>
+  <p><a href="https://scholar.google.com/citations?user=CHJLpOkAAAAJ">Google Scholar プロフィール</a></p>
+
+  <hr>
+  <h2>公開資料</h2>
+  <ul id="file-list"></ul>
+
+  <hr>
+  <h2>プレプリント</h2>
+  <p><a href="https://arxiv.org/search/cs?searchtype=author&query=Kasai,+Kenta" target="_blank">arXiv 上のプレプリント一覧</a></p>
+
+  <hr>
+  <h2>研究室ニュース</h2>
+
+<div class="news-item">
+  <h3>QIT52にて発表予定：アフィン置換行列型量子LDPC符号に関する新構成法（2025年5月28日）</h3>
+  <p>
+    第52回量子情報技術研究会（QIT52）にて、河本大輝さんと笠井健太准教授が、
+    アフィン置換行列を用いた量子LDPC符号の新たな構成法に関する研究をポスター発表します。
+  </p>
+  <p>
+    発表タイトル：「短いサイクルを持たないアフィン置換行列型量子LDPC符号の明示的構成法の提案」
+  </p>
+  <p>
+    著者: 河本 大輝（東京科学大学）, 笠井 健太（東京科学大学）
+  </p>
+  <p>
+    発表形式：ポスターセッション（2025年5月28日 18:00–19:30、静岡大学 浜松キャンパス）
+  </p>
+</div>
+
+<div class="news-item">
+  <h3>QIT52にて発表予定：多元LDPC符号による量子誤り訂正のエラーフロア改善（2025年5月28日）</h3>
+  <p>
+    同じくQIT52にて、笠井健太准教授が、多元LDPC符号を用いた量子誤り訂正手法におけるエラーフロアの緩和についての研究を発表します。
+  </p>
+  <p>
+    発表タイトル：「多元LDPC符号に基づく量子誤り訂正におけるエラーフロアの緩和に向けた検討」
+  </p>
+  <p>
+    著者: 笠井 健太（東京科学大学）
+  </p>
+  <p>
+    発表形式：ポスターセッション（2025年5月28日 18:00–19:30、静岡大学 浜松キャンパス）
+  </p>
+</div>
+<div class="news-item">
+  <h3>河本大輝さんが量子情報技術研究会 学生発表賞を受賞（2025年5月10日）</h3>
+  <p>
+    第51回量子情報技術研究会において、河本大輝さんが優れた学生発表を行い、「学生発表賞」を受賞しました。
+  </p>
+  <p>
+    発表タイトル：「最小サイクル長が12である空間結合多元QC-LDPC符号に基づくCSS符号の構成」
+  </p>
+  <p>
+    著者: 大輝 河本（東京科学大学）, 笠井 健太（東京科学大学）
+  </p>
+  <p>
+    今後のさらなる活躍が期待されます。おめでとうございます！
+  </p>
+</div>
+  <div class="news-item">
+    <h3>ISIT 2025 採択論文：「Efficient Mitigation of Error Floors in Quantum Error Correction using Non-Binary Low-Density Parity-Check Codes
+」（2025年4月27日）</h3>
+    <p>
+      論文「Quantum Error Correction Near the Hashing Bound」が、
+      国際会議 ISIT 2025 に採択されました。
+    </p>
+  <p>
+    著者: Kenta Kasai（東京科学大学）
+  </p>
+    <p>
+      本論文では、符号理論的限界に近い性能を持つ量子LDPC符号クラスのエラーフロア性能を向上させる復号アルゴリズムについて議論しています。
+    </p>
+    <p>
+      論文のプレプリントは <a href="https://arxiv.org/abs/2501.13923" target="_blank">arXiv</a> にて公開中です。
+    </p>
+  </div>
+
+  <hr>
+  <h2>連絡先</h2>
+  <p>Email: <a href="mailto:kenta@ict.eng.isct.ac.jp">kenta@ict.eng.isct.ac.jp</a></p>
+  <p>居室: 東京科学大学 大岡山キャンパス南3号館418号室 〒152-8550 東京都目黒区大岡山2-12-1 S3-61</p>
 </body>
 </html>
