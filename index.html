@@ -247,5 +247,42 @@
   <h2>連絡先</h2>
   <p>Email: <a href="mailto:kenta@ict.eng.isct.ac.jp">kenta@ict.eng.isct.ac.jp</a></p>
   <p>居室: 東京科学大学 大岡山キャンパス南3号館418号室 〒152-8550 東京都目黒区大岡山2-12-1 S3-61</p>
+
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const newsItems = document.querySelectorAll(".news-item");
+    const showCount = 2;
+
+    // 最初の2件以外を非表示にする
+    newsItems.forEach((item, index) => {
+      if (index >= showCount) {
+        item.style.display = "none";
+      }
+    });
+
+    // ボタンを作成
+    if (newsItems.length > showCount) {
+      const moreBtn = document.createElement("button");
+      moreBtn.textContent = "もっと見る";
+      moreBtn.style.display = "block";
+      moreBtn.style.margin = "20px auto";
+      moreBtn.style.padding = "10px 20px";
+      moreBtn.style.backgroundColor = "#2980b9";
+      moreBtn.style.color = "white";
+      moreBtn.style.border = "none";
+      moreBtn.style.borderRadius = "5px";
+      moreBtn.style.cursor = "pointer";
+
+      moreBtn.addEventListener("click", () => {
+        newsItems.forEach(item => item.style.display = "block");
+        moreBtn.style.display = "none";
+      });
+
+      // 最後の.news-itemの後にボタンを追加
+      const lastNewsItem = newsItems[newsItems.length - 1];
+      lastNewsItem.insertAdjacentElement("afterend", moreBtn);
+    }
+  });
+</script>
 </body>
 </html>
