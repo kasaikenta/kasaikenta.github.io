@@ -96,28 +96,68 @@ body {
   <p>Follow me on <a href="https://x.com/kasai_lab" target="_blank">X</a></p>
   <hr>
 
-  <h2>Recent Research</h2>
-  <p>
-    My recent research focuses on quantum error correction using low-density parity-check (LDPC) codes, 
-    particularly the construction and decoding of Calderbank-Shor-Steane (CSS) quantum codes based on sparse binary or non-binary matrices.
-    We aim to design quantum codes that approach the hashing bound under practical decoding algorithms.
-  </p>
+<h2>Research Background and Achievements</h2>
+<p>
+  To realize useful quantum computation, it is essential to build a large number of reliable logical qubits.  
+  However, the current level of quantum computers is such that even with thousands of physical qubits,  
+  only a few tens of logical qubits can be obtained.  
+  While this limitation partly stems from engineering constraints such as device implementation and stability,  
+  even under an idealized setting of coding theory for quantum error correction,  
+  there remain fundamental challenges in code design itself.
+</p>
 
-  <p>
-    One of our major achievements is the development of explicit quantum LDPC codes constructed from permutation matrices,
-    which demonstrate excellent error-correcting performance over depolarizing channels.
-    These constructions are designed to avoid short cycles in the Tanner graph to suppress the error floor phenomenon.
-  </p>
+<p>
+  Quantum Low-Density Parity-Check (LDPC) codes combined with low-complexity Belief Propagation (BP) decoding  
+  have long been regarded as a promising approach.  
+  Nevertheless, the following issues have persisted:
+</p>
+<ul>
+  <li>Low coding rate, leading to poor practical efficiency.</li>
+  <li>Lack of sufficiently sharp threshold phenomena to dramatically improve error rates.</li>
+  <li>Error floors causing performance stagnation in the high-reliability regime.</li>
+  <li>A significant gap still remaining from the theoretical hashing bound.</li>
+  <li>The necessity of high-complexity post-processing after BP decoding.</li>
+</ul>
+<p>
+  To date, no quantum error correction scheme has simultaneously overcome all of these obstacles.
+</p>
 
-  <p>
-    We are also working on decoding algorithms that handle degeneracy in quantum noise models, 
-    including syndrome-based decoding and belief propagation methods adapted for Galois fields.
-    Recent results suggest that combining dual codes with appropriate post-processing significantly improves the decoding success rate.
-  </p>
+<p>
+  By contrast, the field of classical error correction has already reached maturity.  
+  For instance, in mobile communications, LDPC codes with blocklengths ranging from $10^3$ to $10^6$ bits  
+  have been adopted in the 5G standard, forming the backbone of real-world communication infrastructure.  
+  While classical communication has achieved practical deployment of ultra-large-scale coding,  
+  quantum error correction codes are still far from reaching an equivalent level.
+</p>
 
-  <p>
-    This line of work contributes to the long-term goal of realizing scalable and fault-tolerant quantum communication and computation.
-  </p>
+<h2>Our Research Direction</h2>
+<p>
+  To address this situation, our research focuses on quantum error correction using LDPC codes,  
+  particularly the construction and decoding of Calderbank–Shor–Steane (CSS) quantum codes  
+  based on sparse binary or non-binary matrices.  
+  Our aim is to design quantum codes that approach the hashing bound under practical decoding algorithms.
+</p>
+
+<p>
+  One of our major achievements is the development of explicit quantum LDPC codes constructed from permutation matrices,  
+  which demonstrate excellent error-correcting performance over depolarizing channels.  
+  These constructions are carefully designed to avoid short cycles in the Tanner graph,  
+  thereby suppressing the error floor phenomenon.
+</p>
+
+<p>
+  We are also developing decoding algorithms that account for degeneracy in quantum noise models,  
+  including syndrome-based decoding and belief propagation methods adapted for Galois fields.  
+  Recent results indicate that combining dual codes with appropriate post-processing  
+  significantly improves the decoding success rate.
+</p>
+
+<p>
+  Through this line of work, we have attained performance close to the hashing bound,  
+  reduced error floors in low-rate regimes, constructed codes with large cycle lengths,  
+  and discovered binary LDPC codes with sharp error-rate transitions.  
+  This research contributes to the long-term goal of realizing scalable and fault-tolerant quantum communication and computation.
+</p>
   <hr>
   <h2>Software and Code Data</h2>
   <p>
