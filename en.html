@@ -188,6 +188,80 @@ body {
     For other software or data related to the paper,  
     please feel free to <a href="mailto:kenta@ict.eng.isct.ac.jp">contact us</a>.
   </p>  
+<hr>
+<h2>Q&amp;A (Frequently Asked Questions)</h2>
+
+<div class="news-item">
+  <h3>Q1. Why is a new construction of quantum LDPC codes necessary?</h3>
+  <p>
+    Conventional quantum LDPC codes suffer from low coding rates, high error floors,
+    lack of scalability, and heavy post-processing requirements.
+    As a result, performance does not scale with blocklength and remains far from the hashing bound.
+    Our work aims to construct codes with non-vanishing rate and efficient decoding
+    that achieve performance close to the hashing bound.
+  </p>
+</div>
+
+<div class="news-item">
+  <h3>Q2. How are the proposed codes constructed?</h3>
+  <p>
+    The framework integrates four ingredients:
+    (i) Affine permutation matrix (APM) constructions to avoid short cycles,
+    (ii) joint belief propagation decoding over non-binary fields F<sub>q</sub>,
+    (iii) optimization of minimum distance by carefully selecting matrix entries,
+    and (iv) lightweight post-processing to remove residual errors.
+  </p>
+</div>
+
+<div class="news-item">
+  <h3>Q3. How does the proposed decoding differ from conventional methods?</h3>
+  <p>
+    Unlike conventional approaches that decode X and Z errors separately,
+    our joint BP simultaneously estimates both, fully exploiting the CSS structure.
+    Messages are richer because they are probability vectors over F<sub>q</sub> rather than binary likelihoods,
+    allowing more information to be exchanged during decoding.
+    Residual trapping-cycle errors are corrected by local post-processing whose complexity is independent of code length.
+  </p>
+</div>
+
+<div class="news-item">
+  <h3>Q4. Why do the results focus on large blocklengths?</h3>
+  <p>
+    Threshold phenomena and error-floor behavior become visible only at very large blocklengths.
+    Demonstrating sharp threshold-like performance without error floors in this regime
+    provides the strongest evidence of scalability.
+    While short blocklengths also show good scaling, long blocklength results best highlight the theory.
+  </p>
+</div>
+
+<div class="news-item">
+  <h3>Q5. What is the stabilizer weight?</h3>
+  <p>
+    The stabilizer weight is upper bounded by e × L, where e is the field extension degree
+    and L is the row weight.
+    For example, with e = 8 and L = 6, the stabilizer weight is at most 48,
+    and crucially remains constant regardless of code length.
+  </p>
+</div>
+
+<div class="news-item">
+  <h3>Q6. Are measurement errors considered?</h3>
+  <p>
+    No. The analysis assumes an idealized setting where all gate operations, stabilizer measurements,
+    and recovery operations are error-free.
+    The purpose is to isolate the coding-theoretic limitations apart from engineering constraints.
+  </p>
+</div>
+
+<div class="news-item">
+  <h3>Q7. Does using non-binary LDPC codes mean we are encoding qudits?</h3>
+  <p>
+    No. Although matrices are defined over F<sub>q</sub> and decoding operates over non-binary fields,
+    the physical system is still qubits.
+    Each element of F<sub>q</sub> is expanded into an e × e binary companion matrix,
+    ensuring the code remains a binary CSS code.
+  </p>
+</div>
   <hr>
   <h2>News</h2>
 
