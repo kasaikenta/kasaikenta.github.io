@@ -192,6 +192,39 @@ body {
 <h2>Q&amp;A (Frequently Asked Questions)</h2>
 
 <div class="news-item">
+  <h3>Q15. What key idea enables the proposed codes to approach the hashing bound?</h3>
+  <p>
+    The construction cleverly exploits two well-known insights from classical coding theory:  
+    (i) non-binary LDPC codes with column weight two tend to perform especially well under iterative decoding, and  
+    (ii) column weight two allows flexible designs that can effectively eliminate short cycles in the Tanner graph.  
+  </p>
+  <p>
+    By combining these properties with affine permutation matrix (APM) placements,
+    the proposed codes achieve both orthogonality and large girth, which suppress error floors
+    and enable sharp threshold-like performance.  
+    As a result, the quantum LDPC codes constructed in this way approach the hashing bound,
+    even at practical blocklengths.
+  </p>
+</div>
+
+<div class="news-item">
+  <h3>Q16. Is the minimum distance of the proposed codes large?</h3>
+  <p>
+    The minimum distance of our codes does not grow linearly with blocklength.  
+    However, this does not prevent strong decoding performance under belief propagation (BP).  
+    What primarily determines BP performance are the column weight and row weight of the parity-check matrices.  
+  </p>
+  <p>
+    While minimum distance is an important metric for characterizing the error-floor regime,
+    achieving linearly growing minimum distance is not strictly necessary for excellent iterative decoding performance.  
+    This lesson comes directly from classical coding theory. In fact, during the 1980s and early 1990s,
+    the community was so captivated by the elegance of minimum-distance theory that it overlooked practical 
+    iterative methods. As a result, the rediscovery of turbo codes (1993) and LDPC codes (reintroduced in the mid-1990s, 
+    decades after Gallager’s original 1962 work) was delayed, even though their remarkable power came not from large 
+    minimum distance but from efficient iterative decoding.
+  </p>
+</div>
+<div class="news-item">
   <h3>Q1. Why is a new construction of quantum LDPC codes necessary?</h3>
   <p>
     Conventional quantum LDPC codes suffer from low coding rates, high error floors,
@@ -201,6 +234,7 @@ body {
     that achieve performance close to the hashing bound.
   </p>
 </div>
+
 
 <div class="news-item">
   <h3>Q2. How are the proposed codes constructed?</h3>
@@ -262,7 +296,42 @@ body {
     ensuring the code remains a binary CSS code.
   </p>
 </div>
-  <hr>
+<div class="news-item">
+  <h3>Q8. How is decoding success or failure determined?</h3>
+  <p>
+    Decoding is judged by whether the difference between the true error and the estimated error 
+    belongs to the dual code.  
+    In other words, if (x + x̂) lies in C<sup>⊥</sup><sub>X</sub> and (z + ẑ) lies in C<sup>⊥</sup><sub>Z</sub>, 
+    then the decoding is considered successful, because both correspond to valid stabilizers and 
+    represent the same logical state.  
+  </p>
+  <p>
+    If the difference vector is not in the dual, then the estimated error introduces a logical error 
+    and decoding is considered unsuccessful.  
+    Our framework also includes lightweight post-processing that can correct many failures by 
+    resolving small trapping-cycle structures.
+  </p>
+</div>
+<div class="news-item">
+  <h3>Q9. How are orthogonal matrices constructed using APM (Affine Permutation Matrices)?</h3>
+  <p>
+    Our method generalizes the Hagiwara–Imai construction.  
+    Specifically, we place affine permutation matrices (APMs) at cyclically shifted positions within the parity-check matrices.  
+    By carefully choosing the shifts and the APM entries, the resulting non-binary matrices 
+    H<sub>Γ</sub> and H<sub>Δ</sub> become orthogonal over F<sub>q</sub>.
+  </p>
+  <p>
+    In other words, the inner product between any row of H<sub>Γ</sub> and any row of H<sub>Δ</sub> cancels to zero in F<sub>q</sub>.  
+    After expanding each field element into an e × e binary companion matrix, we obtain binary parity-check matrices 
+    H<sub>X</sub> and H<sub>Z</sub> that satisfy H<sub>X</sub>H<sub>Z</sub><sup>T</sup> = 0.  
+    This approach ensures orthogonality while avoiding short cycles, leading to improved decoding performance.
+  </p>
+</div>
+  <p style="margin-top:20px; font-style: italic;">
+  For further questions not covered here, please contact us directly via the 
+  <a href="#contact">Contact</a> section below.
+</p>
+<hr>
   <h2>News</h2>
 
 <div class="news-item">
@@ -392,9 +461,9 @@ body {
 </div>
 
   <hr>
-  <h2>Contact</h2>
-  <p>Email: <a href="mailto:kenta@ict.eng.isct.ac.jp">kenta@ict.eng.isct.ac.jp</a></p>
-  <p>Office: Room 418, South Building 3, Ookayama Campus, Institute of Science Tokyo<br>
-    2-12-1, Ookayama, Meguro-ku, Tokyo 152-8550, Japan</p>
+<h2 id="contact">Contact</h2>
+<p>Email: <a href="mailto:kenta@ict.eng.isct.ac.jp">kenta@ict.eng.isct.ac.jp</a></p>
+<p>Office: Room 418, South Building 3, Ookayama Campus, Institute of Science Tokyo<br>
+  2-12-1, Ookayama, Meguro-ku, Tokyo 152-8550, Japan</p>
 </body>
 </html>
