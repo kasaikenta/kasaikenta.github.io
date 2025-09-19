@@ -208,11 +208,12 @@ body {
 </div>
 
 <div class="news-item">
-  <h3>Q. Is the minimum distance of the proposed codes large?</h3>
+  <h3>Q. Is the minimum distance of the proposed codes large? If not, why do they still perform so well?</h3>
   <p>
     The minimum distance of our codes does not grow linearly with blocklength.  
     However, this does not prevent strong decoding performance under belief propagation (BP).  
-    What primarily determines BP performance are the column weight and row weight of the parity-check matrices.  
+    From the theory of density evolution, it is well understood that what primarily determines BP performance 
+    are the column weight and row weight of the parity-check matrix, not the asymptotic growth of minimum distance.  
   </p>
   <p>
     While minimum distance is an important metric for characterizing the error-floor regime,
