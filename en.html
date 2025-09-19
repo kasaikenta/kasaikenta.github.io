@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <!-- Google tag (gtag.js) -->
+<!-- Google tag (gtag.js) -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-YY8X0H44J2"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
@@ -12,6 +12,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Kenta Kasai's Homepage</title>
+<!-- MathJax -->
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
   <style>
 .news-item {
   border: 1px solid #ccc;
@@ -181,7 +183,7 @@ body {
   </p>
   <p>
     In the <code>prefix_value</code> files, the numbers 1, 2, ..., 255  
-    represent $\alpha^{0}, \alpha^{1}, \ldots, \alpha^{254}$ for a primitive element $\alpha$.  
+    represent \(\alpha^{0}, \alpha^{1}, \ldots, \alpha^{254}\) for a primitive element \(\alpha\).  
     The primitive polynomial can be found in the respective paper.
   </p>
   <p>
@@ -297,9 +299,9 @@ body {
 <div class="news-item">
   <h3>Q. Does using non-binary LDPC codes mean we are encoding qudits?</h3>
   <p>
-    No. Although matrices are defined over F<sub>q</sub> and decoding operates over non-binary fields,
+    No. Although matrices are defined over \( F_q \) and decoding operates over non-binary fields,
     the physical system is still qubits.
-    Each element of F<sub>q</sub> is expanded into an e × e binary companion matrix,
+    Each element of \( F_q \) is expanded into an \( e \times e \) binary companion matrix,
     ensuring the code remains a binary CSS code.
   </p>
 </div>
@@ -308,7 +310,7 @@ body {
   <p>
     Decoding is judged by whether the difference between the true error and the estimated error 
     belongs to the dual code.  
-    In other words, if (x + x̂) lies in C<sup>⊥</sup><sub>X</sub> and (z + ẑ) lies in C<sup>⊥</sup><sub>Z</sub>, 
+    In other words, if \( (x + \hat{x}) \in C_X^{\perp} \) and \( (z + \hat{z}) \in C_Z^{\perp} \), 
     then the decoding is considered successful, because both correspond to valid stabilizers and 
     represent the same logical state.  
   </p>
@@ -325,12 +327,12 @@ body {
     Our method generalizes the Hagiwara–Imai construction.  
     Specifically, we place affine permutation matrices (APMs) at cyclically shifted positions within the parity-check matrices.  
     By carefully choosing the shifts and the APM entries, the resulting non-binary matrices 
-    H<sub>Γ</sub> and H<sub>Δ</sub> become orthogonal over F<sub>q</sub>.
+    \( H_{\Gamma} \) and \( H_{\Delta} \) become orthogonal over \( F_q \).
   </p>
   <p>
-    In other words, the inner product between any row of H<sub>Γ</sub> and any row of H<sub>Δ</sub> cancels to zero in F<sub>q</sub>.  
-    After expanding each field element into an e × e binary companion matrix, we obtain binary parity-check matrices 
-    H<sub>X</sub> and H<sub>Z</sub> that satisfy H<sub>X</sub>H<sub>Z</sub><sup>T</sup> = 0.  
+    In other words, the inner product between any row of \( H_{\Gamma} \) and any row of \( H_{\Delta} \) cancels to zero in \( F_q \).  
+    After expanding each field element into an \( e \times e \) binary companion matrix, we obtain binary parity-check matrices 
+    \( H_X \) and \( H_Z \) that satisfy \( H_X H_Z^{T} = 0 \).  
     This approach ensures orthogonality while avoiding short cycles, leading to improved decoding performance.
   </p>
 </div>
