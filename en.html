@@ -345,14 +345,10 @@ Consequently, the (re)discovery of turbo codes (1993) and LDPC codes (reintroduc
     For example, are you simply counting any error pattern that satisfies the syndrome as a decoding success?
   </h3>
   <p>
-    We are aware of this concern. In our framework, decoding success is not judged merely by reproducing the measured syndrome.  
+     In our framework, decoding success is not judged merely by reproducing the measured syndrome.  
     Instead, the definition is stricter: the difference between the true error and the estimated error must belong to the dual code.  
     In that case, the estimated error corresponds to a valid stabilizer and preserves the logical state, and only then is decoding counted as successful.  
-  </p>
-  <p>
     If this condition is not met, the event is classified as a decoding failure since it introduces a logical error.  
-    Furthermore, lightweight post-processing is applied to correct residual trapping-cycle errors, 
-    ensuring that the reported performance reflects genuine improvements rather than artifacts of the evaluation method.  
   </p>
 </div>
 <hr>
