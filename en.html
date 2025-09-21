@@ -298,9 +298,9 @@ Consequently, the (re)discovery of turbo codes (1993) and LDPC codes (reintroduc
 <div class="news-item">
   <h3>Q. Does using non-binary LDPC codes mean we are encoding qudits?</h3>
   <p>
-    No. Although matrices are defined over \( F_q \) and decoding operates over non-binary fields,
+    No. Although matrices are defined over \( \mathbb{F}_q \) and decoding operates over non-binary fields,
     the physical system is still qubits.
-    Each element of \( F_q \) is expanded into an \( e \times e \) binary companion matrix,
+    Each element of \( \mathbb{F}_q \) is expanded into an \( e \times e \) binary companion matrix,
     ensuring the code remains a binary CSS code.
   </p>
 </div>
@@ -326,10 +326,10 @@ Consequently, the (re)discovery of turbo codes (1993) and LDPC codes (reintroduc
     Our method generalizes the Hagiwara–Imai construction.  
     Specifically, we place affine permutation matrices (APMs) at cyclically shifted positions within the parity-check matrices.  
     By carefully choosing the shifts and the APM entries, the resulting non-binary matrices 
-    \( H_{\Gamma} \) and \( H_{\Delta} \) become orthogonal over \( F_q \).
+    \( H_{\Gamma} \) and \( H_{\Delta} \) become orthogonal over \( \mathbb{F}_q \).
   </p>
   <p>
-    In other words, the inner product between any row of \( H_{\Gamma} \) and any row of \( H_{\Delta} \) cancels to zero in \( \mathbf{F}_q \).  
+    In other words, the inner product between any row of \( H_{\Gamma} \) and any row of \( H_{\Delta} \) cancels to zero in \( \mathbb{F}_q \).  
     After expanding each field element into an \( e \times e \) binary companion matrix, we obtain binary parity-check matrices 
     \( H_X \) and \( H_Z \) that satisfy \( H_X H_Z^{T} = 0 \).  
     This approach ensures orthogonality while avoiding short cycles, leading to improved decoding performance.
