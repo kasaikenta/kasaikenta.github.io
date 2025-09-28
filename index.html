@@ -14,7 +14,22 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>笠井健太のホームページ</title>
-  <style>
+<!-- MathJax 読み込み -->
+<script>
+  MathJax = {
+    tex: {
+      inlineMath: [['$', '$'], ['\\(', '\\)']],  // インライン数式
+      displayMath: [['$$', '$$'], ['\\[', '\\]']] // ディスプレイ数式
+    },
+    svg: {
+      fontCache: 'global'
+    }
+  };
+</script>
+<script id="MathJax-script" async
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+</script>
+<style>
 .x-link-subtle {
   display: inline-block;
   background-color: #f0f0f0;
@@ -148,13 +163,14 @@
   <hr>
   <p><a href="https://scholar.google.com/citations?user=CHJLpOkAAAAJ">Google Scholar プロフィール</a></p>
   <hr>
-  <h2 id="files">資料</h2>
+  <h2 id="files">授業・ゼミ用資料</h2>
   <ul id="file-list"></ul>
 
   <hr>
   <h2>プレプリント</h2>
   <p><a href="https://arxiv.org/search/cs?searchtype=author&query=Kasai,+Kenta" target="_blank">arXiv 上のプレプリント一覧</a></p>
 
+<hr>
 <h2>研究背景と成果</h2>
 <p>
   実用的な量子計算を実現するためには、多数の信頼できる論理量子ビットを構築することが不可欠です。  
