@@ -213,6 +213,24 @@ body {
 </div>
 
 <div class="news-item">
+  <h3>Q. LDPC codes with column weight 2 are known to have logarithmic minimum distance and poor decoding performance, aren’t they?</h3>
+  <p>
+    Indeed, classical binary LDPC codes with column weight 2 have a minimum distance that grows only logarithmically with respect to the code length,
+    and their BP decoding threshold is significantly worse than that of column-3 codes.
+    However, the situation is quite different for non-binary LDPC codes.
+    When the code rate is high, the BP threshold of column-2 non-binary LDPC codes can approach the channel capacity,
+    whereas that of column-3 codes becomes much poorer.
+  </p>
+  <p>
+    Moreover, non-binary extensions can substantially increase the minimum distance,
+    leading to performance without observable error floors.
+    As mentioned in the following Q&A,
+    it is well known in classical coding theory that good BP decoding performance
+    does not necessarily require the minimum distance to grow linearly with the code length.
+  </p>
+</div>
+
+<div class="news-item">
   <h3>Q. Is the minimum distance of the proposed codes large? If not, why do they still perform so well?</h3>
   <p>
     The minimum distance of our codes does not grow linearly with blocklength.  
@@ -226,6 +244,7 @@ body {
     theory tend not to emphasize minimum distance as the decisive factor: good iterative decoding performance 
     can be achieved without relying on very large minimum distance.
   </p>
+</div>
 <p>
 While minimum distance is an important metric for characterizing the error-floor regime, achieving linearly growing minimum distance is not strictly necessary for excellent iterative decoding performance.
 This insight can be traced back to lessons from classical coding theory.
