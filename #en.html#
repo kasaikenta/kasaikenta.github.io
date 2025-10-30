@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-YY8X0H44J2"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-YY8X0H44J2');
+  </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kenta Kasai's Homepage</title>
+<!-- MathJax -->
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <style>
+.news-item {
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 20px;
+  background-color: #f9f9f9;
+  box-shadow: 2px 2px 5px rgba(0,0,0,0.05);
+}
+
+.news-item h3 {
+  margin-top: 0;
+  color: #2c3e50;
+  font-size: 1.1em;
+}
+
+.news-item .date {
+  color: #888;
+  font-size: 0.9em;
+  margin-bottom: 10px;
+  display: block;
+}
+body {
+      font-family: Arial, sans-serif;
+      margin: 40px;
+      line-height: 1.6;
+    }
+    h1 {
+      color: #2c3e50;
+    }
+    a {
+      color: #2980b9;
+      text-decoration: none;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+    .profile {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+    .profile img {
+      width: 150px;
+      border-radius: 50%;
+    }
+  
+    .lang-switch {
+      text-align: right;
+      margin-bottom: 20px;
+    }
+    .lang-switch a {
+      background-color: #2980b9;
+      color: white;
+      padding: 8px 14px;
+      text-decoration: none;
+      border-radius: 5px;
+      font-size: 0.95em;
+      transition: background-color 0.3s ease;
+    }
+    .lang-switch a:hover {
+      background-color: #1c5985;
+    }
+
+</style>
+</head>
+<body>
+  <div class="lang-switch">
+    <a href="index.html">日本語</a>
+  </div>
+  <h1>Kenta Kasai</h1>
+  <div class="profile">
+    <img src="kasai_ume_photo_small.jpg" alt="Photo of Kenta Kasai">
+    <ul>
+      <li>Associate Professor, Department of Information and Communications Engineering, Institute of Science Tokyo</li>
+      <li>Research Interests: Quantum Error Correction, Coding Theory, Information Theory</li>
+    </ul>
+  </div>
+  <hr>
+  <p><a href="https://arxiv.org/search/cs?searchtype=author&query=Kasai,+Kenta" target="_blank">List of preprints on arXiv</a></p>
+  <p><a href="https://scholar.google.com/citations?user=CHJLpOkAAAAJ">Google Scholar Profile</a></p>
+  <p>Follow me on <a href="https://x.com/kasai_lab" target="_blank">X</a></p>
+  <hr>
+
+<h2>Research Background and Achievements</h2>
+<p>
+  To realize useful quantum computation, it is essential to build a large number of reliable logical qubits.  
+  However, the current level of quantum computers is such that even with thousands of physical qubits,  
+  only a few tens of logical qubits can be obtained.  
+  While this limitation partly stems from engineering constraints such as device implementation and stability,  
+  even under an idealized setting of coding theory for quantum error correction,  
+  there remain fundamental challenges in code design itself.
+</p>
+
+<p>
+  Quantum Low-Density Parity-Check (LDPC) codes combined with low-complexity Belief Propagation (BP) decoding  
+  have long been regarded as a promising approach.  
+  Nevertheless, the following issues have persisted:
+</p>
+<ul>
+  <li>Low coding rate, leading to poor practical efficiency.</li>
+  <li>Lack of sufficiently sharp threshold phenomena to dramatically improve error rates.</li>
+  <li>Error floors causing performance stagnation in the high-reliability regime.</li>
+  <li>A significant gap still remaining from the theoretical hashing bound.</li>
+  <li>The necessity of high-complexity post-processing after BP decoding.</li>
+</ul>
+<p>
+  To date, no quantum error correction scheme has simultaneously overcome all of these obstacles.
+</p>
+
+<p>
+  By contrast, the field of classical error correction has already reached
+  maturity. For instance, in mobile communications, LDPC codes have been
+  adopted in the 5G standard, forming the backbone of real-world
+  communication infrastructure. On personal computers as well,
+  large-scale simulations with blocklengths up to \(10^7\) bits are
+  feasible. While classical communication has achieved practical
+  deployment of ultra-large-scale coding, quantum error correction codes
+  are still far from reaching an equivalent level.
+</p>
+<h2>Our Research Direction</h2>
+<p>
+  To address this situation, our research focuses on quantum error correction using LDPC codes,  
+  particularly the construction and decoding of Calderbank–Shor–Steane (CSS) quantum codes  
+  based on sparse binary or non-binary matrices.  
+  Our aim is to design quantum codes that approach the hashing bound under practical decoding algorithms.
+</p>
+
+<p>
+  One of our major achievements is the development of explicit quantum LDPC codes constructed from permutation matrices,  
+  which demonstrate excellent error-correcting performance over depolarizing channels.  
+  These constructions are carefully designed to avoid short cycles in the Tanner graph,  
+  thereby suppressing the error floor phenomenon.
+</p>
+
+<p>
+  We are also developing decoding algorithms that account for degeneracy in quantum noise models,  
+  including syndrome-based decoding and belief propagation methods adapted for Galois fields.  
+  Recent results indicate that combining dual codes with appropriate post-processing  
+  significantly improves the decoding success rate.
+</p>
+
+<p>
+  Through this line of work, we have attained performance close to the hashing bound,  
+  reduced error floors in low-rate regimes, constructed codes with large cycle lengths,  
+  and discovered binary LDPC codes with sharp error-rate transitions.  
+  This research contributes to the long-term goal of realizing scalable and fault-tolerant quantum communication and computation.
+</p>
+<p style="text-align:center;">
+  <img src="./files/figures.png" alt="Decoding performance of the proposed quantum LDPC codes" width="70%">
+</p>
+<hr>
+  <a id="software"></a>
+  <h2>Software and Code Data</h2>
+  <p>
+    The software used in our recent publication  
+    (<a href="https://www.nature.com/articles/s41534-025-01090-1">npj Quantum Information</a>,  
+    also available at  
+    <a href="https://arxiv.org/abs/2506.15636">arXiv:2506.15636</a>)  
+    has now been released on GitHub:  
+    <a href="https://github.com/kasaikenta/gd-css-decoder">https://github.com/kasaikenta/gd-css-decoder</a>.  
+    It implements joint and degenerate belief propagation decoding  
+    for quantum error correction based on non-binary LDPC codes.  
+  </p>
+  <p>
+    The parity-check matrix data used in the paper is now available here:  
+    <a href="https://kasaikenta.github.io/2506.15636.code.tar.gz">https://kasaikenta.github.io/2506.15636.code.tar.gz</a>  
+  </p>
+  <p>
+    The parity-check matrix data for our earlier work  
+    (<a href="https://arxiv.org/abs/2504.17790">arXiv:2504.17790</a>) is also available here:  
+    <a href="https://kasaikenta.github.io/2504.17790.code.tar.gz">https://kasaikenta.github.io/2504.17790.code.tar.gz</a>  
+  </p>
+  <p>
+    In the <code>prefix_value</code> files, the numbers 1, 2, ..., 255  
+    represent \(\alpha^{0}, \alpha^{1}, \ldots, \alpha^{254}\) for a primitive element \(\alpha\).  
+    The primitive polynomial can be found in the respective paper.
+  </p>
+  <p>
+    For other software or data related to the paper,  
+    please feel free to <a href="mailto:kenta@ict.eng.isct.ac.jp">contact us</a>.
+  </p>  
+<hr>
+<h2>Q&amp;A (Frequently Asked Questions)</h2>
+
+<div class="news-item">
+  <h3>Q. What key idea enables the proposed codes to approach the hashing bound?</h3>
+  <p>
+    The construction cleverly exploits two well-known insights from classical coding theory:  
+    (i) non-binary LDPC codes with column weight two tend to perform especially well under iterative decoding, and  
+    (ii) column weight two allows flexible designs that can effectively eliminate short cycles in the Tanner graph.  
+  </p>
+  <p>
+    By combining these properties with affine permutation matrix (APM) placements,
+    the proposed codes achieve both orthogonality and large girth, which suppress error floors
+    and enable sharp threshold-like performance.  
+    As a result, the quantum LDPC codes constructed in this way approach the hashing bound,
+    even at practical blocklengths.
+  </p>
+</div>
+
+<div class="news-item">
+  <h3>Q. LDPC codes with column weight 2 are known to have logarithmic minimum distance and poor decoding performance, aren’t they?</h3>
+  <p>
+    Indeed, classical binary LDPC codes with column weight 2 have a minimum distance that grows only logarithmically with respect to the code length,
+    and their BP decoding threshold is significantly worse than that of column-3 codes.
+    However, the situation is quite different for non-binary LDPC codes.
+    When the code rate is high, the BP threshold of column-2 non-binary LDPC codes can approach the channel capacity,
+    whereas that of column-3 codes becomes much poorer.
+  </p>
+  <p>
+    Moreover, non-binary extensions can substantially increase the minimum distance,
+    leading to performance without observable error floors.
+    As mentioned in the following Q&A,
+    it is well known in classical coding theory that good BP decoding performance
+    does not necessarily require the minimum distance to grow linearly with the code length.
+  </p>
+</div>
+
+<div class="news-item">
+  <h3>Q. Is the minimum distance of the proposed codes large? If not, why do they still perform so well?</h3>
+  <p>
+    The minimum distance of our codes does not grow linearly with blocklength.  
+    However, this does not prevent strong decoding performance under belief propagation (BP).  
+    From the theory of density evolution, it is well understood that what primarily determines BP performance 
+    are the column weight and row weight of the parity-check matrix, not the asymptotic growth of minimum distance.  
+  </p>
+  <p>
+    Furthermore, it is known that classical LDPC codes with column weight three or larger typically have minimum distance 
+    that grows linearly with blocklength when constructed at random. This explains why researchers in LDPC coding 
+    theory tend not to emphasize minimum distance as the decisive factor: good iterative decoding performance 
+    can be achieved without relying on very large minimum distance.
+  </p>
+</div>
+<p>
+While minimum distance is an important metric for characterizing the error-floor regime, achieving linearly growing minimum distance is not strictly necessary for excellent iterative decoding performance.
+This insight can be traced back to lessons from classical coding theory.
+During the 1980s and early 1990s, much of the community’s attention was directed toward the algebraic aspects of minimum-distance theory, and practical iterative methods received less focus.
+Consequently, the (re)discovery of turbo codes (1993) and LDPC codes (reintroduced in the mid-1990s, following Gallager’s original 1962 work) came somewhat later, even though their effectiveness derives not primarily from large minimum distance but from efficient iterative decoding and code structures that are well suited for BP.
+</p>
+</div>
+<div class="news-item">
+  <h3>Q. Why is a new construction of quantum LDPC codes necessary?</h3>
+  <p>
+    Conventional quantum LDPC codes suffer from low coding rates, high error floors,
+    lack of scalability, and heavy post-processing requirements.
+    As a result, performance does not scale with blocklength and remains far from the hashing bound.
+    Our work aims to construct codes with non-vanishing rate and efficient decoding
+    that achieve performance close to the hashing bound.
+  </p>
+</div>
+
+
+<div class="news-item">
+  <h3>Q. What are the main components of the proposed coding framework?</h3>
+  <p>
+    The framework integrates four ingredients:<br>
+    (i) Affine permutation matrix (APM) constructions to avoid short cycles,<br>
+    (ii) joint belief propagation decoding over non-binary fields F<sub>q</sub>,<br>
+    (iii) optimization of minimum distance by carefully selecting matrix entries,<br>
+    (iv) lightweight post-processing to remove residual errors.
+  </p>
+</div>
+
+<div class="news-item">
+  <h3>Q. How does the proposed decoding differ from conventional methods?</h3>
+  <p>
+    Unlike conventional approaches that decode X and Z errors separately,
+    our joint BP simultaneously estimates both, fully exploiting the CSS structure.
+    Messages are richer because they are probability vectors over F<sub>q</sub> rather than binary likelihoods,
+    allowing more information to be exchanged during decoding.
+    Residual trapping-cycle errors are corrected by local post-processing whose complexity is independent of code length.
+  </p>
+</div>
+
+<div class="news-item">
+  <h3>Q. Why do the results focus on large blocklengths?</h3>
+  <p>
+    Threshold phenomena and error-floor behavior become visible only at very large blocklengths.
+    Demonstrating sharp threshold-like performance without error floors in this regime
+    provides the strongest evidence of scalability.
+    While short blocklengths also show good scaling, long blocklength results best highlight the theory.
+  </p>
+</div>
+
+<div class="news-item">
+  <h3>Q. What is the stabilizer weight?</h3>
+  <p>
+    The stabilizer weight is upper bounded by e × L, where e is the field extension degree
+    and L is the row weight.
+    For example, with e = 8 and L = 6, the stabilizer weight is at most 48,
+    and crucially remains constant regardless of code length.
+  </p>
+</div>
+
+<div class="news-item">
+  <h3>Q. Are measurement errors considered?</h3>
+  <p>
+    No. The analysis assumes an idealized setting where all gate operations, stabilizer measurements,
+    and recovery operations are error-free.
+    The purpose is to isolate the coding-theoretic limitations apart from engineering constraints.
+  </p>
+</div>
+
+<div class="news-item">
+  <h3>Q. Does using non-binary LDPC codes mean we are encoding qudits?</h3>
+  <p>
+    No. Although matrices are defined over \( \mathbb{F}_q \) and decoding operates over non-binary fields,
+    the physical system is still qubits.
+    Each element of \( \mathbb{F}_q \) is expanded into an \( e \times e \) binary companion matrix,
+    ensuring the code remains a binary CSS code.
+  </p>
+</div>
+<div class="news-item">
+  <h3>Q. How is decoding success or failure determined?</h3>
+  <p>
+    Decoding is judged by whether the difference between the true error and the estimated error 
+    belongs to the dual code.  
+    In other words, if \( (x + \hat{x}) \in C_X^{\perp} \) and \( (z + \hat{z}) \in C_Z^{\perp} \), 
+    then the decoding is considered successful, because both correspond to valid stabilizers and 
+    represent the same logical state.  
+  </p>
+  <p>
+    If the difference vector is not in the dual, then the estimated error introduces a logical error 
+    and decoding is considered unsuccessful.  
+    Our framework also includes lightweight post-processing that can correct many failures by 
+    resolving small trapping-cycle structures.
+  </p>
+</div>
+<div class="news-item">
+  <h3>Q. How are orthogonal matrices constructed using APM (Affine Permutation Matrices)?</h3>
+  <p>
+    Our method generalizes the Hagiwara–Imai construction.  
+    Specifically, we place affine permutation matrices (APMs) at cyclically shifted positions within the parity-check matrices.  
+    By carefully choosing the shifts and the APM entries, the resulting non-binary matrices 
+    \( H_{\Gamma} \) and \( H_{\Delta} \) become orthogonal over \( \mathbb{F}_q \).
+  </p>
+  <p>
+    In other words, the inner product between any row of \( H_{\Gamma} \) and any row of \( H_{\Delta} \) cancels to zero in \( \mathbb{F}_q \).  
+    After expanding each field element into an \( e \times e \) binary companion matrix, we obtain binary parity-check matrices 
+    \( H_X \) and \( H_Z \) that satisfy \( H_X H_Z^{T} = 0 \).  
+    This approach ensures orthogonality while avoiding short cycles, leading to improved decoding performance.
+  </p>
+</div>
+<div class="news-item">
+  <h3>
+    Q. Could the unusually sharp performance curves be an artifact of incorrect decoding criteria?  
+    For example, are you simply counting any error pattern that satisfies the syndrome as a decoding success?
+  </h3>
+  <p>
+     In our framework, decoding success is not judged merely by reproducing the measured syndrome.  
+    Instead, the definition is stricter: the difference between the true error and the estimated error must belong to the dual code.  
+    In that case, the estimated error corresponds to a valid stabilizer and preserves the logical state, and only then is decoding counted as successful.  
+    If this condition is not met, the event is classified as a decoding failure since it introduces a logical error.  
+  </p>
+</div>
+  <p style="margin-top:20px; font-style: italic;">
+  For further questions not covered here, please contact us directly via the 
+  <a href="#contact">Contact</a> section below.
+</p>
+<hr>
+  <h2>News</h2>
+
+<div class="news-item">
+  <h3>Paper Published in npj Quantum Information (September 30, 2025)</h3>
+  <p>
+    The paper titled <strong>"Quantum error correction near the coding theoretical bound"</strong>,
+    authored by <em>Daiki Komoto</em> and <em>Kenta Kasai</em> (Institute of Science Tokyo),
+    has been published in <em>npj Quantum Information</em>.
+  </p>
+  <p>
+    This study proposes a new quantum error correction framework based on LDPC codes
+    that achieves performance near the coding-theoretical (hashing) bound.
+    The work demonstrates efficient decoding for hundreds of thousands of logical qubits,
+    marking a major step toward scalable fault-tolerant quantum computation.
+  </p>
+  <p>
+    ▶︎ <a href="https://www.nature.com/articles/s41534-025-01090-1" target="_blank" rel="noopener">
+      Read the article on npj Quantum Information (Nature)
+    </a>
+  </p>
+</div>
+<div class="news-item">
+  <h3>New Preprint on arXiv: "Sharp Error-Rate Transitions in Quantum QC-LDPC Codes under Joint BP Decoding" (July 16, 2025)</h3>
+  <p>
+    We have released a new preprint titled 
+    <strong>"Sharp Error-Rate Transitions in Quantum QC-LDPC Codes under Joint BP Decoding"</strong> on 
+    <a href="https://arxiv.org/abs/2507.11534" target="_blank">arXiv</a>.
+  </p>
+  <p>
+    This work reports the first observation of steep error-rate “waterfall” transitions in quantum LDPC codes with non-vanishing coding rate using 
+    <em>binary</em> joint belief propagation decoding. This phenomenon was previously believed to require more complex decoding strategies.
+  </p>
+  <p>
+    The paper also investigates the cause of error floors, identifying trapping sets in the Tanner graph as key contributors. These insights enable the 
+    potential design of codes and decoders that both maintain steep thresholds and reduce the error floor, moving quantum error correction closer to 
+    practical deployment.
+  </p>
+  <p>
+    <a href="https://arxiv.org/abs/2507.11534" target="_blank">Read the full preprint on arXiv</a>
+  </p>
+</div>
+<div class="news-item">
+  <h3>New Preprint Published on arXiv: "Quantum Error Correction Exploiting Degeneracy to Approach the Hashing Bound" (June 19, 2025)</h3>
+  <p>
+    Our new preprint titled <strong>"Quantum Error Correction Exploiting Degeneracy to Approach the Hashing Bound"</strong> is now available on 
+    <a href="https://arxiv.org/abs/2506.15636" target="_blank">arXiv</a>.
+  </p>
+  <p>
+    This work presents a decoding algorithm that explicitly exploits the degeneracy of quantum errors under the depolarizing channel. 
+    Using non-binary LDPC codes and syndrome-based methods, the proposed decoder achieves a frame error rate of $10^{-4}$ at a physical error rate of 9.45%
+    with a code of 104,000 logical qubits and 312,000 physical qubits, approaching the quantum hashing bound.
+  </p>
+</div>
+<div class="news-item" id="ISTC2025">
+  <h3>Papers and Posters Accepted at ISTC 2025 (June 11, 2025)</h3>
+  <p>
+    The following paper and poster presentations have been accepted to <strong>ISTC 2025 (13th International Symposium on Topics in Coding)</strong>, which will be held in Los Angeles, USA, in August 2025.
+  </p>
+  <ul>
+    <li><strong>Regular Paper</strong><br>
+      “Quantum Error Correction with Girth-16 Non-Binary LDPC Codes via Affine Permutation Construction”<br>
+      <em>Kenta Kasai</em>
+    </li>
+    <li><strong>Poster Presentations</strong><br>
+      “A Review of Recent Developments in Quantum Error Correction Using Non-Binary LDPC Codes”<br>
+      <em>Kenta Kasai</em><br>
+      “Towards High-Girth Quantum LDPC Codes Beyond Conventional Constraints”<br>
+      <em>Daiki Komoto, Kenta Kasai</em>
+    </li>
+  </ul>
+  <p>
+    The regular paper presents a novel construction of quantum APM-LDPC codes using non-circulant affine permutation matrices, demonstrating the feasibility of girth-16 code design beyond the conventional constraints of quantum QC-LDPC codes.
+    The poster presentations provide an overview of recent developments in quantum error correction using non-binary LDPC codes and future directions for high-girth code constructions.
+  </p>
+  <p>
+    📄 <a href="files/ISTC2025.pdf" target="_blank">Download Slides (ISTC 2025 Presentation)</a>
+  </p>
+</div>
+<div class="news-item">
+  <h3>Poster to Be Presented at ISIT 2025 Workshop Q-PIC (June 24, 2025)</h3>
+  <p>
+    Prof. Kenta Kasai (Tokyo University of Science and Technology) will present his poster titled
+    <strong>“Perspectives on Degeneracy and Structure in Non-Binary LDPC Code-Based QEC”</strong> 
+    at the ISIT 2025 workshop 
+    <strong>“Quantum Information – Open Problems, Impact, and Challenges (Q-PIC)”</strong>.
+  </p>
+  <p>
+    The workshop focuses on key challenges and open problems in quantum information science, and the poster highlights
+    new perspectives on degeneracy and structural properties in quantum error correction based on non-binary LDPC codes.
+  </p>
+  <p>
+    The poster will be on display starting at <strong>9:30 AM on June 24, 2025 (Tuesday)</strong> at the Rackham Graduate School, University of Michigan.
+    Prof. Kasai will also deliver a 30-second pitch talk and be available for Q&A sessions.
+  </p>
+  <p>
+    For more details, please visit the <a href="https://www.itsoc.org/group/isit2025-workshop-quantum-information-its-puzzles-impact-and-challenges" target="_blank">Q-PIC workshop page</a>.
+  </p>
+</div>
+<div class="news-item">
+  <h3>Presentation at ISIT 2025 Recent Results Poster Session (June 23, 2025)</h3>
+  <p>
+    Prof. Kenta Kasai (Institute of Science Tokyo) will present his recent work titled  
+    <strong>“Follow-Up Study on Efficient Mitigation of Error Floors in Quantum Error Correction using Non-Binary LDPC Codes”</strong>  
+    at the <strong>Recent Results Poster Session</strong> of the <strong>IEEE International Symposium on Information Theory (ISIT) 2025</strong>.
+  </p>
+  <p>
+    The session will take place on <strong>Monday, June 23, 2025</strong>, from <strong>14:30 to 15:50</strong> at the ballroom of the Michigan League in Ann Arbor.
+  </p>
+  <p>
+    This follow-up study builds upon previously proposed techniques to mitigate error floors in quantum LDPC codes and evaluates their performance and practicality in greater depth.
+  </p>
+  <p>
+    ▶︎ <a href="https://2025.ieee-isit.org/recent-results-session" target="_blank">ISIT 2025 Recent Results Session</a><br>
+    ▶︎ <a href="https://arxiv.org/abs/2501.13923" target="_blank">arXiv preprint</a>
+  </p>
+</div>
+<div class="news-item">
+  <h3>Poster Accepted at QEC25: "Towards Practical Quantum Error Correction" (May 22, 2025)</h3>
+  <p>
+    The poster <strong>"Towards Practical Quantum Error Correction: Near-Optimal Performance and Floor Mitigation via Non-Binary LDPC Codes"</strong>, authored by <strong>Kenta Kasai</strong>, 
+    has been accepted for presentation at the <strong>Quantum Error Correction (QEC25)</strong> conference.
+  </p>
+  <p>
+    This work addresses the suppression of error floors in quantum LDPC codes and demonstrates near-optimal performance using non-binary belief propagation decoding.
+  </p>
+  <p>
+    The acceptance rate for this year’s poster session was below 40%, making it a highly competitive venue for recent results in quantum error correction.
+  </p>
+  <p>
+    More details available on the <a href="https://qec25.yalepages.org" target="_blank">QEC25 website</a>.
+  </p>
+</div>
+<div class="news-item">
+  <h3>Paper Accepted at ISIT 2025: "Efficient Mitigation of Error Floors in Quantum Error Correction using Non-Binary Low-Density Parity-Check Codes" (April 27, 2025)</h3>
+  <p>
+    The paper <strong>"Efficient Mitigation of Error Floors in Quantum Error Correction using Non-Binary Low-Density Parity-Check Codes"</strong>, authored by <strong>Kenta Kasai</strong>, 
+    has been accepted for presentation at the IEEE International Symposium on Information Theory (ISIT 2025).
+  </p>
+  <p>
+    This paper presents decoding algorithms designed to mitigate the error floor in quantum LDPC codes constructed over non-binary fields, 
+    achieving performance close to the hashing bound under practical quantum noise models.
+  </p>
+  <p>
+    As a follow-up to this work, we will present new results in the <strong>Recent Results Poster Session</strong> at ISIT 2025, to be held in <strong>Ann Arbor, Michigan</strong>.
+  </p>
+  <p>
+    Preprint available on <a href="https://arxiv.org/abs/2501.13923" target="_blank">arXiv</a>.
+  </p>
+  <p>
+    📄 <a href="files/ISIT2025.pdf" target="_blank">Download Slides (ISIT 2025 Presentation)</a>
+  </p>
+</div>
+
+  <hr>
+<h2 id="contact">Contact</h2>
+<p>Email: <a href="mailto:kenta@ict.eng.isct.ac.jp">kenta@ict.eng.isct.ac.jp</a></p>
+<p>Office: Room 418, South Building 3, Ookayama Campus, Institute of Science Tokyo<br>
+  2-12-1, Ookayama, Meguro-ku, Tokyo 152-8550, Japan</p>
+</body>
+</html>
