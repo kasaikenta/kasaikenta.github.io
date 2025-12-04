@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <title>語頭符号生成アルゴリズム 学習ツール</title>
+
+  <!-- MathJax 設定 & 読み込み -->
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [['\\(','\\)'], ['$', '$']],
+        displayMath: [['\\[','\\]'], ['$$','$$']]
+      },
+      svg: { fontCache: 'global' }
+    };
+  </script>
+  <script id="MathJax-script" async
+    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+  </script>
+
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      margin: 0;
+      padding: 16px;
+      background: #f5f5f5;
+      color: #333;
+    }
+    h1 {
+      font-size: 1.6rem;
+      margin-bottom: 0.5rem;
+    }
+    p.note {
+      margin-top: 0;
+      margin-bottom: 1rem;
+      font-size: 0.9rem;
+      color: #555;
+    }
+    .panel {
+      background: #fff;
+      border-radius: 12px;
+      padding: 12px 16px;
+      margin-bottom: 12px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+    }
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: flex-end;
+    }
+    .control-group {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      min-width: 180px;
+    }
+    label {
+      font-size: 0.85rem;
+      color: #555;
+    }
+    input[type="text"] {
+      padding: 4px 8px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      font-size: 0.9rem;
+    }
+    button {
+      padding: 6px 14px;
+      border-radius: 999px;
+      border: none;
+      cursor: pointer;
+      font-size: 0.9rem;
+      background: #1976d2;
+      color: #fff;
+    }
+    button.secondary {
+      background: #eeeeee;
+      color: #333;
+    }
+    button:disabled {
+      opacity: 0.5;
+      cursor: default;
+    }
+    #status {
+      font-size: 0.85rem;
+      margin-top: 6px;
+      color: #555;
+    }
+    #status.error {
+      color: #c62828;
+    }
+    .layout {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .tree-panel, .table-panel {
+      flex: 1 1 360px;
+      min-width: 320px;
+    }
+    .tree-panel h2, .table-panel h2 {
+      font-size: 1.1rem;
+      margin: 0 0 4px;
+    }
+    #treeSvg {
+      width: 100%;
+      height: 420px;
+      border-radius: 8px;
+      background: #fafafa;
+      border: 1px solid #ddd;
+    }
+    .legend {
+      margin-top: 4px;
+      font-size: 0.8rem;
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .legend-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .legend-swatch {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      border: 1px solid #555;
+    }
+    .legend-leaf { background: #4caf50; }
+    .legend-current { background: #ff9800; }
+    .legend-deleted { background: #cccccc; }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9rem;
+      margin-top: 4px;
+    }
+    th, td {
+      border-bottom: 1px solid #e0e0e0;
+      padding: 4px 6px;
+      text-align: center;
+    }
+    th {
+      background: #fafafa;
+      font-weight: 600;
+    }
+    tr.current-row {
+      background: #e3f2fd;
+    }
+    #stepExplanation {
+      margin-top: 6px;
+      font-size: 0.85rem;
+      color: #555;
+      min-height: 2.5em;
+    }
+    @media (max-width: 800px) {
+      #treeSvg {
+        height: 360px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1>語頭符号生成アルゴリズム 学習ツール</h1>
+  <p class="note">
+    クラフトの不等式を満たす符号語長列 \(l_1 \le l_2 \le \dots \le l_m\) を入力し，
+    ステップごとに 2 分木上で節点を選んで語頭符号を構成する手順を体験できます。
+  </p>
+
+  <div class="panel">
+    <div class="controls">
+      <div class="control-group">
+        <label for="symbolsInput">記号（空白区切り・省略可）</label>
+        <input id="symbolsInput" type="text" placeholder="例: a b c d e">
+      </div>
+      <div class="control-group">
+        <label for="lengthsInput">符号語長列 \(l_i\)（昇順・空白区切り）</label>
+        <input id="lengthsInput" type="text" placeholder="例: 1 2 2">
+      </div>
+      <div class="control-group">
+        <button id="initButton">初期化</button>
+      </div>
+      <!-- ランダム生成ボタン -->
+      <div class="control-group">
+        <button id="randomButton" class="secondary">ランダム生成</button>
+      </div>
+    </div>
+    <div id="status"></div>
+    <div style="margin-top:8px; display:flex; gap:8px;">
+      <button id="nextStepButton" disabled>次のステップ</button>
+      <button id="autoButton" disabled>最後まで</button>
+      <button id="resetButton" class="secondary" disabled>リセット</button>
+    </div>
+  </div>
+
+  <div class="layout">
+    <div class="panel tree-panel">
+      <h2>符号の木</h2>
+      <svg id="treeSvg"></svg>
+      <div class="legend">
+        <div class="legend-item">
+          <span class="legend-swatch legend-leaf"></span><span>確定した葉（符号語）</span>
+        </div>
+        <div class="legend-item">
+          <span class="legend-swatch legend-current"></span><span>今回選んだ節点</span>
+        </div>
+        <div class="legend-item">
+          <span class="legend-swatch legend-deleted"></span><span>削除された部分木</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel table-panel">
+      <h2>符号割り当て結果</h2>
+      <table id="resultTable">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>記号</th>
+            <th>符号語長 \(l_i\)</th>
+            <th>符号語</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+      <div id="stepExplanation"></div>
+    </div>
+  </div>
+
+  <script>
+    // ----- データ構造 -----
+    class TreeNode {
+      constructor(id, depth, indexAtDepth, parent, bitFromParent) {
+        this.id = id;
+        this.depth = depth;
+        this.indexAtDepth = indexAtDepth;
+        this.parent = parent;
+        this.bitFromParent = bitFromParent;
+        this.left = null;
+        this.right = null;
+        this.code = parent ? parent.code + bitFromParent : "";
+        this.isLeaf = false;     // この節点が葉として確定したか
+        this.deleted = false;    // 削除された部分木かどうか
+        this.leafBelow = false;  // 自分より下に葉が存在するか
+        this.isCurrent = false;  // 直近のステップで選んだ節点か
+        this.x = 0;
+        this.y = 0;
+      }
+    }
+
+    function buildFullBinaryTree(maxDepth) {
+      let idCounter = 0;
+      const nodesByDepth = [];
+      for (let d = 0; d <= maxDepth; d++) nodesByDepth[d] = [];
+
+      function createNode(depth, indexAtDepth, parent, bitFromParent) {
+        const node = new TreeNode(idCounter++, depth, indexAtDepth, parent, bitFromParent);
+        nodesByDepth[depth].push(node);
+        if (depth < maxDepth) {
+          node.left = createNode(depth + 1, indexAtDepth * 2, node, "0");
+          node.right = createNode(depth + 1, indexAtDepth * 2 + 1, node, "1");
+        }
+        return node;
+      }
+
+      const root = createNode(0, 0, null, "");
+      return { root, nodesByDepth, maxDepth };
+    }
+
+    function markDescendantsDeleted(node) {
+      if (!node.left && !node.right) return;
+      const stack = [];
+      if (node.left) stack.push(node.left);
+      if (node.right) stack.push(node.right);
+      while (stack.length > 0) {
+        const cur = stack.pop();
+        cur.deleted = true;
+        if (cur.left) stack.push(cur.left);
+        if (cur.right) stack.push(cur.right);
+      }
+    }
+
+    // ----- 描画 -----
+    function renderTree(tree) {
+      const svg = document.getElementById("treeSvg");
+      svg.innerHTML = "";
+      if (!tree) return;
+
+      const width = svg.clientWidth || 800;
+      const levelHeight = 70;
+      const height = 40 + tree.maxDepth * levelHeight + 40;
+      svg.setAttribute("viewBox", "0 0 " + width + " " + height);
+
+      // 座標計算：各深さで等間隔に配置
+      for (let d = 0; d <= tree.maxDepth; d++) {
+        const nodes = tree.nodesByDepth[d];
+        const spacing = width / (nodes.length + 1);
+        nodes.forEach((node, j) => {
+          node.x = (j + 1) * spacing;
+          node.y = 40 + d * levelHeight;
+        });
+      }
+
+      const ns = "http://www.w3.org/2000/svg";
+
+      // 枝の描画
+      for (let d = 0; d < tree.maxDepth; d++) {
+        for (const node of tree.nodesByDepth[d]) {
+          if (node.deleted || node.isLeaf) continue;
+          for (const [child, bit] of [[node.left, "0"], [node.right, "1"]]) {
+            if (!child || child.deleted) continue;
+            const line = document.createElementNS(ns, "line");
+            line.setAttribute("x1", node.x);
+            line.setAttribute("y1", node.y);
+            line.setAttribute("x2", child.x);
+            line.setAttribute("y2", child.y);
+            line.setAttribute("stroke", "#555");
+            line.setAttribute("stroke-width", "1");
+            svg.appendChild(line);
+
+            const label = document.createElementNS(ns, "text");
+            label.textContent = bit;
+            label.setAttribute("x", (node.x + child.x) / 2);
+            label.setAttribute("y", (node.y + child.y) / 2 - 4);
+            label.setAttribute("font-size", "10");
+            label.setAttribute("text-anchor", "middle");
+            svg.appendChild(label);
+          }
+        }
+      }
+
+      // 節点の描画
+      for (let d = 0; d <= tree.maxDepth; d++) {
+        for (const node of tree.nodesByDepth[d]) {
+          const circle = document.createElementNS(ns, "circle");
+          circle.setAttribute("cx", node.x);
+          circle.setAttribute("cy", node.y);
+          circle.setAttribute("r", 10);
+
+          let fill = "#ffffff";
+          if (node.deleted) fill = "#cccccc";
+          if (node.isLeaf) fill = "#4caf50";
+          if (node.isCurrent) fill = "#ff9800";
+
+          circle.setAttribute("fill", fill);
+          circle.setAttribute("stroke", "#333");
+          circle.setAttribute("stroke-width", "1");
+          svg.appendChild(circle);
+
+          if (node.depth > 0) {
+            const t = document.createElementNS(ns, "text");
+            t.textContent = node.bitFromParent;
+            t.setAttribute("x", node.x);
+            t.setAttribute("y", node.y + 3);
+            t.setAttribute("font-size", "10");
+            t.setAttribute("text-anchor", "middle");
+            svg.appendChild(t);
+          }
+        }
+      }
+    }
+
+    // ----- アプリ状態 -----
+    const appState = {
+      pairs: null,    // [{symbol, length, code?}, ...]
+      tree: null,
+      stepIndex: 0
+    };
+
+    function setStatus(text, isError=false) {
+      const status = document.getElementById("status");
+      status.textContent = text;
+      status.className = isError ? "error" : "";
+    }
+
+    function updateButtons() {
+      const hasInit = !!appState.tree;
+      const nextBtn = document.getElementById("nextStepButton");
+      const autoBtn = document.getElementById("autoButton");
+      const resetBtn = document.getElementById("resetButton");
+
+      resetBtn.disabled = !hasInit;
+      if (!hasInit) {
+        nextBtn.disabled = true;
+        autoBtn.disabled = true;
+        return;
+      }
+      const finished = appState.stepIndex >= appState.pairs.length;
+      nextBtn.disabled = finished;
+      autoBtn.disabled = finished;
+    }
+
+    function updateTable() {
+      const tbody = document.querySelector("#resultTable tbody");
+      tbody.innerHTML = "";
+      if (!appState.pairs) return;
+
+      appState.pairs.forEach((p, i) => {
+        const tr = document.createElement("tr");
+        if (i === appState.stepIndex - 1) tr.classList.add("current-row");
+
+        const tdIdx = document.createElement("td");
+        tdIdx.textContent = (i + 1);
+        const tdSym = document.createElement("td");
+        tdSym.textContent = p.symbol;
+        const tdLen = document.createElement("td");
+        tdLen.textContent = p.length;
+        const tdCode = document.createElement("td");
+        tdCode.textContent = p.code || "-";
+
+        tr.appendChild(tdIdx);
+        tr.appendChild(tdSym);
+        tr.appendChild(tdLen);
+        tr.appendChild(tdCode);
+        tbody.appendChild(tr);
+      });
+    }
+
+    function updateStepExplanation(message) {
+      const div = document.getElementById("stepExplanation");
+      div.textContent = message || "";
+    }
+
+    // ----- 初期化 -----
+    function initializeApp() {
+      const lengthsInput = document.getElementById("lengthsInput").value.trim();
+      if (!lengthsInput) {
+        setStatus("符号語長を入力してください。", true);
+        return;
+      }
+      const lengthTokens = lengthsInput.split(/[\s,]+/).filter(t => t.length > 0);
+      const lengths = lengthTokens.map(t => Number(t));
+      if (lengths.some(l => !Number.isInteger(l) || l <= 0)) {
+        setStatus("符号語長は 1 以上の整数で入力してください。", true);
+        return;
+      }
+
+      const symbolsInput = document.getElementById("symbolsInput").value.trim();
+      let symbols;
+      if (symbolsInput) {
+        symbols = symbolsInput.split(/\s+/);
+        if (symbols.length !== lengths.length) {
+          setStatus("記号の個数と符号語長の個数が一致していません。", true);
+          return;
+        }
+      } else {
+        const alpha = "abcdefghijklmnopqrstuvwxyz";
+        symbols = lengths.map((_, i) => alpha[i] || ("x" + (i+1)));
+      }
+
+      const pairs = symbols.map((sym, i) => ({ symbol: sym, length: lengths[i], code: null }));
+      pairs.sort((a, b) => a.length - b.length);
+
+      // クラフトの不等式チェック
+      let kraft = 0;
+      for (const p of pairs) {
+        kraft += Math.pow(2, -p.length);
+      }
+      const kraftText = "クラフト和 Σ 2^{-l_i} = " + kraft.toFixed(4);
+      if (kraft > 1 + 1e-9) {
+        setStatus(kraftText + " ＞ 1 となっており，語頭符号は存在しません。", true);
+        return;
+      } else {
+        setStatus(kraftText + " ≤ 1 なので，語頭符号が構成できます。");
+      }
+
+      const maxDepth = Math.max(...pairs.map(p => p.length));
+      const tree = buildFullBinaryTree(maxDepth);
+
+      appState.pairs = pairs;
+      appState.tree = tree;
+      appState.stepIndex = 0;
+
+      for (let d = 0; d <= tree.maxDepth; d++) {
+        for (const node of tree.nodesByDepth[d]) {
+          node.isLeaf = false;
+          node.deleted = false;
+          node.leafBelow = false;
+          node.isCurrent = false;
+        }
+      }
+
+      renderTree(tree);
+      updateTable();
+      updateStepExplanation("「次のステップ」を押すと，最初の記号に対する節点が選ばれます。");
+      updateButtons();
+    }
+
+    // ----- 1 ステップ進める -----
+    function doOneStep() {
+      const tree = appState.tree;
+      const pairs = appState.pairs;
+      if (!tree || !pairs) return;
+      if (appState.stepIndex >= pairs.length) return;
+
+      // 前回の強調をリセット
+      for (let d = 0; d <= tree.maxDepth; d++) {
+        for (const node of tree.nodesByDepth[d]) {
+          node.isCurrent = false;
+        }
+      }
+
+      const current = pairs[appState.stepIndex];
+      const depth = current.length;
+      const candidates = tree.nodesByDepth[depth];
+
+      // 「葉でなく・削除されておらず・自分より下に葉がない」最初の節点
+      let chosen = null;
+      for (const node of candidates) {
+        if (node.isLeaf) continue;
+        if (node.deleted) continue;
+        if (node.leafBelow) continue;
+        chosen = node;
+        break;
+      }
+
+      if (!chosen) {
+        setStatus("深さ " + depth + " の節点で条件を満たすものが見つかりません。", true);
+        return;
+      }
+
+      chosen.isLeaf = true;
+      chosen.isCurrent = true;
+      markDescendantsDeleted(chosen);
+
+      let anc = chosen.parent;
+      while (anc) {
+        anc.leafBelow = true;
+        anc = anc.parent;
+      }
+
+      current.code = chosen.code;
+
+      appState.stepIndex += 1;
+
+      renderTree(tree);
+      updateTable();
+
+      const msg =
+        "ステップ " + appState.stepIndex +
+        "：深さ l = " + depth +
+        " の節点を左から順に見ていき，「葉でなく，かつ自分より下に葉がない」最初の節点を選びました。" +
+        " その節点の根からの経路 " + (current.code || "ε") +
+        " を記号「" + current.symbol + "」の符号語とします。";
+      updateStepExplanation(msg);
+      updateButtons();
+
+      if (appState.stepIndex >= appState.pairs.length) {
+        setStatus("すべての記号に対する語頭符号の構成が完了しました。");
+      }
+    }
+
+    // ----- 最後まで自動で進める -----
+    function doAuto() {
+      while (appState.tree && appState.stepIndex < appState.pairs.length) {
+        doOneStep();
+      }
+    }
+
+    function resetApp() {
+      appState.pairs = null;
+      appState.tree = null;
+      appState.stepIndex = 0;
+      renderTree(null);
+      updateTable();
+      updateStepExplanation("");
+      setStatus("再度，符号語長列を入力して初期化してください。");
+      updateButtons();
+    }
+
+    // ----- ランダムにクラフトを満たす符号長列を生成 -----
+    function generateRandomLengths() {
+      // 記号数を 3〜8 くらいでランダムに
+      const maxSymbols = 8;
+      const minSymbols = 3;
+      const Lmax = 6; // 最大符号長（木の深さ）
+
+      let remaining = 1.0;
+      const lengths = [];
+      let iterations = 0;
+
+      while (true) {
+        iterations++;
+        if (iterations > 100) break; // 安全装置
+
+        // 残りで取れる長さの候補を列挙
+        const candidates = [];
+        for (let L = 1; L <= Lmax; L++) {
+          const w = Math.pow(2, -L);
+          if (w <= remaining + 1e-9) {
+            candidates.push(L);
+          }
+        }
+        if (candidates.length === 0) break;
+
+        // すでにある程度シンボルを生成していて、かつ残りが小さくなったら終了することもある
+        if (lengths.length >= minSymbols && Math.random() < 0.35) {
+          break;
+        }
+        if (lengths.length >= maxSymbols) {
+          break;
+        }
+
+        // 候補からランダムに 1 つ選ぶ
+        const L = candidates[Math.floor(Math.random() * candidates.length)];
+        lengths.push(L);
+        remaining -= Math.pow(2, -L);
+      }
+
+      if (lengths.length === 0) {
+        lengths.push(1); // フォールバック
+      }
+
+      lengths.sort((a, b) => a - b);
+      return lengths;
+    }
+
+    // ----- ランダム生成ボタン用処理 -----
+    function randomGenerateAndInit() {
+      const lengths = generateRandomLengths();
+      document.getElementById("lengthsInput").value = lengths.join(" ");
+
+      // 長さの個数に合わせて記号も自動生成して入力欄に表示
+      const alpha = "abcdefghijklmnopqrstuvwxyz";
+      const syms = lengths.map((_, i) => alpha[i] || ("x" + (i + 1)));
+      document.getElementById("symbolsInput").value = syms.join(" ");
+
+      initializeApp();
+      updateStepExplanation("ランダムに生成した符号語長列と記号に対して木を初期化しました。「次のステップ」でアルゴリズムを追ってください。");
+    }
+
+    // ----- イベント登録 -----
+    window.addEventListener("load", () => {
+      document.getElementById("initButton").addEventListener("click", initializeApp);
+      document.getElementById("nextStepButton").addEventListener("click", doOneStep);
+      document.getElementById("autoButton").addEventListener("click", doAuto);
+      document.getElementById("resetButton").addEventListener("click", resetApp);
+      document.getElementById("randomButton").addEventListener("click", randomGenerateAndInit);
+      renderTree(null);
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <title>最小ヒープ学習ツール</title>
+
+  <!-- MathJax: LaTeX数式表示 -->
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [['\\(','\\)'], ['$', '$']],
+        displayMath: [['\\[','\\]'], ['$$','$$']]
+      },
+      svg: { fontCache: 'global' }
+    };
+  </script>
+  <script id="MathJax-script" async
+    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+  </script>
+
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      margin: 0;
+      padding: 16px;
+      background: #f5f5f5;
+      color: #333;
+    }
+    h1 {
+      font-size: 1.6rem;
+      margin-bottom: 0.3rem;
+    }
+    p.note {
+      margin-top: 0;
+      margin-bottom: 1rem;
+      font-size: 0.9rem;
+      color: #555;
+    }
+    .panel {
+      background: #fff;
+      border-radius: 12px;
+      padding: 12px 16px;
+      margin-bottom: 12px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+    }
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: flex-end;
+    }
+    .control-group {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      min-width: 160px;
+    }
+    label {
+      font-size: 0.85rem;
+      color: #555;
+    }
+    input[type="number"] {
+      padding: 4px 8px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      font-size: 0.9rem;
+      width: 100px;
+    }
+    button {
+      padding: 6px 14px;
+      border-radius: 999px;
+      border: none;
+      cursor: pointer;
+      font-size: 0.9rem;
+      background: #1976d2;
+      color: #fff;
+      white-space: nowrap;
+    }
+    button.secondary {
+      background: #eeeeee;
+      color: #333;
+    }
+    button:disabled {
+      opacity: 0.5;
+      cursor: default;
+    }
+    #status {
+      font-size: 0.85rem;
+      margin-top: 6px;
+      color: #555;
+      min-height: 1.4em;
+    }
+    #status.error {
+      color: #c62828;
+    }
+
+    .layout {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .tree-panel, .array-panel {
+      flex: 1 1 360px;
+      min-width: 320px;
+    }
+    .tree-panel h2, .array-panel h2 {
+      font-size: 1.1rem;
+      margin: 0 0 4px;
+    }
+
+    .heap-container {
+      position: relative;
+      width: 100%;
+      height: 360px;
+      border-radius: 8px;
+      background: #fafafa;
+      border: 1px solid #ddd;
+      overflow: hidden;
+    }
+    /* エッジ描画用 SVG をコンテナにかぶせる */
+    #heapEdges {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+    }
+
+    .heap-node {
+      position: absolute;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: #e3f2fd;
+      border: 2px solid #1976d2;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.9rem;
+      box-sizing: border-box;
+      /* アニメーションをゆっくりに：0.8s */
+      transition: transform 0.8s ease;
+    }
+    .heap-node.highlight {
+      border-color: #fb8c00;
+      background: #ffe0b2;
+    }
+    .heap-node .value {
+      font-weight: 600;
+    }
+    .heap-node .index {
+      position: absolute;
+      top: -12px;
+      font-size: 0.65rem;
+      color: #555;
+    }
+
+    #arrayView {
+      font-family: "SF Mono", Menlo, Monaco, Consolas, "Courier New", monospace;
+      font-size: 0.9rem;
+      background: #fafafa;
+      border-radius: 8px;
+      padding: 8px;
+      border: 1px solid #ddd;
+      min-height: 2.2em;
+      white-space: pre;
+    }
+    #explanation {
+      margin-top: 8px;
+      font-size: 0.85rem;
+      color: #555;
+      min-height: 3em;
+      white-space: pre-line;
+    }
+  </style>
+</head>
+<body>
+  <h1>最小ヒープ学習ツール</h1>
+  <p class="note">
+    最小ヒープを配列と木の両方で表示しながら，
+    <strong>挿入（push）</strong>と<strong>最小値の削除（pop）</strong>の動きをアニメーションで学べます。
+  </p>
+
+  <div class="panel">
+    <div class="controls">
+      <div class="control-group">
+        <label for="valueInput">挿入する値 （整数）</label>
+        <input id="valueInput" type="number" value="10" />
+      </div>
+      <div class="control-group">
+        <button id="insertButton">挿入（insert）</button>
+      </div>
+      <div class="control-group">
+        <button id="deleteMinButton">最小値削除（delete-min）</button>
+      </div>
+      <div class="control-group">
+        <button id="randomInitButton" class="secondary">ランダム初期ヒープ</button>
+      </div>
+      <div class="control-group">
+        <!-- ラベルをランダム挿入に変更 -->
+        <button id="randomInsertButton" class="secondary">ランダム挿入</button>
+      </div>
+    </div>
+    <div id="status"></div>
+  </div>
+
+  <div class="layout">
+    <div class="panel tree-panel">
+      <h2>ヒープの木構造</h2>
+      <div class="heap-container" id="heapContainer">
+        <!-- 親子を結ぶエッジを描く SVG -->
+        <svg id="heapEdges"></svg>
+      </div>
+      <div id="explanation"></div>
+    </div>
+
+    <div class="panel array-panel">
+      <h2>配列で見たヒープ</h2>
+      <div id="arrayView"></div>
+      <p style="font-size:0.8rem; color:#555; margin-top:4px;">
+        配列の添字 \(i\) に対して，左の子は \(2i+1\)，右の子は \(2i+2\) です。
+      </p>
+    </div>
+  </div>
+
+  <script>
+    // ====== ヒープ内部表現 ======
+    // 各要素: { key: number, id: uniqueNodeId, layoutX: number, layoutY: number }
+    let heap = [];
+    let nextNodeId = 1;
+    let animating = false;
+
+    const heapContainer = document.getElementById("heapContainer");
+    const edgesSvg = document.getElementById("heapEdges");
+    const statusEl = document.getElementById("status");
+    const arrayView = document.getElementById("arrayView");
+    const explanationEl = document.getElementById("explanation");
+
+    // アニメーション速度（遅め）
+    const INSERT_HILIGHT_MS = 500;
+    const SWAP_ANIM_MS = 900;
+
+    function setStatus(msg, isError = false) {
+      statusEl.textContent = msg || "";
+      statusEl.className = isError ? "error" : "";
+    }
+
+    function setExplanation(msg) {
+      explanationEl.textContent = msg || "";
+    }
+
+    // ====== ノード描画 ======
+    function layoutHeap() {
+      const existing = new Map();
+      Array.from(heapContainer.querySelectorAll(".heap-node")).forEach(el => {
+        const id = parseInt(el.dataset.id, 10);
+        existing.set(id, el);
+      });
+
+      const width = heapContainer.clientWidth || 600;
+      const height = heapContainer.clientHeight || 360;
+      const levels = heap.length === 0 ? 0 : Math.floor(Math.log2(heap.length)) + 1;
+      const verticalSpacing = levels > 1 ? (height - 80) / Math.max(levels - 1, 1) : 0;
+
+      // ノードの座標を更新
+      heap.forEach((node, i) => {
+        let el = existing.get(node.id);
+        if (!el) {
+          el = document.createElement("div");
+          el.className = "heap-node";
+          el.dataset.id = String(node.id);
+
+          const valueSpan = document.createElement("span");
+          valueSpan.className = "value";
+          valueSpan.textContent = node.key;
+          el.appendChild(valueSpan);
+
+          const idxSpan = document.createElement("span");
+          idxSpan.className = "index";
+          idxSpan.textContent = i;
+          el.appendChild(idxSpan);
+
+          heapContainer.appendChild(el);
+        } else {
+          el.querySelector(".value").textContent = node.key;
+          el.querySelector(".index").textContent = i;
+          existing.delete(node.id);
+        }
+
+        const level = Math.floor(Math.log2(i + 1));
+        const indexInLevel = i - (Math.pow(2, level) - 1);
+        const nodesThisLevel = Math.pow(2, level);
+        const x = width * (indexInLevel + 1) / (nodesThisLevel + 1);
+        const y = 40 + level * verticalSpacing;
+
+        node.layoutX = x;
+        node.layoutY = y;
+
+        el.style.transform = `translate(${x - 20}px, ${y - 20}px)`;
+      });
+
+      // 余った古いノードを削除
+      existing.forEach(el => el.remove());
+
+      // エッジ描画（SVG）
+      drawEdges(width, height);
+    }
+
+    function drawEdges(width, height) {
+      edgesSvg.setAttribute("viewBox", `0 0 ${width} ${height}`);
+      edgesSvg.innerHTML = "";
+
+      for (let i = 0; i < heap.length; i++) {
+        const parent = heap[i];
+        const leftIndex = 2 * i + 1;
+        const rightIndex = 2 * i + 2;
+        if (leftIndex < heap.length) {
+          drawEdgeLine(parent, heap[leftIndex]);
+        }
+        if (rightIndex < heap.length) {
+          drawEdgeLine(parent, heap[rightIndex]);
+        }
+      }
+    }
+
+    function drawEdgeLine(parentNode, childNode) {
+      const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+      line.setAttribute("x1", parentNode.layoutX);
+      line.setAttribute("y1", parentNode.layoutY);
+      line.setAttribute("x2", childNode.layoutX);
+      line.setAttribute("y2", childNode.layoutY);
+      line.setAttribute("stroke", "#888");
+      line.setAttribute("stroke-width", "2");
+      edgesSvg.appendChild(line);
+    }
+
+    function updateArrayView() {
+      if (heap.length === 0) {
+        arrayView.textContent = "[]";
+        return;
+      }
+      let s = "index: ";
+      for (let i = 0; i < heap.length; i++) {
+        s += i.toString().padStart(2, " ") + (i === heap.length - 1 ? "" : " ");
+      }
+      s += "\nvalue: ";
+      for (let i = 0; i < heap.length; i++) {
+        s += heap[i].key.toString().padStart(2, " ") + (i === heap.length - 1 ? "" : " ");
+      }
+      arrayView.textContent = s;
+    }
+
+    function refreshView() {
+      layoutHeap();
+      updateArrayView();
+    }
+
+    function highlightIndices(indices, on) {
+      indices.forEach(i => {
+        if (i < 0 || i >= heap.length) return;
+        const node = heap[i];
+        const el = heapContainer.querySelector(`.heap-node[data-id="${node.id}"]`);
+        if (el) {
+          if (on) el.classList.add("highlight");
+          else el.classList.remove("highlight");
+        }
+      });
+    }
+
+    // ====== ヒープ操作（アニメーション付き） ======
+    function swapHeap(i, j) {
+      const tmp = heap[i];
+      heap[i] = heap[j];
+      heap[j] = tmp;
+    }
+
+    function heapifyUp(i, done) {
+      if (i <= 0) {
+        done();
+        return;
+      }
+      const parent = Math.floor((i - 1) / 2);
+      if (heap[i].key >= heap[parent].key) {
+        done();
+        return;
+      }
+
+      highlightIndices([i, parent], true);
+      setTimeout(() => {
+        swapHeap(i, parent);
+        refreshView();
+        setTimeout(() => {
+          highlightIndices([i, parent], false);
+          heapifyUp(parent, done);
+        }, SWAP_ANIM_MS);
+      }, INSERT_HILIGHT_MS);
+    }
+
+    function heapifyDown(i, done) {
+      const n = heap.length;
+      function step(k) {
+        const left = 2 * k + 1;
+        const right = 2 * k + 2;
+        let smallest = k;
+        if (left < n && heap[left].key < heap[smallest].key) smallest = left;
+        if (right < n && heap[right].key < heap[smallest].key) smallest = right;
+        if (smallest === k) {
+          done();
+          return;
+        }
+        highlightIndices([k, smallest], true);
+        setTimeout(() => {
+          swapHeap(k, smallest);
+          refreshView();
+          setTimeout(() => {
+            highlightIndices([k, smallest], false);
+            step(smallest);
+          }, SWAP_ANIM_MS);
+        }, INSERT_HILIGHT_MS);
+      }
+      step(i);
+    }
+
+    function insertValue(value) {
+      if (animating) return;
+      animating = true;
+      setStatus("");
+      setExplanation("");
+
+      const node = { key: value, id: nextNodeId++, layoutX: 0, layoutY: 0 };
+      heap.push(node);
+
+      setExplanation(
+        `値 ${value} を末尾（配列の最後）に追加しました。\n` +
+        `次に，上向きのヒープ調整（heapify-up）を行います。`
+      );
+
+      refreshView();
+      const idx = heap.length - 1;
+
+      heapifyUp(idx, () => {
+        refreshView();
+        setExplanation(
+          `挿入が完了しました。\n` +
+          `全ての親ノードが子ノード以下になっているので，最小ヒープ条件が保たれています。`
+        );
+        animating = false;
+      });
+    }
+
+    function deleteMin() {
+      if (animating) return;
+      if (heap.length === 0) {
+        setStatus("ヒープが空です。削除できる要素がありません。", true);
+        return;
+      }
+      animating = true;
+      setStatus("");
+      setExplanation("");
+
+      const minVal = heap[0].key;
+      if (heap.length === 1) {
+        heap.pop();
+        refreshView();
+        setExplanation(
+          `最小値 ${minVal} を削除しました。\n` +
+          `ヒープは空になりました。`
+        );
+        animating = false;
+        return;
+      }
+
+      setExplanation(
+        `最小値 ${minVal} を取り出します。\n` +
+        `根と末尾の要素を入れ替えてから，末尾を削除し，\n` +
+        `下向きのヒープ調整（heapify-down）を行います。`
+      );
+
+      const lastIndex = heap.length - 1;
+      swapHeap(0, lastIndex);
+      refreshView();
+
+      setTimeout(() => {
+        const removed = heap.pop();
+        const el = heapContainer.querySelector(`.heap-node[data-id="${removed.id}"]`);
+        if (el) el.remove();
+
+        refreshView();
+        heapifyDown(0, () => {
+          refreshView();
+          setExplanation(
+            `最小値 ${minVal} の削除が完了しました。\n` +
+            `根には新しい最小値 ${ (heap.length ? heap[0].key : "（なし）") } が来ています。`
+          );
+          animating = false;
+        });
+      }, SWAP_ANIM_MS);
+    }
+
+    // ====== ランダム初期化 ======
+    function randomInit() {
+      if (animating) return;
+      heap = [];
+      nextNodeId = 1;
+
+      const n = Math.floor(Math.random() * 7) + 5; // 5〜11個
+      for (let i = 0; i < n; i++) {
+        heap.push({
+          key: Math.floor(Math.random() * 99) + 1,
+          id: nextNodeId++,
+          layoutX: 0,
+          layoutY: 0
+        });
+      }
+
+      // bottom-up でヒープ構成（アニメーションなし）
+      for (let i = Math.floor(heap.length / 2) - 1; i >= 0; i--) {
+        siftDownNoAnim(i);
+      }
+
+      setStatus("ランダムな最小ヒープを生成しました。");
+      setExplanation("配列から一括でヒープを構成しました（bottom-up ヒープ構成）。");
+      refreshView();
+    }
+
+    function siftDownNoAnim(i) {
+      const n = heap.length;
+      let k = i;
+      while (true) {
+        const left = 2 * k + 1;
+        const right = 2 * k + 2;
+        let smallest = k;
+        if (left < n && heap[left].key < heap[smallest].key) smallest = left;
+        if (right < n && heap[right].key < heap[smallest].key) smallest = right;
+        if (smallest === k) break;
+        swapHeap(k, smallest);
+        k = smallest;
+      }
+    }
+
+    // ====== ランダム挿入（削除は含めない） ======
+    function randomInsert() {
+      if (animating) return;
+      const val = Math.floor(Math.random() * 99) + 1;
+      setStatus(`ランダム挿入: insert(${val})`);
+      insertValue(val);
+    }
+
+    // ====== ボタンイベント ======
+    window.addEventListener("load", () => {
+      document.getElementById("insertButton").addEventListener("click", () => {
+        const valStr = document.getElementById("valueInput").value;
+        const val = Number(valStr);
+        if (!Number.isFinite(val)) {
+          setStatus("整数値を入力してください。", true);
+          return;
+        }
+        insertValue(val);
+      });
+
+      document.getElementById("deleteMinButton").addEventListener("click", () => {
+        deleteMin();
+      });
+
+      document.getElementById("randomInitButton").addEventListener("click", () => {
+        randomInit();
+      });
+
+      document.getElementById("randomInsertButton").addEventListener("click", () => {
+        randomInsert();
+      });
+
+      refreshView();
+      setStatus("まずは「ランダム初期ヒープ」か「挿入」「ランダム挿入」を試してみてください。");
+    });
+  </script>
+</body>
+</html>

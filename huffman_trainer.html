@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <title>逐次ハフマン符号生成ツール（葉位置固定・次ノード強調）</title>
+
+  <!-- MathJax: LaTeX数式表示 -->
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [['\\(','\\)'], ['$', '$']],
+        displayMath: [['\\[','\\]'], ['$$','$$']]
+      },
+      svg: { fontCache: 'global' }
+    };
+  </script>
+  <script id="MathJax-script" async
+    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+  </script>
+
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      margin: 0;
+      padding: 16px;
+      background: #f5f5f5;
+      color: #333;
+    }
+    h1 {
+      font-size: 1.6rem;
+      margin-bottom: 0.3rem;
+    }
+    p.note {
+      margin-top: 0;
+      margin-bottom: 1rem;
+      font-size: 0.9rem;
+      color: #555;
+    }
+    .panel {
+      background: #fff;
+      border-radius: 12px;
+      padding: 12px 16px;
+      margin-bottom: 12px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+    }
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: flex-end;
+    }
+    .control-group {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      min-width: 220px;
+      flex: 1 1 220px;
+    }
+    label {
+      font-size: 0.85rem;
+      color: #555;
+    }
+    input[type="text"] {
+      padding: 4px 8px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      font-size: 0.9rem;
+    }
+    button {
+      padding: 6px 14px;
+      border-radius: 999px;
+      border: none;
+      cursor: pointer;
+      font-size: 0.9rem;
+      background: #1976d2;
+      color: #fff;
+    }
+    button.secondary {
+      background: #eeeeee;
+      color: #333;
+    }
+    button:disabled {
+      opacity: 0.5;
+      cursor: default;
+    }
+    #status {
+      font-size: 0.85rem;
+      margin-top: 6px;
+      color: #555;
+    }
+    #status.error {
+      color: #c62828;
+    }
+    .layout {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .tree-panel, .table-panel {
+      flex: 1 1 360px;
+      min-width: 320px;
+    }
+    .tree-panel h2, .table-panel h2 {
+      font-size: 1.1rem;
+      margin: 0 0 4px;
+    }
+    #treeSvg {
+      width: 100%;
+      height: 450px;
+      border-radius: 8px;
+      background: #fafafa;
+      border: 1px solid #ddd;
+    }
+    .legend {
+      margin-top: 4px;
+      font-size: 0.8rem;
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .legend-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .legend-swatch {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      border: 1px solid #555;
+    }
+    .legend-leaf { background: #4caf50; }
+    .legend-internal { background: #ffffff; }
+    .legend-next { background: #ffe0b2; border-color: #fb8c00; }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9rem;
+      margin-top: 4px;
+    }
+    th, td {
+      border-bottom: 1px solid #e0e0e0;
+      padding: 4px 6px;
+      text-align: center;
+    }
+    th {
+      background: #fafafa;
+      font-weight: 600;
+    }
+    #summary {
+      margin-top: 8px;
+      font-size: 0.85rem;
+      color: #555;
+      line-height: 1.4;
+      min-height: 3em;
+    }
+    #stepExplanation {
+      margin-top: 8px;
+      font-size: 0.85rem;
+      color: #555;
+      min-height: 3em;
+      white-space: pre-line;
+    }
+    @media (max-width: 800px) {
+      #treeSvg {
+        height: 380px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1>逐次ハフマン符号生成ツール（葉位置固定・次ノード強調）</h1>
+  <p class="note">
+    記号集合 \(\{x_1,\dots,x_m\}\) と確率分布 \((p_1,\dots,p_m)\) を入力し，
+    「最小の 2 つを足して 1 つにする」操作を逐次的に行ってハフマン木を構成します。<br>
+    下の段の葉ノードの位置は固定で，<strong>次のステップで選ばれる 2 ノードはオレンジの枠でマーク</strong>されます。
+  </p>
+
+  <div class="panel">
+    <div class="controls">
+      <div class="control-group">
+        <label for="symbolsInput">記号（空白区切り）</label>
+        <input id="symbolsInput" type="text" placeholder="例: a b c d e">
+      </div>
+      <div class="control-group">
+        <label for="probsInput">正規確率列 \(p_i\)（空白 / カンマ区切り）</label>
+        <input id="probsInput" type="text" placeholder="例: 0.4 0.3 0.2 0.1">
+      </div>
+      <div class="control-group" style="max-width: 160px;">
+        <button id="initButton">初期化</button>
+      </div>
+      <div class="control-group" style="max-width: 180px;">
+        <button id="randomButton" class="secondary">ランダム分布生成</button>
+      </div>
+    </div>
+    <div id="status"></div>
+    <div style="margin-top:8px; display:flex; gap:8px; flex-wrap:wrap;">
+      <button id="nextStepButton" disabled>次のマージ</button>
+      <button id="autoButton" disabled>最後まで</button>
+      <button id="resetButton" class="secondary" disabled>リセット</button>
+    </div>
+  </div>
+
+  <div class="layout">
+    <div class="panel tree-panel">
+      <h2>ハフマン木（構成途中の森を表示）</h2>
+      <svg id="treeSvg"></svg>
+      <div class="legend">
+        <div class="legend-item">
+          <span class="legend-swatch legend-leaf"></span><span>葉（記号, 確率）</span>
+        </div>
+        <div class="legend-item">
+          <span class="legend-swatch legend-internal"></span><span>内部ノード（結合確率）</span>
+        </div>
+        <div class="legend-item">
+          <span class="legend-swatch legend-next"></span><span>次のステップでマージされる 2 ノード</span>
+        </div>
+      </div>
+      <div id="stepExplanation"></div>
+    </div>
+
+    <div class="panel table-panel">
+      <h2>ハフマン符号表</h2>
+      <table id="resultTable">
+        <thead>
+          <tr>
+            <th>記号</th>
+            <th>確率 \(p_i\)</th>
+            <th>符号語</th>
+            <th>符号長 \(l_i\)</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+      <div id="summary"></div>
+    </div>
+  </div>
+
+  <script>
+    // ========= データ構造 =========
+    class HuffmanNode {
+      constructor(id, prob, symbol = null, left = null, right = null, bornIndex = 0) {
+        this.id = id;
+        this.prob = prob;
+        this.symbol = symbol;  // 葉なら string, 内部ノードなら null
+        this.left = left;
+        this.right = right;
+        this.parent = null;
+        this.bornIndex = bornIndex; // タイブレイク用
+        // 描画用座標（葉は初期化時に固定）
+        this.x = 0;
+        this.y = 0;
+      }
+    }
+
+    // ========= アプリ状態 =========
+    const appState = {
+      symbols: [],
+      probs: [],
+      allNodes: [],
+      activeNodes: [],
+      root: null,
+      stepIndex: 0,
+      finished: false,
+      nextId: 0,
+      bornCounter: 0
+    };
+
+    function setStatus(text, isError = false) {
+      const status = document.getElementById("status");
+      status.textContent = text;
+      status.className = isError ? "error" : "";
+    }
+
+    function updateButtons() {
+      const hasInit = appState.allNodes.length > 0;
+      const nextBtn = document.getElementById("nextStepButton");
+      const autoBtn = document.getElementById("autoButton");
+      const resetBtn = document.getElementById("resetButton");
+
+      resetBtn.disabled = !hasInit;
+
+      if (!hasInit || appState.finished) {
+        nextBtn.disabled = true;
+        autoBtn.disabled = true;
+      } else {
+        nextBtn.disabled = false;
+        autoBtn.disabled = false;
+      }
+    }
+
+    // ========= 初期の葉の位置を設定（固定） =========
+    function assignInitialLeafPositions() {
+      const width = 800;         // 仮想幅
+      const bottomY = 400;       // 葉の高さ
+      const leaves = appState.activeNodes.slice(); // 初期は葉だけが active
+
+      const n = leaves.length;
+      const spacing = width / (n + 1);
+      for (let i = 0; i < n; i++) {
+        const node = leaves[i];
+        node.x = (i + 1) * spacing;
+        node.y = bottomY;
+      }
+    }
+
+    // ========= 次ステップで選ばれる 2 ノードを決める（ハイライト用） =========
+    function getNextMergePair() {
+      if (appState.finished) return [];
+      if (appState.activeNodes.length < 2) return [];
+      const sorted = appState.activeNodes.slice().sort((a, b) => {
+        if (a.prob !== b.prob) return a.prob - b.prob;
+        return a.bornIndex - b.bornIndex;
+      });
+      return [sorted[0], sorted[1]];
+    }
+
+    // ========= 森（途中経過）を描画：座標は再計算しない =========
+    function renderForest() {
+      const svg = document.getElementById("treeSvg");
+      svg.innerHTML = "";
+      if (appState.allNodes.length === 0) return;
+
+      // 親を持たないノード＝森の根
+      const roots = [];
+      for (const node of appState.allNodes) {
+        if (!node.parent) roots.push(node);
+      }
+      if (roots.length === 0) return;
+
+      // 次にマージされる 2 ノードを取得（強調用）
+      const nextPair = getNextMergePair();
+      const nextIdSet = new Set(nextPair.map(n => n.id));
+
+      // 座標のバウンディングボックスから viewBox を決定
+      let minX = Infinity, maxX = -Infinity;
+      let minY = Infinity, maxY = -Infinity;
+      for (const node of appState.allNodes) {
+        if (node.x < minX) minX = node.x;
+        if (node.x > maxX) maxX = node.x;
+        if (node.y < minY) minY = node.y;
+        if (node.y > maxY) maxY = node.y;
+      }
+      if (!isFinite(minX)) {
+        svg.setAttribute("viewBox", "0 0 800 450");
+        return;
+      }
+      const margin = 40;
+      const width = (maxX - minX) + margin * 2 || 800;
+      const height = (maxY - minY) + margin * 2 || 450;
+      const viewMinX = minX - margin;
+      const viewMinY = minY - margin;
+      svg.setAttribute("viewBox", viewMinX + " " + viewMinY + " " + width + " " + height);
+
+      const ns = "http://www.w3.org/2000/svg";
+
+      function drawEdges(node) {
+        if (!node) return;
+        for (const [child, bit] of [[node.left, "0"], [node.right, "1"]]) {
+          if (!child) continue;
+          const line = document.createElementNS(ns, "line");
+          line.setAttribute("x1", node.x);
+          line.setAttribute("y1", node.y);
+          line.setAttribute("x2", child.x);
+          line.setAttribute("y2", child.y);
+          line.setAttribute("stroke", "#555");
+          line.setAttribute("stroke-width", "1");
+          svg.appendChild(line);
+
+          const label = document.createElementNS(ns, "text");
+          label.textContent = bit;
+          label.setAttribute("x", (node.x + child.x) / 2);
+          label.setAttribute("y", (node.y + child.y) / 2 - 4);
+          label.setAttribute("font-size", "10");
+          label.setAttribute("text-anchor", "middle");
+          svg.appendChild(label);
+
+          drawEdges(child);
+        }
+      }
+
+      function drawNodes(node) {
+        if (!node) return;
+
+        const circle = document.createElementNS(ns, "circle");
+        circle.setAttribute("cx", node.x);
+        circle.setAttribute("cy", node.y);
+        // 次にマージされるノードは少し太め・オレンジ枠
+        const isNext = nextIdSet.has(node.id);
+        circle.setAttribute("r", isNext ? 14 : 12);
+
+        const isLeaf = node.symbol !== null;
+        const fill = isLeaf ? "#4caf50" : "#ffffff";
+        circle.setAttribute("fill", fill);
+        circle.setAttribute("stroke", isNext ? "#fb8c00" : "#333");
+        circle.setAttribute("stroke-width", isNext ? "2.5" : "1");
+        svg.appendChild(circle);
+
+        // ラベル：
+        // 葉: 上に記号，下に確率
+        // 内部: 確率のみ
+        if (isLeaf) {
+          const tSym = document.createElementNS(ns, "text");
+          tSym.textContent = node.symbol;
+          tSym.setAttribute("x", node.x);
+          tSym.setAttribute("y", node.y - 2);
+          tSym.setAttribute("font-size", "11");
+          tSym.setAttribute("text-anchor", "middle");
+          svg.appendChild(tSym);
+
+          const tProb = document.createElementNS(ns, "text");
+          tProb.textContent = node.prob.toFixed(3);
+          tProb.setAttribute("x", node.x);
+          tProb.setAttribute("y", node.y + 10);
+          tProb.setAttribute("font-size", "9");
+          tProb.setAttribute("text-anchor", "middle");
+          svg.appendChild(tProb);
+        } else {
+          const tProb = document.createElementNS(ns, "text");
+          tProb.textContent = node.prob.toFixed(3);
+          tProb.setAttribute("x", node.x);
+          tProb.setAttribute("y", node.y + 4);
+          tProb.setAttribute("font-size", "10");
+          tProb.setAttribute("text-anchor", "middle");
+          svg.appendChild(tProb);
+        }
+
+        drawNodes(node.left);
+        drawNodes(node.right);
+      }
+
+      roots.forEach(r => {
+        drawEdges(r);
+        drawNodes(r);
+      });
+    }
+
+    // ========= 符号表生成 & サマリ =========
+    function buildCodeTable(root) {
+      const codes = {};
+      function dfs(node, prefix) {
+        if (!node) return;
+        if (node.symbol !== null) {
+          codes[node.symbol] = prefix.length > 0 ? prefix : "0";
+          return;
+        }
+        dfs(node.left, prefix + "0");
+        dfs(node.right, prefix + "1");
+      }
+      dfs(root, "");
+      return codes;
+    }
+
+    function updateTableAndSummary() {
+      const tbody = document.querySelector("#resultTable tbody");
+      tbody.innerHTML = "";
+      const summaryDiv = document.getElementById("summary");
+
+      if (appState.symbols.length === 0) {
+        summaryDiv.textContent = "";
+        return;
+      }
+
+      let codes = null;
+      if (appState.root) {
+        codes = buildCodeTable(appState.root);
+      }
+
+      // 表
+      appState.symbols.forEach((sym, i) => {
+        const p = appState.probs[i];
+        const code = codes ? codes[sym] : null;
+
+        const tr = document.createElement("tr");
+        const tdSym = document.createElement("td");
+        tdSym.textContent = sym;
+        const tdProb = document.createElement("td");
+        tdProb.textContent = p.toFixed(4);
+        const tdCode = document.createElement("td");
+        tdCode.textContent = code || "-";
+        const tdLen = document.createElement("td");
+        tdLen.textContent = code ? code.length : "-";
+
+        tr.appendChild(tdSym);
+        tr.appendChild(tdProb);
+        tr.appendChild(tdCode);
+        tr.appendChild(tdLen);
+        tbody.appendChild(tr);
+      });
+
+      // サマリ
+      if (!appState.root) {
+        summaryDiv.innerHTML =
+          "まだマージ途中です。ハフマン符号はすべてのマージが終わった後に確定します。";
+        if (window.MathJax && window.MathJax.typesetPromise) {
+          window.MathJax.typesetPromise();
+        }
+        return;
+      }
+
+      // 完成したときは L, H(X) を計算
+      let L = 0;
+      let H = 0;
+      for (let i = 0; i < appState.symbols.length; i++) {
+        const sym = appState.symbols[i];
+        const p = appState.probs[i];
+        const c = codes[sym];
+        const l = c.length;
+        L += p * l;
+        if (p > 0) {
+          H += -p * (Math.log(p) / Math.log(2));
+        }
+      }
+
+      summaryDiv.innerHTML =
+        "平均符号長: \\( L = \\sum_i p_i l_i \\approx " + L.toFixed(4) + " \\)<br>" +
+        "エントロピー: \\( H(X) = -\\sum_i p_i \\log_2 p_i \\approx " + H.toFixed(4) + " \\)<br>" +
+        "ハフマン符号では常に \\( H(X) \\le L < H(X)+1 \\) が成り立ちます。";
+
+      if (window.MathJax && window.MathJax.typesetPromise) {
+        window.MathJax.typesetPromise();
+      }
+    }
+
+    function updateStepExplanation(text) {
+      const div = document.getElementById("stepExplanation");
+      div.textContent = text || "";
+    }
+
+    // ========= 初期化 =========
+    function initializeApp() {
+      const symbolsStr = document.getElementById("symbolsInput").value.trim();
+      const probsStr = document.getElementById("probsInput").value.trim();
+
+      if (!symbolsStr || !probsStr) {
+        setStatus("記号列と確率列の両方を入力してください。", true);
+        return;
+      }
+
+      const symbols = symbolsStr.split(/\s+/);
+      const probTokens = probsStr.split(/[\s,]+/).filter(t => t.length > 0);
+      if (symbols.length !== probTokens.length) {
+        setStatus("記号の個数と確率の個数が一致していません。", true);
+        return;
+      }
+
+      const probsRaw = probTokens.map(t => Number(t));
+      if (probsRaw.some(p => !isFinite(p) || p < 0)) {
+        setStatus("確率は 0 以上の実数で入力してください。", true);
+        return;
+      }
+
+      const sumRaw = probsRaw.reduce((a, b) => a + b, 0);
+      if (sumRaw <= 0) {
+        setStatus("確率の総和が 0 です。正の値を入力してください。", true);
+        return;
+      }
+
+      const probs = probsRaw.map(p => p / sumRaw);
+      const sumNorm = probs.reduce((a, b) => a + b, 0);
+      const diff = Math.abs(sumNorm - 1.0);
+
+      if (diff < 1e-6) {
+        setStatus("確率は正規化されました（数値誤差を含めて和 ≈ 1）。");
+      } else {
+        setStatus("入力された確率を正規化して使用しました（和を 1 にスケーリング）。");
+      }
+
+      // 状態リセット
+      appState.symbols = symbols.slice();
+      appState.probs = probs.slice();
+      appState.allNodes = [];
+      appState.activeNodes = [];
+      appState.root = null;
+      appState.stepIndex = 0;
+      appState.finished = false;
+      appState.nextId = 0;
+      appState.bornCounter = 0;
+
+      // 葉ノードを作成
+      for (let i = 0; i < symbols.length; i++) {
+        const node = new HuffmanNode(
+          appState.nextId++,
+          probs[i],
+          symbols[i],
+          null,
+          null,
+          appState.bornCounter++
+        );
+        appState.allNodes.push(node);
+        appState.activeNodes.push(node);
+      }
+
+      // 葉の位置を一度だけ設定し、以降は固定
+      assignInitialLeafPositions();
+
+      if (symbols.length === 1) {
+        // 特別扱い：1記号のみ
+        appState.root = appState.allNodes[0];
+        appState.finished = true;
+        renderForest();
+        updateTableAndSummary();
+        updateButtons();
+        updateStepExplanation(
+          "記号が 1 つだけなのでマージは不要です。\n" +
+          "この記号には符号語 0 を割り当てると考えることができます。"
+        );
+        return;
+      }
+
+      renderForest();
+      updateTableAndSummary();
+      updateButtons();
+      updateStepExplanation(
+        "初期状態では各記号がそれぞれ確率 \\(p_i\\) を持つ葉ノードとして，\n" +
+        "下の段に横一列に並んでいます（記号の下の数値が \\(p_i\\)）。\n" +
+        "オレンジ枠の 2 つが「次のマージで選ばれるノード」です。"
+      );
+      if (window.MathJax && window.MathJax.typesetPromise) {
+        window.MathJax.typesetPromise();
+      }
+    }
+
+    // ========= 1 ステップのマージ =========
+    function doOneStep() {
+      if (appState.finished) return;
+      if (appState.activeNodes.length <= 1) return;
+
+      // 最も確率の小さい 2 ノードを選ぶ
+      appState.activeNodes.sort((a, b) => {
+        if (a.prob !== b.prob) return a.prob - b.prob;
+        return a.bornIndex - b.bornIndex;
+      });
+
+      const n1 = appState.activeNodes[0];
+      const n2 = appState.activeNodes[1];
+
+      const newProb = n1.prob + n2.prob;
+      const newNode = new HuffmanNode(
+        appState.nextId++,
+        newProb,
+        null,
+        n1,
+        n2,
+        appState.bornCounter++
+      );
+      n1.parent = newNode;
+      n2.parent = newNode;
+
+      // 新ノードの位置：子ノードの真上（x は平均，y は子よりも上）
+      const levelHeight = 60;
+      newNode.x = (n1.x + n2.x) / 2;
+      newNode.y = Math.min(n1.y, n2.y) - levelHeight;
+
+      // activeNodes を更新
+      appState.activeNodes = appState.activeNodes.slice(2);
+      appState.activeNodes.push(newNode);
+      appState.allNodes.push(newNode);
+      appState.stepIndex += 1;
+
+      if (appState.activeNodes.length === 1) {
+        appState.root = newNode;
+        appState.finished = true;
+      }
+
+      renderForest();
+      updateTableAndSummary();
+      updateButtons();
+
+      const labelForNode = (node) => {
+        if (node.symbol !== null) {
+          return "記号「" + node.symbol + "」(p=" + node.prob.toFixed(4) + ")";
+        } else {
+          return "内部ノード (p=" + node.prob.toFixed(4) + ")";
+        }
+      };
+
+      const msgBase =
+        "ステップ " + appState.stepIndex +
+        "：最も確率の小さい 2 つのノード\n" +
+        "  - " + labelForNode(n1) + "\n" +
+        "  - " + labelForNode(n2) + "\n" +
+        "を結合して，新しい内部ノード (p=" + newProb.toFixed(4) + ") を作りました。";
+
+      if (appState.finished) {
+        updateStepExplanation(
+          msgBase + "\nこれですべてのマージが完了し，ハフマン木とハフマン符号が確定しました。"
+        );
+        setStatus("すべてのマージが完了しました。ハフマン符号が確定しています。");
+      } else {
+        updateStepExplanation(
+          msgBase + "\nまだ複数のノードが残っているので，続けてマージします。\n" +
+          "表示中の図では，次にマージされる 2 ノードがオレンジ枠でマークされています。"
+        );
+      }
+    }
+
+    // ========= 最後まで自動 =========
+    function doAuto() {
+      while (!appState.finished && appState.activeNodes.length > 1) {
+        doOneStep();
+      }
+    }
+
+    // ========= リセット =========
+    function resetApp() {
+      appState.symbols = [];
+      appState.probs = [];
+      appState.allNodes = [];
+      appState.activeNodes = [];
+      appState.root = null;
+      appState.stepIndex = 0;
+      appState.finished = false;
+      appState.nextId = 0;
+      appState.bornCounter = 0;
+      document.getElementById("treeSvg").innerHTML = "";
+      document.querySelector("#resultTable tbody").innerHTML = "";
+      document.getElementById("summary").textContent = "";
+      updateStepExplanation("");
+      setStatus("再度，記号と確率を入力して「初期化」を押してください。");
+      updateButtons();
+    }
+
+    // ========= ランダム分布生成 =========
+    function randomGenerateAndInit() {
+      // 記号数を 3〜7 でランダムに
+      const n = Math.floor(Math.random() * 5) + 3; // 3..7
+      const alpha = "abcdefghijklmnopqrstuvwxyz";
+      const symbols = [];
+      for (let i = 0; i < n; i++) {
+        symbols.push(alpha[i] || ("x" + (i + 1)));
+      }
+
+      // ランダムな正の値を生成して正規化
+      const raw = [];
+      for (let i = 0; i < n; i++) {
+        const u = -Math.log(Math.random() + 1e-6); // 擬似的な指数分布
+        raw.push(u);
+      }
+      const sumRaw = raw.reduce((a, b) => a + b, 0);
+      const probs = raw.map(v => v / sumRaw);
+
+      document.getElementById("symbolsInput").value = symbols.join(" ");
+      document.getElementById("probsInput").value = probs.map(p => p.toFixed(3)).join(" ");
+
+      initializeApp();
+      updateStepExplanation(
+        "ランダムに生成した正規確率分布に対して初期化しました。\n" +
+        "下の段に並んだ葉の位置は最後まで固定です。\n" +
+        "オレンジ枠の 2 つが「次にマージされるノード」です。"
+      );
+    }
+
+    // ========= イベント登録 =========
+    window.addEventListener("load", () => {
+      document.getElementById("initButton").addEventListener("click", initializeApp);
+      document.getElementById("nextStepButton").addEventListener("click", doOneStep);
+      document.getElementById("autoButton").addEventListener("click", doAuto);
+      document.getElementById("resetButton").addEventListener("click", resetApp);
+      document.getElementById("randomButton").addEventListener("click", randomGenerateAndInit);
+    });
+  </script>
+</body>
+</html>
