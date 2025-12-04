@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>Z_n^× の巡回群性を可視化するアプリ</title>
+
+  <!-- ▼ MathJax 設定：インライン数式を \( ... \) で書けるようにする -->
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [['\\(', '\\)']]
+      }
+    };
+  </script>
+  <!-- ▼ MathJax 本体（CDN） -->
+  <script async
+    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+  </script>
+
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      margin: 0;
+      padding: 1.5rem;
+      background: #f5f5f7;
+      color: #222;
+    }
+    h1 {
+      font-size: 1.4rem;
+      margin-bottom: 0.5rem;
+    }
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+      padding: 1.5rem 2rem 2rem;
+    }
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      align-items: flex-end;
+      margin-bottom: 1.5rem;
+    }
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 0.2rem;
+      min-width: 120px;
+    }
+    label {
+      font-size: 0.85rem;
+      color: #555;
+    }
+    input[type="number"],
+    select {
+      padding: 0.4rem 0.6rem;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      font-size: 0.9rem;
+    }
+    button {
+      padding: 0.45rem 0.95rem;
+      border-radius: 999px;
+      border: none;
+      cursor: pointer;
+      font-size: 0.9rem;
+      background: #0070f3;
+      color: #fff;
+      box-shadow: 0 4px 10px rgba(0,112,243,0.3);
+    }
+    button:hover {
+      background: #0059c8;
+    }
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
+      gap: 1.5rem;
+    }
+    canvas {
+      border-radius: 16px;
+      background: radial-gradient(circle at 50% 30%, #ffffff, #e9edf5);
+      border: 1px solid #dde1ee;
+      width: 100%;
+      height: auto;
+    }
+    .info {
+      font-size: 0.9rem;
+      line-height: 1.6;
+    }
+    .badge {
+      display: inline-block;
+      border-radius: 999px;
+      padding: 0.1rem 0.6rem;
+      font-size: 0.8rem;
+      font-weight: 600;
+      margin-right: 0.4rem;
+    }
+    .badge.cyclic {
+      background: #e6f4ea;
+      color: #137333;
+    }
+    .badge.noncyclic {
+      background: #fce8e6;
+      color: #c5221f;
+    }
+    .code-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      font-size: 0.75rem;
+      color: #555;
+      background: #f1f3f4;
+      border-radius: 999px;
+      padding: 0.1rem 0.6rem;
+      margin-top: 0.2rem;
+    }
+    .small {
+      font-size: 0.8rem;
+      color: #666;
+    }
+    ul {
+      padding-left: 1.1rem;
+      margin-top: 0.4rem;
+    }
+    hr {
+      border: none;
+      border-top: 1px solid #e0e3ec;
+      margin: 1rem 0;
+    }
+    @media (max-width: 800px) {
+      .layout {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Z\(_n^\times\) が巡回群かどうかを極座標で見る</h1>
+
+    <p class="small">
+      定理: 群 \( Z_n^\times \) が巡回群となるのは
+      \[
+        n \in \{1,2,4,\,p^k,\,2p^k\}
+      \]
+      である場合に限る（ただし \(p\) は奇素数, \(k &gt; 0\)）。
+    </p>
+
+    <div class="controls">
+      <div class="field">
+        <label for="nInput">法 \(n\)（2〜200 くらいまで）:</label>
+        <!-- 初期値を 106 に変更 -->
+        <input id="nInput" type="number" value="106" min="1" max="200">
+      </div>
+
+      <div class="field">
+        <label for="elementSelect">元 \( g \in Z_n^\times \)（軌跡を見る元）:</label>
+        <select id="elementSelect"></select>
+        <span class="small">
+          \(1,g,g^2,\dots\) の軌跡を描きます。
+        </span>
+      </div>
+
+      <div class="field">
+        <button id="updateBtn">更新 / Update</button>
+      </div>
+    </div>
+
+    <div class="layout">
+      <div>
+        <canvas id="canvas" width="520" height="520"></canvas>
+      </div>
+
+      <div class="info">
+        <div id="groupSummary"></div>
+        <hr>
+        <p>
+          円周上に \(0,1,\dots,n-1\) を角度 \(\frac{2\pi k}{n}\) の位置に点として打ち、
+          そのうち \(\gcd(k,n)=1\) のもの（\(Z_n^\times\) の元）を濃い色で表示しています。
+        </p>
+        <ul>
+          <li>薄い点 … \(0,1,\dots,n-1\) のすべての剰余。</li>
+          <li>濃い点 … \(Z_n^\times\) の元（\(\gcd(k,n)=1\)）。</li>
+          <li>選んだ \(g\) のべき列 \(1,g,g^2,\dots\) を線で結んで描画。</li>
+        </ul>
+        <p>
+          巡回群のときは、ある \(g\) のべきで全ての濃い点を 1 周できるので、
+          濃い点をすべて通る 1 つの大きな多角形が見えます。
+        </p>
+        <p>
+          非巡回群のときは、どの \(g\) を選んでも一部しか回れず、
+          小さなポリゴンがいくつも現れます。  
+          これが「\(Z_n^\times\) が巡回群になる \(n\) と、ならない \(n\) の違い」です。
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // --- ユーティリティ ---
+
+    // ユークリッド互除法
+    function gcd(a, b) {
+      a = Math.abs(a); b = Math.abs(b);
+      while (b !== 0) {
+        const t = b;
+        b = a % b;
+        a = t;
+      }
+      return a;
+    }
+
+    // 素因数分解（単純な試し割り）: 重複を除いた素因子集合
+    function primeFactorsDistinct(m) {
+      const res = [];
+      let n = m;
+      for (let p = 2; p * p <= n; p++) {
+        if (n % p === 0) {
+          res.push(p);
+          while (n % p === 0) n /= p;
+        }
+      }
+      if (n > 1) res.push(n);
+      return res;
+    }
+
+    // 繰り返し二乗法によるべきの計算 (base^exp mod mod)
+    function powMod(base, exp, mod) {
+      let result = 1 % mod;
+      let b = base % mod;
+      let e = exp;
+      while (e > 0) {
+        if (e & 1) {
+          result = (result * b) % mod;
+        }
+        b = (b * b) % mod;
+        e >>= 1;
+      }
+      return result;
+    }
+
+    // Z_n^× の元（単位）を列挙
+    function unitsModN(n) {
+      const res = [];
+      if (n === 1) {
+        // Z_1^× を {0} とみなす
+        res.push(0);
+        return res;
+      }
+      for (let k = 1; k < n; k++) {
+        if (gcd(k, n) === 1) res.push(k);
+      }
+      return res;
+    }
+
+    // g の軌跡 1,g,g^2,... を、1 に戻るまで返す
+    function orbitOf(g, n) {
+      const seen = new Set();
+      const orbit = [];
+      let x = 1 % n;
+      while (!seen.has(x)) {
+        seen.add(x);
+        orbit.push(x);
+        x = (x * g) % n;
+      }
+      return orbit;
+    }
+
+    // g が生成元かどうか（位数が φ(n) かどうか）を判定
+    // 数式的には：
+    //   φ(n) = ∏_i p_i^{e_i} と素因数分解し，
+    //   すべての p_i について g^{φ(n)/p_i} ≢ 1 (mod n) なら g は生成元
+    function isGenerator(g, n, phi, primeFactors) {
+      if (phi === 0) return false;
+      if (n === 1) {
+        // Z_1^× = {0} を自明な巡回群とみなす
+        return (g === 0);
+      }
+      for (const p of primeFactors) {
+        const exp = phi / p;
+        if (powMod(g, exp, n) === 1 % n) {
+          return false;
+        }
+      }
+      return true;
+    }
+
+    // Z_n^× の解析: 単位, φ(n), 生成元のリスト, 巡回かどうか
+    function analyzeGroup(n) {
+      const units = unitsModN(n);
+      const phi = units.length;
+
+      // φ(n) の素因数
+      const primeFactors = primeFactorsDistinct(phi);
+      const generators = [];
+
+      if (phi > 0) {
+        for (const g of units) {
+          if (isGenerator(g, n, phi, primeFactors)) {
+            generators.push(g);
+          }
+        }
+      }
+
+      const isCyclic = (generators.length > 0);
+      return { units, phi, generators, isCyclic };
+    }
+
+    // 描画
+    function drawScene(n, selectedG, analysis) {
+      const canvas = document.getElementById('canvas');
+      const ctx = canvas.getContext('2d');
+      const w = canvas.width;
+      const h = canvas.height;
+      const cx = w / 2;
+      const cy = h / 2;
+      const radius = Math.min(w, h) * 0.38;
+
+      ctx.clearRect(0, 0, w, h);
+
+      // 背景の円
+      ctx.save();
+      ctx.translate(cx, cy);
+      ctx.beginPath();
+      ctx.arc(0, 0, radius, 0, 2 * Math.PI);
+      ctx.strokeStyle = '#ccd1e3';
+      ctx.lineWidth = 1;
+      ctx.stroke();
+      ctx.restore();
+
+      // 0..n-1 のすべての点（薄い）
+      ctx.save();
+      ctx.translate(cx, cy);
+      for (let k = 0; k < n; k++) {
+        const angle = 2 * Math.PI * k / n - Math.PI / 2;
+        const r = radius;
+        const x = r * Math.cos(angle);
+        const y = r * Math.sin(angle);
+        ctx.beginPath();
+        ctx.arc(x, y, 4, 0, 2 * Math.PI);
+        ctx.fillStyle = '#d4d7e5';
+        ctx.fill();
+      }
+
+      // 単位の点（濃い）
+      for (const a of analysis.units) {
+        const angle = 2 * Math.PI * a / n - Math.PI / 2;
+        const r = radius;
+        const x = r * Math.cos(angle);
+        const y = r * Math.sin(angle);
+        ctx.beginPath();
+        ctx.arc(x, y, 5.5, 0, 2 * Math.PI);
+        ctx.fillStyle = '#1a73e8';
+        ctx.fill();
+      }
+
+      // 選んだ g の軌跡
+      if (analysis.units.length > 0 && selectedG !== null && selectedG !== undefined) {
+        const orbit = orbitOf(selectedG, n);
+        // 線
+        ctx.beginPath();
+        let first = true;
+        for (const a of orbit) {
+          const angle = 2 * Math.PI * a / n - Math.PI / 2;
+          const r = radius;
+          const x = r * Math.cos(angle);
+          const y = r * Math.sin(angle);
+          if (first) {
+            ctx.moveTo(x, y);
+            first = false;
+          } else {
+            ctx.lineTo(x, y);
+          }
+        }
+        ctx.closePath();
+        ctx.strokeStyle = '#ff7043';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+
+        // 軌跡の点をオレンジで上書き
+        for (const a of orbit) {
+          const angle = 2 * Math.PI * a / n - Math.PI / 2;
+          const r = radius;
+          const x = r * Math.cos(angle);
+          const y = r * Math.sin(angle);
+          ctx.beginPath();
+          ctx.arc(x, y, 6.5, 0, 2 * Math.PI);
+          ctx.fillStyle = '#ff7043';
+          ctx.fill();
+        }
+      }
+
+      ctx.restore();
+    }
+
+    function updateAll() {
+      const nInput = document.getElementById('nInput');
+      let n = parseInt(nInput.value, 10);
+      if (!Number.isFinite(n) || n < 1) n = 1;
+      if (n > 200) n = 200;
+      nInput.value = String(n);
+
+      const analysis = analyzeGroup(n);
+      const select = document.getElementById('elementSelect');
+      select.innerHTML = '';
+
+      // セレクトボックスに単位を挿入
+      if (analysis.units.length === 0) {
+        const opt = document.createElement('option');
+        opt.value = '';
+        opt.textContent = '単位がありません';
+        select.appendChild(opt);
+      } else {
+        for (const a of analysis.units) {
+          const opt = document.createElement('option');
+          opt.value = String(a);
+          opt.textContent = String(a);
+          select.appendChild(opt);
+        }
+      }
+
+      // デフォルトの g: 生成元があれば最初のもの，なければ最初の単位
+      let defaultG = null;
+      if (analysis.generators.length > 0) {
+        defaultG = analysis.generators[0];
+      } else if (analysis.units.length > 0) {
+        defaultG = analysis.units[0];
+      }
+
+      if (defaultG !== null) {
+        select.value = String(defaultG);
+      }
+
+      const selectedG = defaultG;
+
+      // 情報パネル
+      const summaryDiv = document.getElementById('groupSummary');
+      const isCyclic = analysis.isCyclic;
+      const badge = isCyclic
+        ? '<span class="badge cyclic">巡回群 / cyclic</span>'
+        : '<span class="badge noncyclic">非巡回群 / non-cyclic</span>';
+
+      let generatorText = '';
+      if (analysis.generators.length > 0) {
+        generatorText =
+          '生成元 (primitive root) の例: ' +
+          analysis.generators.slice(0, 5).join(', ') +
+          (analysis.generators.length > 5 ? ' など' : '');
+      } else {
+        generatorText = 'この \\(n\\) では，全体を生成する 1 つの元（生成元）は存在しません。';
+      }
+
+      // ★ ここが LaTeX 化された生成元判定の説明部
+      summaryDiv.innerHTML = `
+        ${badge}
+        <div class="code-badge">
+          n = ${n},
+          &nbsp;|Z<sub>${n}</sub><sup>×</sup>| = \\(\\varphi(n)\\) = ${analysis.phi}
+        </div>
+        <p style="margin-top:0.6rem;">
+          Z<sub>${n}</sub><sup>×</sup> は ${isCyclic ? '巡回群です。' : '巡回群ではありません。'}
+        </p>
+        <p>${generatorText}</p>
+        <p class="small">
+          生成元 \\(g\\) の判定には、位数 \\(\\varphi(n)\\) の素因数分解
+          \\[
+            \\varphi(n) = \\prod_i p_i^{e_i}
+          \\]
+          を用いて、すべての素因数 \\(p_i\\) に対して
+          \\[
+            g^{\\varphi(n)/p_i} \\not\\equiv 1 \\pmod{n}
+          \\]
+          となるかどうかをチェックしています。<br>
+          ある \\(g\\) がこの条件を満たすとき、\\(g\\) は \\(Z_n^\\times\\) の生成元になります。
+        </p>
+      `;
+
+      drawScene(n, selectedG, analysis);
+
+      // 数式再レンダリング（MathJax）
+      if (window.MathJax && window.MathJax.typesetPromise) {
+        window.MathJax.typesetPromise();
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const nInput = document.getElementById('nInput');
+      const select = document.getElementById('elementSelect');
+      const btn = document.getElementById('updateBtn');
+
+      btn.addEventListener('click', updateAll);
+      nInput.addEventListener('change', updateAll);
+
+      select.addEventListener('change', () => {
+        const n = parseInt(document.getElementById('nInput').value, 10);
+        const analysis = analyzeGroup(n);
+        const g = parseInt(select.value, 10);
+        drawScene(n, g, analysis);
+      });
+
+      updateAll();
+    });
+  </script>
+</body>
+</html>
