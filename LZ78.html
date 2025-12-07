@@ -1,0 +1,2032 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>LZ78 学習アプリ（拡張＋ズーム/フィット）</title>
+<style>
+:root{
+  --bg:#0b1020;
+  --panel:#111a33;
+  --panel2:#0f1730;
+  --text:#e8ecff;
+  --muted:#aeb7e6;
+  --border:#24315e;
+  --accent:#7aa2ff;
+  --accent2:#7dffb2;
+  --danger:#ff6b6b;
+  --warn:#ffd166;
+  --shadow: 0 18px 60px rgba(0,0,0,.35);
+  --radius: 14px;
+  --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Hiragino Kaku Gothic ProN", "Noto Sans JP", "Yu Gothic", "Meiryo", sans-serif;
+}
+*{box-sizing:border-box;}
+html,body{height:100%;}
+body{
+  margin:0;
+  background: radial-gradient(1200px 600px at 10% -10%, rgba(122,162,255,.28), transparent 60%),
+              radial-gradient(900px 600px at 110% 10%, rgba(125,255,178,.14), transparent 55%),
+              var(--bg);
+  color: var(--text);
+  font-family: var(--sans);
+}
+header{
+  padding: 18px 20px 10px;
+  display:flex;
+  gap:14px;
+  align-items:flex-start;
+  justify-content:space-between;
+  flex-wrap:wrap;
+}
+h1{
+  font-size: 18px;
+  margin: 0;
+  letter-spacing: .2px;
+}
+small{ color: var(--muted); }
+.container{
+  padding: 14px 20px 24px;
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
+  gap: 14px;
+}
+@media (max-width: 1100px){
+  .container{grid-template-columns: 1fr; }
+}
+.card{
+  background: linear-gradient(180deg, rgba(255,255,255,.03), transparent 32%), var(--panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+.card .hd{
+  padding: 12px 14px;
+  border-bottom: 1px solid rgba(36,49,94,.85);
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap: 10px;
+  flex-wrap:wrap;
+}
+.card .bd{ padding: 14px; }
+.row{display:flex; gap:10px; flex-wrap:wrap; align-items:center;}
+label{
+  font-size: 12px;
+  color: var(--muted);
+  display:flex; gap:8px; align-items:center;
+}
+input[type="text"], input[type="number"], textarea, select{
+  background: var(--panel2);
+  color: var(--text);
+  border: 1px solid rgba(36,49,94,.9);
+  border-radius: 12px;
+  padding: 10px 12px;
+  outline: none;
+}
+input[type="text"], input[type="number"], select{ height: 38px; }
+textarea{
+  width: 100%;
+  min-height: 84px;
+  resize: vertical;
+  font-family: var(--mono);
+  font-size: 13px;
+  line-height: 1.4;
+}
+button{
+  height: 38px;
+  padding: 0 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(36,49,94,.95);
+  background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
+  color: var(--text);
+  cursor: pointer;
+  transition: transform .05s ease, background .12s ease, border-color .12s ease;
+}
+button:hover{ border-color: rgba(122,162,255,.55); }
+button:active{ transform: translateY(1px); }
+button.primary{
+  border-color: rgba(122,162,255,.55);
+  background: linear-gradient(180deg, rgba(122,162,255,.25), rgba(122,162,255,.10));
+}
+button.good{
+  border-color: rgba(125,255,178,.55);
+  background: linear-gradient(180deg, rgba(125,255,178,.22), rgba(125,255,178,.08));
+}
+button.danger{
+  border-color: rgba(255,107,107,.55);
+  background: linear-gradient(180deg, rgba(255,107,107,.18), rgba(255,107,107,.06));
+}
+button.ghost{ background: transparent; }
+.pill{
+  font-family: var(--mono);
+  font-size: 12px;
+  padding: 5px 9px;
+  border-radius: 999px;
+  border: 1px solid rgba(36,49,94,.9);
+  color: var(--muted);
+  background: rgba(15,23,48,.7);
+}
+hr.sep{border:none;border-top:1px solid rgba(36,49,94,.75); margin: 12px 0;}
+.grid2{display:grid; grid-template-columns: 1fr 1fr; gap: 12px;}
+@media (max-width: 700px){ .grid2{grid-template-columns:1fr;} }
+.tableWrap{
+  overflow:auto;
+  border: 1px solid rgba(36,49,94,.85);
+  border-radius: 12px;
+  background: rgba(15,23,48,.55);
+}
+table{
+  width:100%;
+  border-collapse: collapse;
+  font-family: var(--mono);
+  font-size: 12px;
+}
+th,td{
+  padding: 10px 10px;
+  border-bottom: 1px solid rgba(36,49,94,.65);
+  vertical-align: top;
+}
+th{
+  text-align:left;
+  position: sticky;
+  top: 0;
+  background: rgba(17,26,51,.95);
+  z-index: 1;
+  color: var(--muted);
+}
+tr:last-child td{border-bottom:none;}
+tr.active{
+  outline: 2px solid rgba(122,162,255,.50);
+  outline-offset: -2px;
+  background: rgba(122,162,255,.08);
+}
+td.bits{
+  word-break: break-all;
+  font-family: var(--mono);
+  color: rgba(232,236,255,.92);
+}
+.note{
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.6;
+}
+.kbd{
+  font-family: var(--mono);
+  font-size: 11px;
+  padding: 2px 6px;
+  border: 1px solid rgba(36,49,94,.95);
+  border-radius: 8px;
+  background: rgba(15,23,48,.75);
+  color: var(--text);
+}
+.rightSplit{
+  display:grid;
+  grid-template-rows: auto 1fr;
+  height: 74vh;
+  min-height: 620px;
+}
+@media (max-width: 1100px){
+  .rightSplit{height: auto; min-height: unset;}
+}
+.rightBody{
+  padding: 10px;
+  height: 100%;
+  display:grid;
+  grid-template-rows: 1.25fr 0.85fr;
+  gap: 10px;
+}
+.graphWrap{
+  height: 100%;
+  overflow: hidden;          /* ← スクロールではなくズーム/パン */
+  border: 1px solid rgba(36,49,94,.85);
+  border-radius: 12px;
+  background: rgba(15,23,48,.45);
+  touch-action: none;        /* ← pointerでパンしやすく */
+  cursor: grab;
+  position: relative;
+}
+.graphWrap.grabbing{ cursor: grabbing; }
+#graph{ width: 100%; height: 100%; display:block; }
+svg{ display:block; }
+
+.node circle{
+  fill: rgba(122,162,255,.12);
+  stroke: rgba(122,162,255,.75);
+  stroke-width: 1.4;
+}
+.node text{
+  fill: var(--text);
+  font-family: var(--mono);
+  font-size: 11px;
+  user-select:none;
+}
+.edge{
+  stroke: rgba(174,183,230,.55);
+  stroke-width: 1.2;
+}
+.edgeLabel{
+  font-family: var(--mono);
+  font-size: 11px;
+  fill: rgba(232,236,255,.85);
+  paint-order: stroke;
+  stroke: rgba(11,16,32,.85);
+  stroke-width: 4px;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.node.hl-path circle{ fill: rgba(122,162,255,.24); stroke: rgba(122,162,255,1); stroke-width: 2.0; }
+.node.hl-new  circle{ fill: rgba(125,255,178,.22); stroke: rgba(125,255,178,.95); stroke-width: 2.2; }
+.node.hl-ref  circle{ fill: rgba(255,209,102,.18); stroke: rgba(255,209,102,.95); stroke-width: 2.2; }
+.node.hl-sel  circle{ fill: rgba(255,107,107,.16); stroke: rgba(255,107,107,.95); stroke-width: 2.2; }
+
+.badge{
+  display:inline-flex; align-items:center; gap:6px;
+  padding: 6px 9px;
+  border-radius: 999px;
+  border: 1px solid rgba(36,49,94,.85);
+  background: rgba(15,23,48,.55);
+  color: var(--muted);
+  font-size: 12px;
+}
+.dot{width:8px;height:8px;border-radius:999px;background:rgba(122,162,255,.85);}
+.dot.good{background:rgba(125,255,178,.85);}
+.dot.warn{background:rgba(255,209,102,.85);}
+.dot.danger{background:rgba(255,107,107,.85);}
+.toast{
+  position: fixed;
+  left: 50%;
+  bottom: 16px;
+  transform: translateX(-50%);
+  background: rgba(15,23,48,.92);
+  border: 1px solid rgba(36,49,94,.9);
+  border-radius: 12px;
+  padding: 10px 12px;
+  box-shadow: var(--shadow);
+  color: var(--text);
+  display:none;
+  max-width: min(980px, calc(100vw - 24px));
+}
+.toast.show{display:block;}
+details{
+  border: 1px solid rgba(36,49,94,.85);
+  border-radius: 12px;
+  background: rgba(15,23,48,.35);
+  padding: 10px 12px;
+}
+details > summary{
+  cursor: pointer;
+  color: rgba(232,236,255,.92);
+  font-size: 13px;
+}
+.dictTableWrap{
+  height: 100%;
+  overflow: auto;
+  border: 1px solid rgba(36,49,94,.85);
+  border-radius: 12px;
+  background: rgba(15,23,48,.45);
+}
+#dictTable{ width:100%; border-collapse: collapse; min-width: 720px; }
+#dictTable th{ top: 0; }
+#dictTable td, #dictTable th{ border-bottom: 1px solid rgba(36,49,94,.65); }
+tr.d-ref{ background: rgba(255,209,102,.08); outline: 2px solid rgba(255,209,102,.35); outline-offset:-2px; }
+tr.d-new{ background: rgba(125,255,178,.07); outline: 2px solid rgba(125,255,178,.35); outline-offset:-2px; }
+tr.d-path{ background: rgba(122,162,255,.07); }
+tr.d-sel{ outline: 2px solid rgba(255,107,107,.45); outline-offset:-2px; }
+tr.d-row:hover{ background: rgba(255,255,255,.03); cursor:pointer; }
+</style>
+</head>
+<body>
+<header>
+  <div>
+    <h1>LZ78 学習アプリ（拡張＋ズーム/フィット）</h1>
+    <small>辞書グラフは自動フィット＆ズーム。ドラッグでパン、ホイールでもズームできます。</small>
+  </div>
+  <div class="row">
+    <span class="pill" id="statusPill">準備OK</span>
+    <button class="ghost" id="btnClearAll" title="全部リセット">全リセット</button>
+  </div>
+</header>
+
+<div class="container">
+  <!-- Left -->
+  <section class="card">
+    <div class="hd">
+      <div class="row" style="align-items:baseline;">
+        <strong>操作</strong>
+        <span class="badge" title="辞書グラフの凡例">
+          <span class="dot"></span>一致パス
+          <span class="dot warn"></span>参照
+          <span class="dot good"></span>追加
+          <span class="dot danger"></span>選択
+        </span>
+      </div>
+      <div class="row">
+        <button class="primary" id="btnEncodeAll">符号化（全部）</button>
+        <button id="btnEncodeStep">符号化（ステップ開始）</button>
+        <button id="btnNext" class="good" disabled>次へ</button>
+        <button id="btnReset" class="danger" disabled>現在モードをリセット</button>
+      </div>
+    </div>
+
+    <div class="bd">
+      <div class="grid2">
+        <div>
+          <div class="row" style="justify-content:space-between;">
+            <label>入力（記号列） <span class="kbd">空白/カンマは区切りにも使えます</span></label>
+            <div class="row">
+              <button id="btnExample">例: ababbababaa</button>
+              <button class="good" id="btnRandom">ランダム入力</button>
+            </div>
+          </div>
+          <textarea id="inputText" spellcheck="false" placeholder="例: ababbababaa / 例(トークン): th e th e (空白区切り)"></textarea>
+
+          <div class="row" style="margin-top:10px;">
+            <label>アルファベット Σ
+              <input type="text" id="alphabet" value="ab" style="width:190px;">
+            </label>
+            <label>長さ
+              <input type="number" id="randLen" value="24" min="1" max="400" style="width:100px;">
+            </label>
+          </div>
+
+          <div class="row" style="margin-top:10px;">
+            <label>記号の符号化
+              <select id="symCoding" style="width:240px;">
+                <option value="utf8">UTF-8(bytes) 表示（ASCIIなら8bit/記号）</option>
+                <option value="fixed">固定長（Σのサイズで ⌈log2|Σ|⌉ bit）</option>
+              </select>
+            </label>
+            <label style="user-select:none;">
+              <input type="checkbox" id="omitFirstIndex" checked />
+              1語目は参照番号を省略（講義資料の説明）
+            </label>
+          </div>
+
+          <div class="row" style="margin-top:8px;">
+            <label style="user-select:none;">
+              <input type="checkbox" id="showBits" checked />
+              ビット列を表示
+            </label>
+            <label>ビット列の表示形式
+              <select id="bitsStyle" style="width:200px;">
+                <option value="lecture">講義資料風（区切り: | と ,）</option>
+                <option value="concat">連結（区切り無し）</option>
+              </select>
+            </label>
+          </div>
+
+          <div class="note" id="parseInfo" style="margin-top:8px;"></div>
+
+          <details id="codeMapDetails" style="margin-top:10px; display:none;">
+            <summary>固定長符号の割当（Σ → ビット列）</summary>
+            <div class="tableWrap" style="margin-top:10px;">
+              <table id="codeMapTable">
+                <thead>
+                  <tr>
+                    <th style="width:70px;">#</th>
+                    <th>記号</th>
+                    <th style="width:140px;">コード</th>
+                  </tr>
+                </thead>
+                <tbody id="codeMapBody"></tbody>
+              </table>
+            </div>
+            <div class="note" id="codeMapNote" style="margin-top:8px;"></div>
+          </details>
+        </div>
+
+        <div>
+          <div class="row" style="justify-content:space-between;">
+            <label>符号語列（復号入力にも使える）
+              <span class="kbd">形式: 0,a | 1,"th" | 3</span>
+            </label>
+            <div class="row">
+              <button id="btnCopyTokens" title="符号語列をコピー">コピー</button>
+              <button class="primary" id="btnDecodeAll">復号（全部）</button>
+              <button id="btnDecodeStep">復号（ステップ開始）</button>
+            </div>
+          </div>
+          <textarea id="tokensText" spellcheck="false" placeholder='例: (0,a) | (0,b) | (1,b) | (2,a) | (4,b) | (1,a)'></textarea>
+
+          <div class="row" style="justify-content:space-between; margin-top:10px;">
+            <label>符号語（ビット列表示） <span class="kbd">readonly</span></label>
+            <div class="row">
+              <button id="btnCopyBits" title="ビット列をコピー">コピー</button>
+            </div>
+          </div>
+          <textarea id="bitsText" readonly placeholder="符号化後にここにビット列が出ます"></textarea>
+
+          <div class="row" style="margin-top:10px;">
+            <label>復号結果 <span class="kbd">readonly</span></label>
+          </div>
+          <textarea id="decodedText" readonly></textarea>
+        </div>
+      </div>
+
+      <hr class="sep">
+
+      <div class="row" style="justify-content:space-between; align-items:flex-end;">
+        <div>
+          <strong id="logTitle">ログ（符号化）</strong>
+          <div class="note" id="logNote">最長一致→(参照番号, 次の1記号)→辞書登録。参照番号は step j で ⌈log2 j⌉ bit。</div>
+        </div>
+        <div class="row">
+          <span class="pill" id="stepInfo">step: -</span>
+          <span class="pill" id="dictInfo">辞書サイズ: 1</span>
+          <span class="pill" id="bitInfo">bits: -</span>
+        </div>
+      </div>
+
+      <div class="note" id="statsLine" style="margin-top:8px;"></div>
+
+      <div class="tableWrap" style="margin-top:10px;">
+        <table id="logTable">
+          <thead>
+            <tr id="logHeadRow"></tr>
+          </thead>
+          <tbody id="logBody">
+            <tr><td colspan="8" class="note">まだ何も実行していません。</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="note" style="margin-top:10px;">
+        ショートカット: <span class="kbd">Ctrl/⌘ + Enter</span>（一括実行） / <span class="kbd">Ctrl/⌘ + Space</span>（次へ）<br>
+        グラフ: <span class="kbd">＋</span>/<span class="kbd">－</span>でズーム、<span class="kbd">ドラッグ</span>で移動、<span class="kbd">フィット</span>で自動追従に戻ります。
+      </div>
+    </div>
+  </section>
+
+  <!-- Right -->
+  <section class="card rightSplit">
+    <div class="hd">
+      <div class="row">
+        <strong>辞書（木 + 表）</strong>
+        <span class="pill">root = 0（空列）</span>
+        <span class="pill" id="zoomPill">zoom: 100%</span>
+      </div>
+      <div class="row">
+        <button id="btnZoomOut" title="ズームアウト">－</button>
+        <button id="btnZoomIn" title="ズームイン">＋</button>
+        <button id="btnFit" title="枠内にフィット（自動追従ON）">フィット</button>
+        <button id="btnExportSvg">SVG保存</button>
+        <button id="btnExportDict">辞書CSV</button>
+      </div>
+    </div>
+
+    <div class="rightBody">
+      <div>
+        <div class="row" style="justify-content:space-between; margin-bottom:8px;">
+          <span class="note">グラフ（クリックで選択）</span>
+          <span class="pill" id="selInfo">選択: -</span>
+        </div>
+        <div class="graphWrap" id="graphWrap" aria-label="dictionary graph">
+          <svg id="graph" role="img" aria-label="LZ78 dictionary graph"></svg>
+        </div>
+      </div>
+
+      <div>
+        <div class="row" style="justify-content:space-between; margin-bottom:8px;">
+          <span class="note">辞書表（クリックで選択）</span>
+          <div class="row">
+            <label>検索
+              <input type="text" id="dictSearch" placeholder="id / phrase / sym" style="width:220px;">
+            </label>
+            <button id="btnClearSel" class="ghost" title="選択解除">選択解除</button>
+          </div>
+        </div>
+        <div class="dictTableWrap">
+          <table id="dictTable">
+            <thead>
+              <tr>
+                <th style="width:70px;">id</th>
+                <th style="width:70px;">親</th>
+                <th style="width:120px;">枝ラベル</th>
+                <th>語（phrase）</th>
+              </tr>
+            </thead>
+            <tbody id="dictBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+(() => {
+  // ---------- utilities ----------
+  const $ = (sel) => document.querySelector(sel);
+  const el = (tag, attrs={}) => {
+    const n = document.createElement(tag);
+    for (const [k,v] of Object.entries(attrs)) {
+      if (k === "class") n.className = v;
+      else if (k === "text") n.textContent = v;
+      else if (k === "html") n.innerHTML = v;
+      else n.setAttribute(k, v);
+    }
+    return n;
+  };
+
+  const toast = (msg, kind="info") => {
+    const t = $("#toast");
+    t.textContent = msg;
+    t.style.borderColor = kind==="danger" ? "rgba(255,107,107,.6)" :
+                          kind==="good" ? "rgba(125,255,178,.6)" :
+                          kind==="warn" ? "rgba(255,209,102,.6)" :
+                          "rgba(122,162,255,.6)";
+    t.classList.add("show");
+    clearTimeout(toast._timer);
+    toast._timer = setTimeout(() => t.classList.remove("show"), 2200);
+  };
+
+  const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
+
+  function ceilLog2Int(n){
+    if (n <= 1) return 0;
+    return Math.ceil(Math.log2(n));
+  }
+  function toBin(n, bits){
+    if (bits <= 0) return "";
+    return (n >>> 0).toString(2).padStart(bits, "0");
+  }
+  function truncateByCodepoints(s, max=6){
+    const arr = Array.from(s);
+    if (arr.length <= max) return s;
+    return arr.slice(0, Math.max(1, max-1)).join("") + "…";
+  }
+
+  function needsQuoting(sym){
+    return sym === "" || /[\s,|()]/.test(sym);
+  }
+  function escapeQuoted(sym){
+    return sym
+      .replace(/\\/g, "\\\\")
+      .replace(/"/g, '\\"')
+      .replace(/\n/g, "\\n")
+      .replace(/\r/g, "\\r")
+      .replace(/\t/g, "\\t");
+  }
+  function formatSymbol(sym){
+    if (!needsQuoting(sym)) return sym;
+    return `"${escapeQuoted(sym)}"`;
+  }
+
+  function parseAlphabet(raw){
+    const s = (raw ?? "").trim();
+    let toks;
+    if (!s) return [];
+    if (/[,\s]/.test(s)){
+      toks = s.split(/[,\s]+/).map(x => x.trim()).filter(Boolean);
+    }else{
+      toks = Array.from(s);
+    }
+    const seen = new Set();
+    const out = [];
+    for (const t of toks){
+      if (!seen.has(t)){
+        seen.add(t);
+        out.push(t);
+      }
+    }
+    return out;
+  }
+
+  function greedyTokenize(compact, tokens){
+    const sorted = [...tokens].sort((a,b) => b.length - a.length);
+    let pos = 0;
+    const out = [];
+    while (pos < compact.length){
+      let m = null;
+      for (const tok of sorted){
+        if (tok && compact.startsWith(tok, pos)){
+          m = tok; break;
+        }
+      }
+      if (m !== null){
+        out.push(m);
+        pos += m.length;
+      }else{
+        const cp = compact.codePointAt(pos);
+        const ch = String.fromCodePoint(cp);
+        out.push(ch);
+        pos += (cp > 0xFFFF ? 2 : 1);
+      }
+    }
+    return out;
+  }
+
+  function parseInputSymbols(rawInput, alphabetTokens){
+    const s0 = (rawInput ?? "").trim();
+    if (!s0) return [];
+    if (/[,\s]/.test(s0)){
+      return s0.split(/[,\s]+/).map(x => x.trim()).filter(Boolean);
+    }
+    const compact = s0.replace(/\s+/g, "");
+    const hasMulti = alphabetTokens.some(t => (t ?? "").length > 1);
+    if (hasMulti){
+      return greedyTokenize(compact, alphabetTokens);
+    }
+    return Array.from(compact);
+  }
+
+  function buildCodec(type, alphabetTokens){
+    if (type === "fixed"){
+      if (!alphabetTokens || alphabetTokens.length === 0){
+        throw new Error("固定長符号にはアルファベット Σ が必要です");
+      }
+      const m = alphabetTokens.length;
+      const codeLen = ceilLog2Int(m);
+      const map = new Map();
+      alphabetTokens.forEach((sym, i) => map.set(sym, toBin(i, codeLen)));
+      return {
+        type,
+        alphabet: alphabetTokens,
+        codeLen,
+        map,
+        encodeSymbol(sym){
+          if (!map.has(sym)){
+            throw new Error(`固定長符号: 記号 "${sym}" が Σ にありません`);
+          }
+          const bits = map.get(sym);
+          return {bits, bitLen: codeLen};
+        }
+      };
+    }
+
+    const enc = new TextEncoder();
+    return {
+      type: "utf8",
+      alphabet: alphabetTokens,
+      codeLen: null,
+      map: null,
+      encodeSymbol(sym){
+        const bytes = enc.encode(sym);
+        let bitsArr = [];
+        for (const b of bytes){
+          bitsArr.push(b.toString(2).padStart(8, "0"));
+        }
+        const bits = bitsArr.join("");
+        return {bits, bitLen: bytes.length * 8};
+      }
+    };
+  }
+
+  function indexBitsForStep(index, stepJ, omitFirstIndex){
+    const len = ceilLog2Int(stepJ);
+    if (stepJ === 1 && omitFirstIndex){
+      return {bits:"", bitLen:0, omitted:true};
+    }
+    return {bits: toBin(index, len), bitLen: len, omitted:false};
+  }
+
+  function formatTokens(tokens){
+    return tokens.map(t => (t.next == null) ? `${t.index}` : `${t.index},${formatSymbol(t.next)}`).join(" | ");
+  }
+
+  function splitByTopLevelPipes(raw){
+    const s = (raw ?? "").trim();
+    if (!s) return [];
+    const out = [];
+    let cur = "";
+    let q = null;
+    let esc = false;
+    for (let i=0;i<s.length;i++){
+      const ch = s[i];
+      if (esc){ cur += ch; esc = false; continue; }
+      if (ch === "\\"){ cur += ch; esc = true; continue; }
+      if (q){
+        cur += ch;
+        if (ch === q) q = null;
+        continue;
+      }
+      if (ch === '"' || ch === "'"){ cur += ch; q = ch; continue; }
+      if (ch === "|"){
+        const part = cur.trim();
+        if (part) out.push(part);
+        cur = "";
+        continue;
+      }
+      cur += ch;
+    }
+    const last = cur.trim();
+    if (last) out.push(last);
+    return out;
+  }
+
+  function parseQuotedString(s){
+    const q = s[0];
+    let i = 1;
+    let out = "";
+    let esc = false;
+    while (i < s.length){
+      const ch = s[i];
+      if (esc){
+        if (ch === "n") out += "\n";
+        else if (ch === "t") out += "\t";
+        else if (ch === "r") out += "\r";
+        else if (ch === "\\") out += "\\";
+        else if (ch === '"') out += '"';
+        else if (ch === "'") out += "'";
+        else out += ch;
+        esc = false;
+        i++;
+        continue;
+      }
+      if (ch === "\\"){ esc = true; i++; continue; }
+      if (ch === q){ return {value: out, rest: s.slice(i+1).trim()}; }
+      out += ch;
+      i++;
+    }
+    throw new Error("引用符が閉じていません: " + s);
+  }
+
+  function parseTokens(text){
+    const raw = (text ?? "").trim();
+    if (!raw) return [];
+    const parts = raw.includes("|") ? splitByTopLevelPipes(raw) : raw.split(/[\n\r]+/).map(x=>x.trim()).filter(Boolean);
+
+    const tokens = [];
+    for (const part0 of parts){
+      let part = part0.trim();
+      if (part.startsWith("(") && part.endsWith(")")) part = part.slice(1, -1).trim();
+      part = part.replace(/，/g, ",");
+
+      let commaPos = -1;
+      let q = null, esc = false;
+      for (let i=0;i<part.length;i++){
+        const ch = part[i];
+        if (esc){ esc=false; continue; }
+        if (ch === "\\"){ esc=true; continue; }
+        if (q){
+          if (ch === q) q = null;
+          continue;
+        }
+        if (ch === '"' || ch === "'"){ q = ch; continue; }
+        if (ch === ","){ commaPos = i; break; }
+      }
+
+      if (commaPos === -1){
+        const idxStr = part.trim();
+        if (!/^[0-9]+$/.test(idxStr)) throw new Error(`参照番号が不正: "${idxStr}"`);
+        tokens.push({index: Number(idxStr), next: null});
+      }else{
+        const idxStr = part.slice(0, commaPos).trim();
+        let rest = part.slice(commaPos+1).trim();
+        if (!/^[0-9]+$/.test(idxStr)) throw new Error(`参照番号が不正: "${idxStr}"`);
+        const index = Number(idxStr);
+
+        if (!rest){ tokens.push({index, next: null}); continue; }
+
+        let sym;
+        if (rest[0] === '"' || rest[0] === "'"){
+          const r = parseQuotedString(rest);
+          sym = r.value;
+        }else{
+          sym = rest;
+        }
+        tokens.push({index, next: sym});
+      }
+    }
+    return tokens;
+  }
+
+  function tokenBitsText(tokens, stepToBitsFn, style){
+    const chunks = [];
+    for (let j=1; j<=tokens.length; j++){
+      const t = tokens[j-1];
+      const B = stepToBitsFn(t, j);
+      if (style === "concat"){
+        chunks.push(B.outBits);
+      }else{
+        if (t.next == null){
+          chunks.push(B.iBits || "");
+        }else{
+          if (B.iOmitted || B.iBits === "") chunks.push(B.cBits);
+          else chunks.push(`${B.iBits},${B.cBits}`);
+        }
+      }
+    }
+    return (style === "concat") ? chunks.join("") : chunks.join(" | ");
+  }
+
+  // ---------- dictionary (trie) ----------
+  function newDict(){
+    return {
+      nodes: [{
+        id: 0,
+        parent: null,
+        sym: "",
+        phrase: "",
+        children: new Map()
+      }]
+    };
+  }
+
+  function dictAdd(dict, parentId, sym){
+    const parent = dict.nodes[parentId];
+    if (!parent) throw new Error("parentId not found: " + parentId);
+    if (parent.children.has(sym)) return parent.children.get(sym);
+    const id = dict.nodes.length;
+    const node = {
+      id,
+      parent: parentId,
+      sym,
+      phrase: parent.phrase + sym,
+      children: new Map()
+    };
+    dict.nodes.push(node);
+    parent.children.set(sym, id);
+    return id;
+  }
+
+  function pathToRoot(dict, id){
+    const path = [];
+    let cur = id;
+    while (cur != null){
+      path.push(cur);
+      cur = dict.nodes[cur].parent;
+    }
+    path.reverse();
+    return path;
+  }
+
+  // ---------- app state ----------
+  const app = {
+    mode: "idle",
+    enc: null,
+    dec: null,
+    visual: { dict: newDict(), hl: {pathIds:[], newId:null, refId:null, selId:null} }
+  };
+
+  function setStatus(text){ $("#statusPill").textContent = text; }
+
+  function setMode(mode){
+    app.mode = mode;
+    $("#logTitle").textContent = mode === "decode" ? "ログ（復号）" : "ログ（符号化）";
+    $("#logNote").textContent =
+      mode === "decode"
+        ? "（i, c）→辞書参照→出力→辞書登録。参照番号は step j で ⌈log2 j⌉ bit（表示用）。"
+        : "最長一致→（i, c）→辞書登録。参照番号は step j で ⌈log2 j⌉ bit。";
+  }
+
+  function setControls({nextEnabled, resetEnabled}){
+    $("#btnNext").disabled = !nextEnabled;
+    $("#btnReset").disabled = !resetEnabled;
+  }
+
+  function updateMeta({step, dictSize, bitsTotal}){
+    $("#stepInfo").textContent = "step: " + (step ?? "-");
+    $("#dictInfo").textContent = "辞書サイズ: " + (dictSize ?? 1);
+    $("#bitInfo").textContent = "bits: " + (bitsTotal ?? "-");
+  }
+
+  function currentAlphabetTokens(){
+    return parseAlphabet($("#alphabet").value);
+  }
+
+  function currentInputSymbols(){
+    return parseInputSymbols($("#inputText").value, currentAlphabetTokens());
+  }
+
+  function currentCfg(){
+    return {
+      symCoding: $("#symCoding").value,
+      omitFirstIndex: $("#omitFirstIndex").checked,
+      showBits: $("#showBits").checked,
+      bitsStyle: $("#bitsStyle").value
+    };
+  }
+
+  function renderParseInfo(){
+    const A = currentAlphabetTokens();
+    const X = currentInputSymbols();
+    const coding = $("#symCoding").value;
+    const hasMulti = A.some(t => t.length > 1);
+
+    const sigmaStr = A.length ? A.map(x => truncateByCodepoints(x, 10)).join(", ") : "(空)";
+    const xPreview = X.slice(0, 18).map(x => truncateByCodepoints(x, 10)).join(" ");
+    const xTail = X.length > 18 ? " …" : "";
+
+    let warn = "";
+    if (coding === "fixed" && A.length === 0){
+      warn = "⚠ 固定長を選ぶなら Σ を指定してください。";
+    }
+    if (hasMulti && !/[,\s]/.test(($("#inputText").value ?? "").trim())){
+      warn += (warn ? " " : "") + "（Σに複数文字トークンがあるので、入力は最長一致で自動分割します。空白/カンマ区切りの方が確実です。）";
+    }
+
+    $("#parseInfo").textContent =
+      `Σ(${A.length}) = { ${sigmaStr} } / 入力記号数=${X.length} / 先頭: ${xPreview}${xTail}` + (warn ? "\n" + warn : "");
+  }
+
+  // ---------- graph rendering (camera: smooth fit + zoom) ----------
+  const SVG_NS = "http://www.w3.org/2000/svg";
+  function svgEl(tag, attrs={}){
+    const n = document.createElementNS(SVG_NS, tag);
+    for (const [k,v] of Object.entries(attrs)) n.setAttribute(k, v);
+    return n;
+  }
+
+  const graphUI = {
+    wrap: null,
+    svg: null,
+    cameraG: null,
+    worldG: null,
+    world: {w: 900, h: 520},
+    camera: {
+      scale: 1,
+      tx: 0,
+      ty: 0,
+      minScale: 0.06,
+      maxScale: 8,
+      autoFit: true
+    },
+    anim: null,
+    drag: {active:false, startX:0, startY:0, startTx:0, startTy:0}
+  };
+
+  function viewportSize(){
+    const w = Math.max(1, graphUI.wrap.clientWidth);
+    const h = Math.max(1, graphUI.wrap.clientHeight);
+    return {w, h};
+  }
+
+  function syncSvgViewport(){
+    const {w,h} = viewportSize();
+    graphUI.svg.setAttribute("viewBox", `0 0 ${w} ${h}`);
+    graphUI.svg.setAttribute("preserveAspectRatio", "none");
+  }
+
+  function applyCamera(){
+    if (!graphUI.cameraG) return;
+    const {scale, tx, ty} = graphUI.camera;
+    graphUI.cameraG.setAttribute("transform", `matrix(${scale} 0 0 ${scale} ${tx} ${ty})`);
+    const z = Math.round(scale * 100);
+    $("#zoomPill").textContent = `zoom: ${z}%`;
+  }
+
+  function cancelAnim(){
+    if (graphUI.anim){
+      cancelAnimationFrame(graphUI.anim.raf);
+      graphUI.anim = null;
+    }
+  }
+
+  function animateCameraTo(target, duration=260){
+    cancelAnim();
+    const from = {...graphUI.camera};
+    const start = performance.now();
+    const easeInOutCubic = (t) => t < 0.5 ? 4*t*t*t : 1 - Math.pow(-2*t+2,3)/2;
+
+    graphUI.anim = {raf:0};
+    const step = (now) => {
+      const t = Math.min(1, (now - start)/duration);
+      const e = easeInOutCubic(t);
+      graphUI.camera.scale = from.scale + (target.scale - from.scale) * e;
+      graphUI.camera.tx = from.tx + (target.tx - from.tx) * e;
+      graphUI.camera.ty = from.ty + (target.ty - from.ty) * e;
+      applyCamera();
+      if (t < 1) graphUI.anim.raf = requestAnimationFrame(step);
+      else graphUI.anim = null;
+    };
+    graphUI.anim.raf = requestAnimationFrame(step);
+  }
+
+  function computeFitTarget(margin=24){
+    syncSvgViewport();
+    const {w:vw, h:vh} = viewportSize();
+    const W = Math.max(1, graphUI.world.w);
+    const H = Math.max(1, graphUI.world.h);
+    const availW = Math.max(1, vw - margin*2);
+    const availH = Math.max(1, vh - margin*2);
+    let s = Math.min(availW / W, availH / H);
+    s = clamp(s, graphUI.camera.minScale, graphUI.camera.maxScale);
+    const tx = (vw - W*s)/2;
+    const ty = (vh - H*s)/2;
+    return {scale:s, tx, ty};
+  }
+
+  function fitsInView(margin=18){
+    const {w:vw, h:vh} = viewportSize();
+    const {scale, tx, ty} = graphUI.camera;
+    const W = graphUI.world.w;
+    const H = graphUI.world.h;
+    const left = tx, top = ty, right = tx + scale*W, bottom = ty + scale*H;
+    return left >= margin && top >= margin && right <= (vw - margin) && bottom <= (vh - margin);
+  }
+
+  function fitGraph(animate=true){
+    graphUI.camera.autoFit = true;
+    const target = computeFitTarget(24);
+    if (animate) animateCameraTo(target, 280);
+    else { Object.assign(graphUI.camera, target); applyCamera(); }
+  }
+
+  function maybeAutoFit(){
+    syncSvgViewport();
+    if (graphUI.camera.autoFit){
+      if (!fitsInView(16)) fitGraph(true);
+      else applyCamera();
+    }else{
+      applyCamera();
+    }
+  }
+
+  function zoomAt(factor, cx, cy, animate=true){
+    graphUI.camera.autoFit = false;
+    syncSvgViewport();
+    const {scale, tx, ty} = graphUI.camera;
+    const worldX = (cx - tx) / scale;
+    const worldY = (cy - ty) / scale;
+    const newScale = clamp(scale * factor, graphUI.camera.minScale, graphUI.camera.maxScale);
+    const newTx = cx - newScale * worldX;
+    const newTy = cy - newScale * worldY;
+    const target = {scale: newScale, tx: newTx, ty: newTy};
+
+    if (animate) animateCameraTo(target, 170);
+    else { Object.assign(graphUI.camera, target); applyCamera(); }
+  }
+
+  function zoomBy(factor, animate=true){
+    const {w:vw, h:vh} = viewportSize();
+    zoomAt(factor, vw/2, vh/2, animate);
+  }
+
+  function initGraphInteractions(){
+    const wrap = graphUI.wrap;
+    const svg = graphUI.svg;
+
+    svg.addEventListener("pointerdown", (e) => {
+      if (e.button !== 0) return;
+      // ノード上はパン開始しない（クリック選択を優先）
+      const isNode = e.target && e.target.closest && e.target.closest(".node");
+      if (isNode) return;
+
+      graphUI.drag.active = true;
+      wrap.classList.add("grabbing");
+      graphUI.drag.startX = e.clientX;
+      graphUI.drag.startY = e.clientY;
+      graphUI.drag.startTx = graphUI.camera.tx;
+      graphUI.drag.startTy = graphUI.camera.ty;
+      graphUI.camera.autoFit = false;
+      try{ svg.setPointerCapture(e.pointerId); }catch{}
+    });
+
+    svg.addEventListener("pointermove", (e) => {
+      if (!graphUI.drag.active) return;
+      const dx = e.clientX - graphUI.drag.startX;
+      const dy = e.clientY - graphUI.drag.startY;
+      graphUI.camera.tx = graphUI.drag.startTx + dx;
+      graphUI.camera.ty = graphUI.drag.startTy + dy;
+      applyCamera();
+    });
+
+    const endDrag = (e) => {
+      if (!graphUI.drag.active) return;
+      graphUI.drag.active = false;
+      wrap.classList.remove("grabbing");
+      try{ svg.releasePointerCapture(e.pointerId); }catch{}
+    };
+    svg.addEventListener("pointerup", endDrag);
+    svg.addEventListener("pointercancel", endDrag);
+    svg.addEventListener("pointerleave", endDrag);
+
+    // ホイールでズーム（カーソル位置中心）
+    svg.addEventListener("wheel", (e) => {
+      e.preventDefault();
+      const rect = svg.getBoundingClientRect();
+      const cx = e.clientX - rect.left;
+      const cy = e.clientY - rect.top;
+      const factor = (e.deltaY < 0) ? 1.10 : (1/1.10);
+      zoomAt(factor, cx, cy, false);
+    }, {passive:false});
+
+    // リサイズ時：autoFitなら即座に再フィット
+    window.addEventListener("resize", () => {
+      syncSvgViewport();
+      if (graphUI.camera.autoFit) fitGraph(false);
+      else applyCamera();
+    });
+  }
+
+  function buildChildren(dict){
+    const children = Array.from({length: dict.nodes.length}, () => []);
+    for (const node of dict.nodes) {
+      if (node.parent !== null) children[node.parent].push(node.id);
+    }
+    for (const arr of children) {
+      arr.sort((a,b) => {
+        const sa = dict.nodes[a].sym;
+        const sb = dict.nodes[b].sym;
+        return (sa < sb) ? -1 : (sa > sb) ? 1 : (a-b);
+      });
+    }
+    return children;
+  }
+
+  function computeLayout(dict, desiredNodeGap=110, levelGap=90){
+    const children = buildChildren(dict);
+    const depth = new Array(dict.nodes.length).fill(0);
+    let maxDepth = 0;
+    for (let i = 1; i < dict.nodes.length; i++){
+      const p = dict.nodes[i].parent;
+      depth[i] = depth[p] + 1;
+      if (depth[i] > maxDepth) maxDepth = depth[i];
+    }
+
+    let leaf = 0;
+    const xIndex = new Array(dict.nodes.length).fill(0);
+
+    function rec(id){
+      const kids = children[id];
+      if (!kids || kids.length === 0){
+        xIndex[id] = leaf++;
+        return;
+      }
+      for (const k of kids) rec(k);
+      const min = Math.min(...kids.map(k => xIndex[k]));
+      const max = Math.max(...kids.map(k => xIndex[k]));
+      xIndex[id] = (min + max) / 2;
+    }
+    rec(0);
+    const leafCount = Math.max(leaf, 1);
+
+    const width = Math.max(900, (leafCount - 1) * desiredNodeGap + 180);
+    const height = Math.max(520, maxDepth * levelGap + 160);
+
+    const marginX = 90;
+    const marginY = 70;
+    const scaleX = (leafCount === 1) ? 0 : ((width - 2*marginX) / (leafCount - 1));
+
+    const pos = xIndex.map((xi, id) => ({
+      x: marginX + (leafCount === 1 ? (width - 2*marginX)/2 : xi * scaleX),
+      y: marginY + depth[id] * levelGap
+    }));
+
+    return {pos, width, height};
+  }
+
+  function renderGraph(dict, hl){
+    const {highlightPathIds = [], highlightNewId = null, highlightRefId = null, highlightSelId = null} = hl || {};
+
+    const svg = graphUI.svg;
+    while (svg.firstChild) svg.removeChild(svg.firstChild);
+    syncSvgViewport();
+
+    // camera/world groups
+    const camG = svgEl("g", {id: "camera"});
+    const worldG = svgEl("g", {id: "world"});
+    camG.appendChild(worldG);
+    svg.appendChild(camG);
+    graphUI.cameraG = camG;
+    graphUI.worldG = worldG;
+
+    const {pos, width, height} = computeLayout(dict);
+    graphUI.world = {w: width, h: height};
+
+    // edges
+    for (let id = 1; id < dict.nodes.length; id++){
+      const node = dict.nodes[id];
+      const p = dict.nodes[node.parent];
+      const a = pos[p.id];
+      const b = pos[node.id];
+
+      const line = svgEl("line", {
+        x1: a.x, y1: a.y, x2: b.x, y2: b.y,
+        class: "edge"
+      });
+      worldG.appendChild(line);
+
+      const midx = (a.x + b.x)/2;
+      const midy = (a.y + b.y)/2 - 6;
+      const txt = svgEl("text", {
+        x: midx, y: midy,
+        "text-anchor":"middle",
+        class:"edgeLabel"
+      });
+      txt.textContent = truncateByCodepoints(node.sym, 10);
+      worldG.appendChild(txt);
+    }
+
+    const pathSet = new Set(highlightPathIds);
+
+    // nodes
+    for (let id = 0; id < dict.nodes.length; id++){
+      const node = dict.nodes[id];
+      const p = pos[id];
+
+      let cls = "node";
+      if (pathSet.has(id)) cls += " hl-path";
+      if (highlightNewId === id) cls += " hl-new";
+      if (highlightRefId === id) cls += " hl-ref";
+      if (highlightSelId === id) cls += " hl-sel";
+
+      const g = svgEl("g", {class: cls, transform: `translate(${p.x}, ${p.y})`});
+      g.style.cursor = "pointer";
+      g.addEventListener("click", () => setSelection(id));
+
+      const c = svgEl("circle", {r: id === 0 ? 20 : 18});
+      g.appendChild(c);
+
+      const t = svgEl("text", {"text-anchor":"middle", dy:"-2"});
+      t.textContent = String(id);
+      g.appendChild(t);
+
+      const t2 = svgEl("text", {"text-anchor":"middle", dy:"13", fill:"rgba(232,236,255,.85)"});
+      t2.textContent = (id === 0) ? "root" : truncateByCodepoints(node.sym, 8);
+      g.appendChild(t2);
+
+      const title = svgEl("title");
+      title.textContent = (id === 0) ? "0: (空列)" : `${id}: "${node.phrase}"`;
+      g.appendChild(title);
+
+      worldG.appendChild(g);
+    }
+
+    // フィット（必要なら滑らかに）
+    maybeAutoFit();
+  }
+
+  function exportSvg(){
+    const svg = $("#graph");
+    const xml = new XMLSerializer().serializeToString(svg);
+    const blob = new Blob([xml], {type:"image/svg+xml;charset=utf-8"});
+    const url = URL.createObjectURL(blob);
+    const a = el("a", {href:url, download:"lz78_dictionary.svg"});
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 500);
+    toast("SVGを保存しました", "good");
+  }
+
+  function exportDictCsv(){
+    const dict = app.visual.dict;
+    const rows = [["id","parent","sym","phrase"]];
+    for (const n of dict.nodes){
+      rows.push([
+        String(n.id),
+        n.parent == null ? "" : String(n.parent),
+        n.sym,
+        n.phrase
+      ]);
+    }
+    const csv = rows.map(r => r.map(cell => {
+      const s = String(cell ?? "");
+      if (/[",\n\r]/.test(s)) return `"${s.replace(/"/g,'""')}"`;
+      return s;
+    }).join(",")).join("\n");
+
+    const blob = new Blob(["\ufeff" + csv], {type:"text/csv;charset=utf-8"});
+    const url = URL.createObjectURL(blob);
+    const a = el("a", {href:url, download:"lz78_dictionary.csv"});
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 500);
+    toast("辞書CSVを保存しました", "good");
+  }
+
+  // ---------- dictionary table ----------
+  function renderDictTable(dict, hl){
+    const {highlightPathIds = [], highlightNewId = null, highlightRefId = null, highlightSelId = null} = hl || {};
+    const pathSet = new Set(highlightPathIds);
+
+    const q = ($("#dictSearch").value ?? "").trim().toLowerCase();
+    const body = $("#dictBody");
+    body.innerHTML = "";
+
+    for (const n of dict.nodes){
+      const phrase = (n.id === 0) ? "(空列)" : n.phrase;
+      const parent = (n.parent == null) ? "" : String(n.parent);
+      const sym = (n.id === 0) ? "" : n.sym;
+
+      const hay = `${n.id} ${parent} ${sym} ${phrase}`.toLowerCase();
+      if (q && !hay.includes(q)) continue;
+
+      let cls = "d-row";
+      if (pathSet.has(n.id)) cls += " d-path";
+      if (highlightNewId === n.id) cls += " d-new";
+      if (highlightRefId === n.id) cls += " d-ref";
+      if (highlightSelId === n.id) cls += " d-sel";
+
+      const tr = el("tr", {class: cls});
+      tr.addEventListener("click", () => setSelection(n.id));
+      tr.appendChild(el("td", {text: String(n.id)}));
+      tr.appendChild(el("td", {text: parent}));
+      tr.appendChild(el("td", {text: (n.id===0) ? "" : truncateByCodepoints(sym, 18)}));
+      const tdPhrase = el("td", {text: truncateByCodepoints(phrase, 80)});
+      tdPhrase.title = phrase;
+      tr.appendChild(tdPhrase);
+      body.appendChild(tr);
+    }
+
+    if (!body.firstChild){
+      const tr = el("tr");
+      tr.appendChild(el("td", {colspan:"4", class:"note", text:"該当なし"}));
+      body.appendChild(tr);
+    }
+  }
+
+  function setSelection(id){
+    if (!app.visual.dict || !app.visual.dict.nodes[id]) return;
+    app.visual.hl.selId = id;
+    const n = app.visual.dict.nodes[id];
+    const label = (id === 0) ? "0:(空列)" : `${id}:"${truncateByCodepoints(n.phrase, 38)}"`;
+    $("#selInfo").textContent = "選択: " + label;
+
+    const selPath = pathToRoot(app.visual.dict, id);
+    const mergedPath = Array.from(new Set([...(app.visual.hl.pathIds||[]), ...selPath]));
+    const hl = {
+      highlightPathIds: mergedPath,
+      highlightNewId: app.visual.hl.newId,
+      highlightRefId: app.visual.hl.refId,
+      highlightSelId: id
+    };
+    renderGraph(app.visual.dict, hl);
+    renderDictTable(app.visual.dict, hl);
+  }
+
+  function clearSelection(){
+    app.visual.hl.selId = null;
+    $("#selInfo").textContent = "選択: -";
+    renderVisuals(app.visual.dict, app.visual.hl);
+  }
+
+  function renderVisuals(dict, hl){
+    app.visual.dict = dict;
+    app.visual.hl = hl;
+    renderGraph(dict, {
+      highlightPathIds: hl.pathIds || [],
+      highlightNewId: hl.newId ?? null,
+      highlightRefId: hl.refId ?? null,
+      highlightSelId: hl.selId ?? null
+    });
+    renderDictTable(dict, {
+      highlightPathIds: hl.pathIds || [],
+      highlightNewId: hl.newId ?? null,
+      highlightRefId: hl.refId ?? null,
+      highlightSelId: hl.selId ?? null
+    });
+  }
+
+  // ---------- logs ----------
+  function resetLogTable(msg="まだ何も実行していません。"){
+    const body = $("#logBody");
+    body.innerHTML = "";
+    const tr = el("tr");
+    tr.appendChild(el("td", {colspan:"8", class:"note", text: msg}));
+    body.appendChild(tr);
+  }
+
+  function setEncodeHeader(){
+    $("#logHeadRow").innerHTML = `
+      <th style="width:70px;">step j</th>
+      <th style="min-width:140px;">処理位置</th>
+      <th style="min-width:140px;">最長一致 w</th>
+      <th style="min-width:110px;">出力 (i,c)</th>
+      <th style="min-width:220px;">i bits（⌈log2 j⌉）</th>
+      <th style="min-width:220px;">c bits</th>
+      <th style="min-width:240px;">出力bits</th>
+      <th>辞書に追加</th>
+    `;
+  }
+
+  function setDecodeHeader(){
+    $("#logHeadRow").innerHTML = `
+      <th style="width:70px;">step j</th>
+      <th style="min-width:140px;">入力 (i,c)</th>
+      <th style="min-width:160px;">参照語 w</th>
+      <th style="min-width:220px;">i bits（⌈log2 j⌉）</th>
+      <th style="min-width:220px;">c bits</th>
+      <th style="min-width:160px;">出力した語</th>
+      <th style="min-width:240px;">出力bits</th>
+      <th>辞書に追加</th>
+    `;
+  }
+
+  function cellBits(len, bits, showBits){
+    if (!showBits) return `len=${len}`;
+    if (len === 0) return `len=0`;
+    return `len=${len}\n${bits}`;
+  }
+
+  function renderEncodeLogs(){
+    const body = $("#logBody");
+    body.innerHTML = "";
+    const S = app.enc;
+    if (!S || S.logs.length === 0){
+      resetLogTable();
+      return;
+    }
+    const showBits = S.settings.showBits;
+
+    for (let i = 0; i < S.logs.length; i++){
+      const L = S.logs[i];
+      const tr = el("tr", {class: i === S.stepCursor-1 ? "active" : ""});
+
+      tr.appendChild(el("td", {text: String(L.step)}));
+      tr.appendChild(el("td", {text: `${L.posStart} → ${L.posEnd}`}));
+      tr.appendChild(el("td", {text: L.matchPhrase === "" ? "(空列)" : truncateByCodepoints(L.matchPhrase, 90)}));
+      tr.appendChild(el("td", {text: L.tokenText}));
+
+      const tdI = el("td", {class:"bits"});
+      tdI.textContent = L.iOmitted ? `len=0（省略）` : cellBits(L.iBitLen, L.iBits, showBits);
+      tr.appendChild(tdI);
+
+      const tdC = el("td", {class:"bits"});
+      tdC.textContent = (L.nextSym == null) ? `len=0` : cellBits(L.cBitLen, L.cBits, showBits);
+      tr.appendChild(tdC);
+
+      const tdOut = el("td", {class:"bits"});
+      tdOut.textContent = cellBits(L.outBitLen, L.outBits, showBits);
+      tr.appendChild(tdOut);
+
+      tr.appendChild(el("td", {text: L.addedText}));
+      body.appendChild(tr);
+    }
+  }
+
+  function renderDecodeLogs(){
+    const body = $("#logBody");
+    body.innerHTML = "";
+    const S = app.dec;
+    if (!S || S.logs.length === 0){
+      resetLogTable();
+      return;
+    }
+    const showBits = S.settings.showBits;
+
+    for (let i = 0; i < S.logs.length; i++){
+      const L = S.logs[i];
+      const tr = el("tr", {class: i === S.stepCursor-1 ? "active" : ""});
+
+      tr.appendChild(el("td", {text: String(L.step)}));
+      tr.appendChild(el("td", {text: L.tokenText}));
+      tr.appendChild(el("td", {text: L.refPhrase === "" ? "(空列)" : truncateByCodepoints(L.refPhrase, 90)}));
+
+      const tdI = el("td", {class:"bits"});
+      tdI.textContent = L.iOmitted ? `len=0（省略）` : cellBits(L.iBitLen, L.iBits, showBits);
+      tr.appendChild(tdI);
+
+      const tdC = el("td", {class:"bits"});
+      tdC.textContent = (L.nextSym == null) ? `len=0` : cellBits(L.cBitLen, L.cBits, showBits);
+      tr.appendChild(tdC);
+
+      tr.appendChild(el("td", {text: truncateByCodepoints(L.outChunk, 90)}));
+
+      const tdOut = el("td", {class:"bits"});
+      tdOut.textContent = cellBits(L.outBitLen, L.outBits, showBits);
+      tr.appendChild(tdOut);
+
+      tr.appendChild(el("td", {text: L.addedText}));
+      body.appendChild(tr);
+    }
+  }
+
+  function renderBitsPanelFromTokens(tokens, settings, codec){
+    const style = settings.bitsStyle;
+    const omitFirstIndex = settings.omitFirstIndex;
+
+    const stepToBits = (t, j) => {
+      const iB = indexBitsForStep(t.index, j, omitFirstIndex);
+      const cB = (t.next == null) ? {bits:"", bitLen:0} : codec.encodeSymbol(t.next);
+      const outBits = iB.bits + cB.bits;
+      return { iBits: iB.bits, iBitLen: iB.bitLen, iOmitted: iB.omitted, cBits: cB.bits, cBitLen: cB.bitLen, outBits, outBitLen: iB.bitLen + cB.bitLen };
+    };
+
+    const text = tokenBitsText(tokens, stepToBits, style);
+    $("#bitsText").value = text;
+  }
+
+  // ---------- stats ----------
+  function updateStats(){
+    if (app.mode === "encode" && app.enc){
+      const S = app.enc;
+      const n = S.input.length;
+      const k = S.tokens.length;
+      const bitsTotal = S.logs.reduce((a, L) => a + (L.outBitLen || 0), 0);
+      const origBits = (() => {
+        if (S.codec.type === "fixed") return n * S.codec.codeLen;
+        let sum = 0;
+        for (const sym of S.input){
+          sum += S.codec.encodeSymbol(sym).bitLen;
+        }
+        return sum;
+      })();
+
+      const ratio = (origBits > 0) ? (bitsTotal / origBits) : null;
+      $("#statsLine").textContent =
+        `入力記号数=${n}, 出力トークン数=${k}, 符号語ビット総数=${bitsTotal}` +
+        (origBits ? ` / 入力(同じ記号符号化)=${origBits}bit / 比率=${ratio.toFixed(3)}` : "");
+      updateMeta({step: S.stepCursor, dictSize: S.dict.nodes.length, bitsTotal});
+    } else if (app.mode === "decode" && app.dec){
+      const S = app.dec;
+      const k = S.tokens.length;
+      const outStr = S.out.join("");
+      const bitsTotal = S.logs.reduce((a, L) => a + (L.outBitLen || 0), 0);
+      $("#statsLine").textContent =
+        `入力トークン数=${k}, 復号出力長=${Array.from(outStr).length}（表示上） / 符号語ビット総数(表示用)=${bitsTotal}`;
+      updateMeta({step: S.stepCursor, dictSize: S.dict.nodes.length, bitsTotal});
+    } else {
+      $("#statsLine").textContent = "";
+      updateMeta({step:"-", dictSize: 1, bitsTotal:"-"});
+    }
+  }
+
+  // ---------- code map ----------
+  function renderCodeMapIfNeeded(codec){
+    const details = $("#codeMapDetails");
+    if (!codec || codec.type !== "fixed"){
+      details.style.display = "none";
+      return;
+    }
+    details.style.display = "block";
+    const body = $("#codeMapBody");
+    body.innerHTML = "";
+    codec.alphabet.forEach((sym, i) => {
+      const tr = el("tr");
+      tr.appendChild(el("td", {text: String(i)}));
+      tr.appendChild(el("td", {text: sym}));
+      tr.appendChild(el("td", {class:"bits", text: codec.map.get(sym)}));
+      body.appendChild(tr);
+    });
+    $("#codeMapNote").textContent = `|Σ|=${codec.alphabet.length} なので 1記号あたり ⌈log2|Σ|⌉ = ${codec.codeLen} bit。`;
+  }
+
+  // ---------- LZ78 encoding ----------
+  function resetEncode(){
+    const cfg = currentCfg();
+    const A = currentAlphabetTokens();
+    const input = parseInputSymbols($("#inputText").value, A);
+
+    if (input.length === 0){
+      toast("入力が空です", "danger");
+      return false;
+    }
+
+    let codec;
+    try{
+      codec = buildCodec(cfg.symCoding, A);
+      if (codec.type === "fixed"){
+        for (const sym of input) codec.encodeSymbol(sym);
+      }
+    }catch(e){
+      toast(e.message, "danger");
+      return false;
+    }
+
+    setMode("encode");
+    setEncodeHeader();
+
+    app.enc = {
+      input,
+      pos: 0,
+      dict: newDict(),
+      logs: [],
+      tokens: [],
+      stepCursor: 0,
+      done: false,
+      codec,
+      settings: cfg
+    };
+    app.dec = null;
+
+    $("#decodedText").value = "";
+    $("#tokensText").value = "";
+    $("#bitsText").value = "";
+    renderCodeMapIfNeeded(codec);
+
+    // 新しいグラフが出たら、まずは自動フィット
+    graphUI.camera.autoFit = true;
+
+    renderVisuals(app.enc.dict, {pathIds:[], newId:null, refId:null, selId: app.visual.hl.selId});
+    resetLogTable("符号化を開始できます。");
+    setControls({nextEnabled: true, resetEnabled: true});
+    setStatus("符号化モード");
+    updateStats();
+    return true;
+  }
+
+  function dictLongestMatch(dict, input, pos0){
+    let nodeId = 0;
+    const path = [0];
+    let i = pos0;
+    while (i < input.length){
+      const sym = input[i];
+      const child = dict.nodes[nodeId].children.get(sym);
+      if (child === undefined) break;
+      nodeId = child;
+      path.push(nodeId);
+      i++;
+    }
+    return {nodeId, path, nextPos: i};
+  }
+
+  function encodeOneStep(){
+    const S = app.enc;
+    if (!S || S.done) return;
+
+    const dict = S.dict;
+    const input = S.input;
+    const n = input.length;
+    const pos0 = S.pos;
+
+    const {nodeId, path, nextPos} = dictLongestMatch(dict, input, pos0);
+    const matchLen = nextPos - pos0;
+    const matchPhrase = dict.nodes[nodeId].phrase;
+    const nextSym = (nextPos < n) ? input[nextPos] : null;
+
+    let token;
+    let addedId = null;
+    let addedText = "(なし)";
+
+    if (nextSym === null){
+      token = {index: nodeId, next: null};
+      S.pos = n;
+      S.done = true;
+    } else {
+      token = {index: nodeId, next: nextSym};
+      addedId = dictAdd(dict, nodeId, nextSym);
+      addedText = `${addedId}: "${dict.nodes[addedId].phrase}"`;
+      S.pos = pos0 + matchLen + 1;
+    }
+
+    S.tokens.push(token);
+    S.stepCursor += 1;
+
+    const iB = indexBitsForStep(token.index, S.stepCursor, S.settings.omitFirstIndex);
+    const cB = (token.next == null) ? {bits:"", bitLen:0} : S.codec.encodeSymbol(token.next);
+    const outBits = iB.bits + cB.bits;
+
+    const tokenText = (token.next === null) ? `(${token.index})` : `(${token.index}, ${formatSymbol(token.next)})`;
+
+    S.logs.push({
+      step: S.stepCursor,
+      posStart: pos0,
+      posEnd: S.pos,
+      matchPhrase,
+      nextSym,
+      tokenText,
+      addedText,
+      iBits: iB.bits,
+      iBitLen: iB.bitLen,
+      iOmitted: iB.omitted,
+      cBits: cB.bits,
+      cBitLen: cB.bitLen,
+      outBits,
+      outBitLen: iB.bitLen + cB.bitLen
+    });
+
+    $("#tokensText").value = formatTokens(S.tokens);
+    renderBitsPanelFromTokens(S.tokens, S.settings, S.codec);
+
+    renderEncodeLogs();
+    renderVisuals(dict, {pathIds: path, newId: addedId, refId: token.index, selId: app.visual.hl.selId});
+    updateStats();
+
+    if (S.done){
+      setControls({nextEnabled: false, resetEnabled: true});
+      setStatus("符号化完了");
+      toast("符号化が完了しました", "good");
+    }
+  }
+
+  function encodeAll(){
+    if (!resetEncode()) return;
+    while (app.enc && !app.enc.done){
+      encodeOneStep();
+      if (app.enc.stepCursor > 5000){
+        toast("ステップ数が多すぎるので停止しました", "danger");
+        break;
+      }
+    }
+  }
+
+  // ---------- LZ78 decoding ----------
+  function resetDecode(){
+    const cfg = currentCfg();
+    const A = currentAlphabetTokens();
+
+    let tokens;
+    try { tokens = parseTokens($("#tokensText").value); }
+    catch (e){ toast(e.message, "danger"); return false; }
+
+    if (tokens.length === 0){
+      toast("符号語列が空です", "danger");
+      return false;
+    }
+
+    let codec;
+    try{
+      codec = buildCodec(cfg.symCoding, A);
+      if (codec.type === "fixed"){
+        for (const t of tokens){
+          if (t.next != null) codec.encodeSymbol(t.next);
+        }
+      }
+    }catch(e){
+      toast(e.message, "danger");
+      return false;
+    }
+
+    setMode("decode");
+    setDecodeHeader();
+
+    app.dec = {
+      tokens,
+      idx: 0,
+      dict: newDict(),
+      out: [],
+      logs: [],
+      stepCursor: 0,
+      done: false,
+      codec,
+      settings: cfg
+    };
+    app.enc = null;
+
+    renderCodeMapIfNeeded(codec);
+
+    $("#decodedText").value = "";
+    renderBitsPanelFromTokens(tokens, cfg, codec);
+
+    graphUI.camera.autoFit = true;
+
+    renderVisuals(app.dec.dict, {pathIds:[], newId:null, refId:null, selId: app.visual.hl.selId});
+    resetLogTable("復号を開始できます。");
+    setControls({nextEnabled: true, resetEnabled: true});
+    setStatus("復号モード");
+    updateStats();
+    return true;
+  }
+
+  function decodeOneStep(){
+    const S = app.dec;
+    if (!S || S.done) return;
+
+    if (S.idx >= S.tokens.length){
+      S.done = true;
+      setControls({nextEnabled:false, resetEnabled:true});
+      setStatus("復号完了");
+      toast("復号が完了しました", "good");
+      return;
+    }
+
+    const dict = S.dict;
+    const tok = S.tokens[S.idx];
+
+    if (tok.index < 0 || tok.index >= dict.nodes.length){
+      toast(`参照番号 ${tok.index} が辞書サイズ ${dict.nodes.length} を超えています（step ${S.idx+1}）`, "danger");
+      S.done = true;
+      setControls({nextEnabled:false, resetEnabled:true});
+      return;
+    }
+
+    const stepJ = S.stepCursor + 1;
+    const refPhrase = dict.nodes[tok.index].phrase;
+
+    let outChunk;
+    let addedId = null;
+    let addedText = "(なし)";
+
+    if (tok.next == null){
+      outChunk = refPhrase;
+      S.out.push(outChunk);
+      S.idx += 1;
+      S.stepCursor += 1;
+      S.done = (S.idx >= S.tokens.length);
+    } else {
+      outChunk = refPhrase + tok.next;
+      S.out.push(outChunk);
+      addedId = dictAdd(dict, tok.index, tok.next);
+      addedText = `${addedId}: "${dict.nodes[addedId].phrase}"`;
+      S.idx += 1;
+      S.stepCursor += 1;
+    }
+
+    const iB = indexBitsForStep(tok.index, stepJ, S.settings.omitFirstIndex);
+    const cB = (tok.next == null) ? {bits:"", bitLen:0} : S.codec.encodeSymbol(tok.next);
+    const outBits = iB.bits + cB.bits;
+
+    const tokenText = (tok.next == null) ? `(${tok.index})` : `(${tok.index}, ${formatSymbol(tok.next)})`;
+
+    S.logs.push({
+      step: stepJ,
+      tokenText,
+      refPhrase,
+      nextSym: tok.next ?? null,
+      outChunk,
+      addedText,
+      iBits: iB.bits,
+      iBitLen: iB.bitLen,
+      iOmitted: iB.omitted,
+      cBits: cB.bits,
+      cBitLen: cB.bitLen,
+      outBits,
+      outBitLen: iB.bitLen + cB.bitLen
+    });
+
+    $("#decodedText").value = S.out.join("");
+    renderDecodeLogs();
+    renderVisuals(dict, {pathIds: [], newId: addedId, refId: tok.index, selId: app.visual.hl.selId});
+    updateStats();
+
+    if (S.done){
+      setControls({nextEnabled:false, resetEnabled:true});
+      setStatus("復号完了");
+      toast("復号が完了しました", "good");
+    }
+  }
+
+  function decodeAll(){
+    if (!resetDecode()) return;
+    while (app.dec && !app.dec.done){
+      decodeOneStep();
+      if (app.dec.stepCursor > 5000){
+        toast("ステップ数が多すぎるので停止しました", "danger");
+        break;
+      }
+    }
+  }
+
+  // ---------- random input ----------
+  function setExample(){
+    $("#inputText").value = "ababbababaa";
+    renderParseInfo();
+    toast("例を入力しました", "good");
+  }
+
+  function randomInput(){
+    const A = currentAlphabetTokens();
+    const len = clamp(Number($("#randLen").value || 24), 1, 400);
+    if (A.length === 0){
+      toast("アルファベット Σ が空です", "danger");
+      return;
+    }
+    const out = [];
+    for (let i=0;i<len;i++){
+      out.push(A[Math.floor(Math.random()*A.length)]);
+    }
+    const joiner = A.some(t => t.length > 1) ? " " : "";
+    $("#inputText").value = out.join(joiner);
+    renderParseInfo();
+    toast("ランダム入力を生成しました", "good");
+  }
+
+  // ---------- copy / reset ----------
+  async function copyTextFrom(text){
+    if (!text){
+      toast("空です", "danger");
+      return;
+    }
+    try{
+      await navigator.clipboard.writeText(text);
+      toast("コピーしました", "good");
+    }catch(e){
+      toast("クリップボードに直接コピーできませんでした（手動で選択してコピーしてください）", "warn");
+    }
+  }
+
+  function resetCurrentMode(){
+    if (app.mode === "encode") resetEncode();
+    else if (app.mode === "decode") resetDecode();
+    else toast("リセットするものがありません");
+  }
+
+  function clearAll(){
+    app.mode = "idle";
+    app.enc = null;
+    app.dec = null;
+    app.visual = {dict: newDict(), hl: {pathIds:[], newId:null, refId:null, selId:null}};
+
+    $("#inputText").value = "";
+    $("#tokensText").value = "";
+    $("#bitsText").value = "";
+    $("#decodedText").value = "";
+    $("#dictSearch").value = "";
+    $("#selInfo").textContent = "選択: -";
+
+    graphUI.camera.autoFit = true;
+    graphUI.camera.scale = 1;
+    graphUI.camera.tx = 0;
+    graphUI.camera.ty = 0;
+
+    setEncodeHeader();
+    resetLogTable();
+    renderVisuals(app.visual.dict, app.visual.hl);
+    setControls({nextEnabled:false, resetEnabled:false});
+    setStatus("準備OK");
+    updateStats();
+    toast("全リセットしました");
+  }
+
+  // ---------- wire up ----------
+  $("#btnEncodeAll").addEventListener("click", () => encodeAll());
+  $("#btnEncodeStep").addEventListener("click", () => { if (resetEncode()) toast("ステップ実行を開始しました", "good"); });
+  $("#btnDecodeAll").addEventListener("click", () => decodeAll());
+  $("#btnDecodeStep").addEventListener("click", () => { if (resetDecode()) toast("ステップ実行を開始しました", "good"); });
+
+  $("#btnNext").addEventListener("click", () => {
+    if (app.mode === "encode") encodeOneStep();
+    else if (app.mode === "decode") decodeOneStep();
+    else toast("まず符号化/復号の開始ボタンを押してください");
+  });
+
+  $("#btnReset").addEventListener("click", () => resetCurrentMode());
+  $("#btnClearAll").addEventListener("click", () => clearAll());
+
+  $("#btnExample").addEventListener("click", () => setExample());
+  $("#btnRandom").addEventListener("click", () => randomInput());
+
+  $("#btnCopyTokens").addEventListener("click", () => copyTextFrom($("#tokensText").value.trim()));
+  $("#btnCopyBits").addEventListener("click", () => copyTextFrom($("#bitsText").value.trim()));
+
+  $("#btnExportSvg").addEventListener("click", () => exportSvg());
+  $("#btnExportDict").addEventListener("click", () => exportDictCsv());
+
+  // ★ズームボタン & フィット
+  $("#btnZoomIn").addEventListener("click", () => zoomBy(1.25, true));
+  $("#btnZoomOut").addEventListener("click", () => zoomBy(1/1.25, true));
+  $("#btnFit").addEventListener("click", () => {
+    graphUI.camera.autoFit = true; // 自動追従ON
+    fitGraph(true);
+    toast("フィット（自動追従ON）", "good");
+  });
+
+  $("#dictSearch").addEventListener("input", () => {
+    renderDictTable(app.visual.dict, {
+      highlightPathIds: app.visual.hl.pathIds || [],
+      highlightNewId: app.visual.hl.newId ?? null,
+      highlightRefId: app.visual.hl.refId ?? null,
+      highlightSelId: app.visual.hl.selId ?? null
+    });
+  });
+
+  $("#btnClearSel").addEventListener("click", () => clearSelection());
+
+  function refreshDisplays(){
+    renderParseInfo();
+
+    const cfg = currentCfg();
+    try{
+      const A = currentAlphabetTokens();
+      const codec = buildCodec(cfg.symCoding, A);
+      renderCodeMapIfNeeded(codec);
+    }catch(_){}
+
+    try{
+      const A = currentAlphabetTokens();
+      const codec = buildCodec(cfg.symCoding, A);
+      const tokens = parseTokens($("#tokensText").value);
+      if (tokens.length){
+        renderBitsPanelFromTokens(tokens, cfg, codec);
+      }else if (app.enc && app.enc.tokens.length){
+        renderBitsPanelFromTokens(app.enc.tokens, cfg, codec);
+      }
+    }catch(_){}
+  }
+  $("#alphabet").addEventListener("input", refreshDisplays);
+  $("#inputText").addEventListener("input", renderParseInfo);
+  $("#symCoding").addEventListener("change", refreshDisplays);
+  $("#omitFirstIndex").addEventListener("change", refreshDisplays);
+  $("#showBits").addEventListener("change", () => {
+    renderParseInfo();
+    toast("表示設定は次回の開始/リセットから適用されます", "warn");
+  });
+  $("#bitsStyle").addEventListener("change", refreshDisplays);
+  $("#tokensText").addEventListener("input", refreshDisplays);
+
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Enter" && (e.ctrlKey || e.metaKey)){
+      const active = document.activeElement;
+      if (active === $("#tokensText")) decodeAll();
+      else encodeAll();
+    }
+    if (e.key === " " && (e.ctrlKey || e.metaKey)){
+      e.preventDefault();
+      if (!$("#btnNext").disabled) $("#btnNext").click();
+    }
+  });
+
+  // ---------- init ----------
+  graphUI.wrap = $("#graphWrap");
+  graphUI.svg = $("#graph");
+  initGraphInteractions();
+
+  setEncodeHeader();
+  renderVisuals(app.visual.dict, app.visual.hl);
+  setControls({nextEnabled:false, resetEnabled:false});
+  setStatus("準備OK");
+  renderParseInfo();
+  updateStats();
+  fitGraph(false);
+})();
+</script>
+</body>
+</html>
