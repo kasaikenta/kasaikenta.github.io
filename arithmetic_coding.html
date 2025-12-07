@@ -1,0 +1,1261 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>算術符号 学習アプリ</title>
+  <style>
+    :root{
+      --bg: #f7f7fb;
+      --card: #ffffff;
+      --text: #111827;
+      --muted: #4b5563;
+      --border: #d1d5db;
+      --soft: #f3f4f6;
+      --primary: #3b82f6;
+      --primary-soft: rgba(59,130,246,0.18);
+      --warn-bg: #fff7ed;
+      --warn-border: #fed7aa;
+      --warn-text: #9a3412;
+    }
+
+    body{
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      margin: 0;
+      padding: 1.5rem;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+    }
+    h1, h2, h3, h4 { margin: 0 0 0.6rem; }
+    p { margin: 0.4rem 0; }
+    .container { max-width: 1100px; margin: 0 auto; }
+    .grid { display:flex; flex-direction:column; gap:1.5rem; margin-top:1rem; }
+    .card{
+      background: var(--card);
+      border-radius: 16px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.04);
+      padding: 1.2rem 1.4rem;
+    }
+
+    table { border-collapse: collapse; width: 100%; font-size: 0.9rem; }
+    th, td { border: 1px solid #ddd; padding: 0.25rem 0.4rem; text-align: right; white-space: nowrap; }
+    th { background: #f0f0f8; }
+    input[type="text"], input[type="number"], textarea{
+      width: 100%;
+      padding: 0.45rem 0.55rem;
+      border-radius: 10px;
+      border: 1px solid #ccc;
+      font-size: 0.95rem;
+      box-sizing: border-box;
+    }
+    textarea { min-height: 110px; font-family: "SF Mono", Menlo, Consolas, monospace; }
+
+    .button-row{
+      display:flex;
+      flex-wrap:wrap;
+      gap:0.5rem;
+      margin-top:0.7rem;
+      align-items:center;
+    }
+    button{
+      padding:0.42rem 0.95rem;
+      border-radius:999px;
+      border:none;
+      cursor:pointer;
+      font-size:0.92rem;
+      background: var(--primary);
+      color:#fff;
+      display:inline-flex;
+      align-items:center;
+      gap:0.25rem;
+      user-select:none;
+    }
+    button.secondary{ background:#e5e7eb; color:#111827; }
+    button:disabled{ opacity:0.4; cursor:not-allowed; }
+
+    .small{ font-size:0.82rem; color: var(--muted); }
+    .mono{ font-family:"SF Mono", Menlo, Consolas, monospace; font-size:0.92rem; word-break:break-all; }
+    .tag{
+      display:inline-block;
+      padding:0.15rem 0.5rem;
+      border-radius:999px;
+      background:#eef2ff;
+      color:#312e81;
+      font-size:0.75rem;
+      margin-left:0.4rem;
+    }
+
+    details{ margin-top:0.5rem; }
+    details summary{ cursor:pointer; font-size:0.9rem; color:#2563eb; }
+    .error{ color:#b91c1c; font-size:0.9rem; margin-top:0.4rem; }
+    .notice{ color:#065f46; font-size:0.85rem; margin-top:0.4rem; }
+    .inline-number{ width:6.5rem; }
+
+    .banner{
+      background: var(--warn-bg);
+      border: 1px solid var(--warn-border);
+      color: var(--warn-text);
+      padding: 0.65rem 0.8rem;
+      border-radius: 12px;
+      margin: 0.8rem 0 1rem;
+      display: none;
+    }
+
+    /* ステップ表示（ズーム可能） */
+    .interval-anim-wrapper { margin-top: 0.8rem; }
+    .interval-bar{
+      position: relative;
+      width: 100%;
+      height: 26px;
+      border-radius: 999px;
+      background: var(--soft);
+      overflow: hidden;
+      border: 1px solid var(--border);
+    }
+    .interval-symbols{ position: relative; width: 100%; height: 100%; }
+    .interval-symbol-seg{
+      position: absolute;
+      top:0; bottom:0;
+      border-right: 1px solid rgba(255,255,255,0.6);
+      box-sizing: border-box;
+    }
+    .interval-parent{
+      position:absolute;
+      top:0; bottom:0;
+      border-radius:999px;
+      border:2px dashed #6b7280;
+      box-sizing:border-box;
+      pointer-events:none;
+      background: transparent;
+    }
+    .interval-current{
+      position:absolute;
+      top:0; bottom:0;
+      border-radius:999px;
+      border:2px solid #111827;
+      box-sizing:border-box;
+      pointer-events:none;
+      background: transparent;
+    }
+
+    .interval-ticks{
+      position: relative;
+      height: 44px;
+      margin-top: 0.3rem;
+      font-size: 0.75rem;
+      color: var(--muted);
+    }
+    .interval-tick{
+      position:absolute;
+      top:0;
+      transform: translateX(-50%);
+      text-align:center;
+      width:1px;
+    }
+    .interval-tick-line{
+      height: 8px;
+      border-left: 1px solid #9ca3af;
+      margin: 0 auto 2px;
+      width: 0;
+    }
+    .interval-tick-label{
+      font-size: 0.68rem;
+      white-space: nowrap;
+      transform: translateX(-8px);
+      transform-origin: left top;
+      color: #374151;
+    }
+    .interval-tick.alt .interval-tick-label{
+      transform: translateX(-8px) translateY(12px);
+      color: #6b7280;
+    }
+
+    .zoom-overview{
+      position: relative;
+      height: 10px;
+      border-radius: 999px;
+      background: #e5e7eb;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      margin-top: 0.2rem;
+    }
+    .zoom-window{
+      position:absolute;
+      top:0; bottom:0;
+      background: var(--primary-soft);
+      border: 1px solid rgba(37,99,235,0.8);
+      border-radius: 999px;
+      box-sizing:border-box;
+    }
+
+    /* 履歴図（全ステップ一覧は常に [0,1) 表示） */
+    .interval-history{
+      margin-top: 0.6rem;
+      display:flex;
+      flex-direction:column;
+      gap:0.6rem;
+    }
+    .history-row{
+      display:flex;
+      flex-direction:row;
+      gap:1rem;
+      align-items:flex-start;
+    }
+    .history-caption{
+      min-width: 280px;
+      font-size:0.8rem;
+      color:#374151;
+      display:flex;
+      flex-direction:column;
+      gap:0.2rem;
+    }
+    .history-bar-block{ flex:1; display:flex; flex-direction:column; gap:0.2rem; }
+    .history-bar{
+      position: relative;
+      width: 100%;
+      height: 18px;
+      border-radius: 999px;
+      background: var(--soft);
+      border: 1px solid var(--border);
+      overflow: hidden;
+    }
+    .history-symbols{ position: relative; width: 100%; height: 100%; }
+    .history-symbol-seg{
+      position:absolute;
+      top:0; bottom:0;
+      border-right: 1px solid rgba(255,255,255,0.7);
+      box-sizing:border-box;
+    }
+    .history-parent{
+      position:absolute;
+      top:0; bottom:0;
+      border-radius:999px;
+      border:2px dashed #6b7280;
+      box-sizing:border-box;
+      pointer-events:none;
+      background: transparent;
+      opacity:0.9;
+    }
+    .history-current{
+      position:absolute;
+      top:0; bottom:0;
+      border-radius:999px;
+      border:2px solid #111827;
+      box-sizing:border-box;
+      pointer-events:none;
+      background: transparent;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <h1>算術符号 学習アプリ <span class="tag">デモ</span></h1>
+  <div id="globalError" class="banner"></div>
+
+  <div class="card">
+    <h2>1. 情報源モデル</h2>
+    <p class="small">
+      アルファベットは固定（a, b, c, ... の順）で、確率だけをランダム化できます。
+    </p>
+
+    <div class="small" id="alphabetLabel"></div>
+
+    <table>
+      <thead>
+      <tr>
+        <th>記号</th>
+        <th>確率 P(x)</th>
+        <th>累積下限</th>
+        <th>累積上限</th>
+      </tr>
+      </thead>
+      <tbody id="probTableBody"></tbody>
+    </table>
+
+    <div class="button-row">
+      <button id="randomProbBtn" class="secondary">確率をランダム初期化</button>
+    </div>
+    <p class="small" style="margin-top:0.4rem;">
+      ※ 確率を変えると、エンコード・デコード結果は一度クリアされます。
+    </p>
+  </div>
+
+  <div class="grid">
+    <div class="card">
+      <h2>2. 符号化 (Encoding)</h2>
+
+      <label class="small">符号化する記号列</label>
+      <input id="messageInput" type="text" placeholder="例: abcbac" />
+
+      <div class="button-row">
+        <span class="small">入力サイズ:</span>
+        <input id="randomLenInput" type="number" class="inline-number" min="1" step="1" value="10" />
+        <button id="randomMessageBtn" class="secondary">ランダムに記号列を生成</button>
+      </div>
+
+      <div class="small" style="margin-top:0.35rem;">
+        入力はアルファベットに含まれる文字のみを使用してください。
+      </div>
+
+      <div class="button-row">
+        <button id="encodeBtn">エンコード</button>
+        <button id="clearBtn" class="secondary">入力・結果をクリア</button>
+      </div>
+
+      <div id="encodeError" class="error"></div>
+      <div id="encodeNotice" class="notice"></div>
+
+      <h3>結果</h3>
+      <table>
+        <tbody>
+        <tr>
+          <th style="text-align:left;">最終区間 [L, H)</th>
+          <td class="mono" id="intervalOut">-</td>
+        </tr>
+        <tr>
+          <th style="text-align:left;">区間幅 H − L</th>
+          <td class="mono" id="widthOut">-</td>
+        </tr>
+        <tr>
+          <th style="text-align:left;">代表値 x（符号語が表す2進区間の中点）</th>
+          <td class="mono" id="pOut">-</td>
+        </tr>
+        <tr>
+          <th style="text-align:left;">x の 2 進小数（先頭のみ）</th>
+          <td class="mono" id="pBinaryOut">-</td>
+        </tr>
+        <tr>
+          <th style="text-align:left;">符号語 (長さ <span id="lenBitsLabel">-</span> ビット)</th>
+          <td class="mono" id="codeOut">-</td>
+        </tr>
+        </tbody>
+      </table>
+
+      <h3>ステップごとの区間の変化</h3>
+      <p class="small">
+        横軸は常に <span class="mono">[0,1)</span>（絶対座標）です。<br>
+        各ステップでは「前ステップで選択された区間（親区間）」だけを、同じ確率分布でさらに細分化して色分けします（親区間の外は灰色のまま）。<br>
+        見にくいときはズームボタンで拡大できます（ズームは滑らかにアニメーションします）。
+      </p>
+
+      <div class="interval-anim-wrapper">
+        <div class="interval-bar">
+          <div class="interval-symbols" id="intervalSymbolSegments"></div>
+          <div class="interval-parent" id="intervalParent"></div>
+          <div class="interval-current" id="intervalCurrent"></div>
+        </div>
+
+        <div class="interval-ticks" id="intervalTicks"></div>
+
+        <div class="zoom-overview" title="[0,1)全体に対する現在の表示範囲">
+          <div id="zoomWindow" class="zoom-window"></div>
+        </div>
+
+        <div class="interval-legend small" style="margin-top:0.35rem;">
+          現在のステップ: <span id="currentStepIndex">-</span> /
+          <span id="totalSteps">-</span>　
+          symbol: <span id="animSymbolLabel">-</span><br>
+          親区間 [L, H) = <span id="animParentLabel">-</span>　
+          選択区間 [L, H) = <span id="animIntervalLabel">-</span><br>
+          表示範囲 = <span id="viewRangeLabel" class="mono">[0.000000, 1.000000)</span>　
+          ズーム = <span id="zoomFactorLabel" class="mono">1.0x</span>
+        </div>
+
+        <div class="button-row" style="margin-top:0.5rem;">
+          <button id="stepPrevBtn" class="secondary">← 前のステップ</button>
+          <button id="stepNextBtn" class="secondary">次のステップ →</button>
+          <span style="flex:1 1 auto;"></span>
+          <button id="zoomOutBtn" class="secondary">− ズームアウト</button>
+          <button id="zoomInBtn" class="secondary">＋ ズームイン</button>
+          <button id="zoomFitParentBtn" class="secondary">親区間にフィット</button>
+          <button id="zoomResetBtn" class="secondary">リセット</button>
+        </div>
+      </div>
+
+      <h4 style="margin-top:1rem;">区間の変化（全ステップの一覧）</h4>
+      <div class="interval-history" id="intervalHistory"></div>
+
+      <details>
+        <summary>符号化の数値ステップ一覧</summary>
+        <div id="encodeStepsContainer" class="small" style="margin-top:0.5rem;"></div>
+      </details>
+    </div>
+
+    <div class="card">
+      <h2>3. 復号 (Decoding)</h2>
+      <p class="small">
+        符号語ビット列と元の記号列の長さ n を指定して復号します（情報源モデルが同じであることが前提）。
+      </p>
+
+      <label class="small">符号語ビット列</label>
+      <textarea id="codeInput" placeholder="エンコードしたら右下のボタンで読み込めます"></textarea>
+
+      <label class="small" style="margin-top:0.5rem; display:block;">記号列の長さ n</label>
+      <input id="decodeLengthInput" type="number" min="1" step="1" value="0" />
+
+      <div class="button-row">
+        <button id="decodeBtn">デコード</button>
+        <button id="useEncodeResultBtn" class="secondary">↑ エンコード結果を読み込む</button>
+      </div>
+
+      <div id="decodeError" class="error"></div>
+
+      <h3>復号結果</h3>
+      <div class="mono" id="decodedMessageOut">-</div>
+
+      <details>
+        <summary>復号の各ステップ（数値）</summary>
+        <div id="decodeStepsContainer" class="small" style="margin-top:0.5rem;"></div>
+      </details>
+    </div>
+  </div>
+</div>
+
+<script>
+(function () {
+  "use strict";
+
+  function $(id) { return document.getElementById(id); }
+  function setText(id, text) { var el = $(id); if (el) el.textContent = String(text); }
+  function setHTML(id, html) { var el = $(id); if (el) el.innerHTML = html; }
+  function setValue(id, val) { var el = $(id); if (el) el.value = val; }
+  function showBanner(msg) { var el = $("globalError"); if (!el) return; el.style.display = "block"; el.textContent = msg; }
+  function hideBanner() { var el = $("globalError"); if (!el) return; el.style.display = "none"; el.textContent = ""; }
+
+  function fmt(x, d) { if (d === undefined) d = 10; if (!isFinite(x)) return String(x); return Number(x).toFixed(d); }
+  function log2(x) { return Math.log(x) / Math.log(2); }
+  function clamp01(x) { return Math.max(0, Math.min(1, x)); }
+
+  var state = {
+    symbols: [],
+    probs: [],
+    cumulative: [],
+    lastEncodedBits: "",
+    lastMessageLength: 0,
+    colors: []
+  };
+
+  // encodeSteps[i] はステップ i+1（1始まり）の情報
+  // { step, symbol, symbolIndex, low, high, parentLow, parentHigh }
+  var encodeSteps = [];
+  var stepPos = -1; // 0-based index into encodeSteps
+
+  // ズーム表示範囲（[0,1) の部分区間を表示）
+  var zoomView = { L: 0.0, H: 1.0 };
+  var zoomAnim = { raf: 0, active: false, start: 0, dur: 300, fromL:0, fromH:1, toL:0, toH:1 };
+
+  var MODEL_SIZE = 4; // a,b,c,d
+
+  function buildSymbolColors() {
+    var n = state.symbols.length;
+    var colors = [];
+    for (var i = 0; i < n; i++) {
+      var hue = 360 * i / Math.max(1, n);
+      colors.push("hsl(" + hue.toFixed(1) + ", 70%, 65%)");
+    }
+    state.colors = colors;
+  }
+
+  function initFixedAlphabet(n) {
+    var letters = "abcdefghijklmnopqrstuvwxyz";
+    var m = Math.max(2, Math.min(26, n|0));
+    var sym = [];
+    for (var i = 0; i < m; i++) sym.push(letters.charAt(i));
+    state.symbols = sym;
+  }
+
+  function recomputeCumulative() {
+    var cum = [0];
+    var s = 0;
+    for (var i = 0; i < state.probs.length; i++) {
+      s += state.probs[i];
+      cum.push(s);
+    }
+    cum[cum.length - 1] = 1.0; // 端点を揃える
+    state.cumulative = cum;
+    buildSymbolColors();
+  }
+
+  function randomizeProbs() {
+    var n = state.symbols.length;
+    var tmp = [];
+    for (var i = 0; i < n; i++) tmp.push(Math.random() + 0.05);
+    var sum = 0; for (i = 0; i < n; i++) sum += tmp[i];
+    var probs = [];
+    for (i = 0; i < n; i++) probs.push(tmp[i] / sum);
+    state.probs = probs;
+    recomputeCumulative();
+  }
+
+  function renderModel() {
+    var human = state.symbols.slice();
+    setText("alphabetLabel", "アルファベット: { " + human.join(", ") + " }");
+
+    var tbody = $("probTableBody");
+    if (!tbody) return;
+    tbody.innerHTML = "";
+    for (var j = 0; j < state.symbols.length; j++) {
+      var tr = document.createElement("tr");
+
+      var tdSym = document.createElement("td");
+      tdSym.style.textAlign = "center";
+      tdSym.textContent = state.symbols[j];
+
+      var tdP = document.createElement("td");
+      tdP.textContent = state.probs[j].toFixed(3);
+
+      var tdL = document.createElement("td");
+      var tdH = document.createElement("td");
+      tdL.textContent = fmt(state.cumulative[j], 4);
+      tdH.textContent = fmt(state.cumulative[j+1], 4);
+
+      tr.appendChild(tdSym);
+      tr.appendChild(tdP);
+      tr.appendChild(tdL);
+      tr.appendChild(tdH);
+      tbody.appendChild(tr);
+    }
+  }
+
+  function intToBits(k, m) {
+    var s = k.toString(2);
+    while (s.length < m) s = "0" + s;
+    return s;
+  }
+
+  function bitsToInt(bits) {
+    var v = 0;
+    for (var i = 0; i < bits.length; i++) v = v * 2 + (bits.charAt(i) === "1" ? 1 : 0);
+    return v;
+  }
+
+  function fractionToBinaryPrefix(p, bits) {
+    var x = p, s = "";
+    for (var i = 0; i < bits; i++) {
+      x *= 2;
+      if (x >= 1) { s += "1"; x -= 1; }
+      else s += "0";
+    }
+    return s;
+  }
+
+  function chooseDyadicInside(L, H) {
+    var W = H - L;
+    if (!(W > 0) || !isFinite(W)) return null;
+    var m = Math.max(1, Math.ceil(-log2(W)) + 2);
+    for (; m <= 60; m++) {
+      var pow2 = Math.pow(2, m);
+      var eps = 1e-12;
+      var kMin = Math.ceil(L * pow2 - eps);
+      var kMax = Math.floor(H * pow2 - 1 + eps);
+      if (kMin <= kMax) return { m: m, k: kMin };
+    }
+    return null;
+  }
+
+  function updateInterval(low, high, symbol) {
+    var idx = state.symbols.indexOf(symbol);
+    if (idx < 0) throw new Error("unsupported symbol: " + symbol);
+    var range = high - low;
+    var cum = state.cumulative;
+    var newLow  = low + range * cum[idx];
+    var newHigh = low + range * cum[idx+1];
+    return { newLow: newLow, newHigh: newHigh, idx: idx };
+  }
+
+  function decimalsForStep(step) {
+    if (!(step > 0) || !isFinite(step)) return 4;
+    var d = Math.max(0, -Math.floor(Math.log10(step)) + 1);
+    return Math.min(12, d);
+  }
+
+  function niceTickStep(width) {
+    if (!(width > 0) || !isFinite(width)) return 0.1;
+    var target = 10; // 10本くらい
+    var raw = width / target;
+    var pow = Math.pow(10, Math.floor(Math.log10(raw)));
+    var mult = raw / pow;
+    var niceMult = (mult <= 1) ? 1 : (mult <= 2) ? 2 : (mult <= 5) ? 5 : 10;
+    return niceMult * pow;
+  }
+
+  function normalizeRange(L, H) {
+    L = clamp01(L); H = clamp01(H);
+    if (H < L) { var t = L; L = H; H = t; }
+    var minW = 1e-12;
+    var w = H - L;
+    if (!(w > minW)) {
+      var mid = (L + H) / 2;
+      L = clamp01(mid - minW / 2);
+      H = clamp01(mid + minW / 2);
+      if (H - L < minW) {
+        if (mid < 0.5) { L = 0; H = minW; }
+        else { H = 1; L = 1 - minW; }
+      }
+    }
+    return { L: L, H: H };
+  }
+
+  function zoomFactor() {
+    var w = zoomView.H - zoomView.L;
+    if (!(w > 0)) return 1;
+    return 1 / w;
+  }
+
+  function updateZoomUI() {
+    setText("viewRangeLabel", "[" + fmt(zoomView.L, 6) + ", " + fmt(zoomView.H, 6) + ")");
+    setText("zoomFactorLabel", zoomFactor().toFixed(1) + "x");
+    var zw = $("zoomWindow");
+    if (zw) {
+      zw.style.left = (zoomView.L * 100).toFixed(4) + "%";
+      zw.style.width = ((zoomView.H - zoomView.L) * 100).toFixed(4) + "%";
+    }
+  }
+
+  function easeInOutCubic(t) {
+    return (t < 0.5) ? 4*t*t*t : 1 - Math.pow(-2*t + 2, 3)/2;
+  }
+
+  function cancelZoomAnim() {
+    if (zoomAnim.raf) cancelAnimationFrame(zoomAnim.raf);
+    zoomAnim.raf = 0;
+    zoomAnim.active = false;
+  }
+
+  function renderStepGraphicsOnly() {
+    if (encodeSteps.length === 0 || stepPos < 0 || stepPos >= encodeSteps.length) return;
+    var s = encodeSteps[stepPos];
+
+    renderPartitionOnGlobalAxis({
+      segContainer: $("intervalSymbolSegments"),
+      parentBox: $("intervalParent"),
+      currentBox: $("intervalCurrent"),
+      parentL: s.parentLow,
+      parentH: s.parentHigh,
+      symbolIndex: s.symbolIndex,
+      childL: s.low,
+      childH: s.high,
+      segClass: "interval-symbol-seg",
+      viewL: zoomView.L,
+      viewH: zoomView.H
+    });
+
+    renderTicksOnGlobalAxis(s.parentLow, s.parentHigh, s.low, s.high, zoomView.L, zoomView.H);
+  }
+
+  function animateZoomTo(targetL, targetH, durationMs) {
+    if (durationMs === undefined) durationMs = 320;
+
+    var from = normalizeRange(zoomView.L, zoomView.H);
+    var to = normalizeRange(targetL, targetH);
+
+    cancelZoomAnim();
+
+    zoomAnim.active = true;
+    zoomAnim.start = performance.now();
+    zoomAnim.dur = Math.max(80, durationMs|0);
+    zoomAnim.fromL = from.L; zoomAnim.fromH = from.H;
+    zoomAnim.toL = to.L; zoomAnim.toH = to.H;
+
+    function frame(now) {
+      var t = (now - zoomAnim.start) / zoomAnim.dur;
+      if (t >= 1) t = 1;
+      var e = easeInOutCubic(Math.max(0, Math.min(1, t)));
+
+      zoomView.L = zoomAnim.fromL + (zoomAnim.toL - zoomAnim.fromL) * e;
+      zoomView.H = zoomAnim.fromH + (zoomAnim.toH - zoomAnim.fromH) * e;
+
+      // 数値誤差対策
+      var nrm = normalizeRange(zoomView.L, zoomView.H);
+      zoomView.L = nrm.L; zoomView.H = nrm.H;
+
+      updateZoomUI();
+      renderStepGraphicsOnly();
+
+      if (t < 1) zoomAnim.raf = requestAnimationFrame(frame);
+      else { zoomAnim.active = false; zoomAnim.raf = 0; }
+    }
+
+    zoomAnim.raf = requestAnimationFrame(frame);
+  }
+
+  function currentFocusCenter() {
+    if (encodeSteps.length > 0 && stepPos >= 0 && stepPos < encodeSteps.length) {
+      var s = encodeSteps[stepPos];
+      return clamp01((s.low + s.high) / 2);
+    }
+    return clamp01((zoomView.L + zoomView.H) / 2);
+  }
+
+  function handleZoomIn() {
+    var center = currentFocusCenter();
+    var w = zoomView.H - zoomView.L;
+    animateZoomTo(center - w/4, center + w/4);
+  }
+  function handleZoomOut() {
+    var center = currentFocusCenter();
+    var w = zoomView.H - zoomView.L;
+    animateZoomTo(center - w, center + w);
+  }
+  function handleZoomReset() {
+    animateZoomTo(0, 1);
+  }
+  function handleZoomFitParent() {
+    if (encodeSteps.length === 0 || stepPos < 0 || stepPos >= encodeSteps.length) { handleZoomReset(); return; }
+    var s = encodeSteps[stepPos];
+    var pL = clamp01(s.parentLow), pH = clamp01(s.parentHigh);
+    if (!(pH > pL)) { handleZoomReset(); return; }
+
+    var r = pH - pL;
+    var margin = r * 0.2; // 親区間が見切れない程度に少し余白
+    var L = pL - margin;
+    var H = pH + margin;
+    animateZoomTo(L, H);
+  }
+
+  // [0,1) 上に「親区間」を描き、親区間だけを確率で細分化して色分けする
+  // opts: { segContainer, parentBox, currentBox, parentL, parentH, symbolIndex, childL, childH, segClass, viewL, viewH }
+  function renderPartitionOnGlobalAxis(opts) {
+    var segContainer = opts.segContainer;
+    var parentBox = opts.parentBox;
+    var currentBox = opts.currentBox;
+    var parentL = clamp01(opts.parentL);
+    var parentH = clamp01(opts.parentH);
+    var symbolIndex = opts.symbolIndex;
+    var childL = clamp01(opts.childL);
+    var childH = clamp01(opts.childH);
+    var segClass = opts.segClass;
+
+    var viewL = (opts.viewL !== undefined) ? clamp01(opts.viewL) : 0.0;
+    var viewH = (opts.viewH !== undefined) ? clamp01(opts.viewH) : 1.0;
+    if (viewH < viewL) { var t = viewL; viewL = viewH; viewH = t; }
+    var viewRange = viewH - viewL;
+    if (!(viewRange > 0)) viewRange = 1.0;
+
+    function toPct(x) { return (x - viewL) / viewRange * 100; }
+    function clip(a, b) {
+      var L = Math.max(a, viewL);
+      var H = Math.min(b, viewH);
+      if (!(H > L)) return null;
+      return { L: L, H: H };
+    }
+
+    segContainer.innerHTML = "";
+
+    // 親区間（前ステップで選ばれた区間）
+    if (!(parentH > parentL)) {
+      parentBox.style.left = "0%";
+      parentBox.style.width = "0%";
+      currentBox.style.left = "0%";
+      currentBox.style.width = "0%";
+      return;
+    }
+
+    var pClip = clip(parentL, parentH);
+    if (pClip) {
+      var pLeft = toPct(pClip.L);
+      var pRight = toPct(pClip.H);
+      parentBox.style.left = pLeft.toFixed(4) + "%";
+      parentBox.style.width = (pRight - pLeft).toFixed(4) + "%";
+    } else {
+      parentBox.style.left = "0%";
+      parentBox.style.width = "0%";
+    }
+
+    // 親区間の中を cum で再分割して色分け
+    var cum = state.cumulative;
+    for (var k = 0; k < state.symbols.length; k++) {
+      var absL = parentL + (parentH - parentL) * cum[k];
+      var absH = parentL + (parentH - parentL) * cum[k+1];
+
+      var sClip = clip(absL, absH);
+      if (!sClip) continue;
+
+      var left = toPct(sClip.L);
+      var right = toPct(sClip.H);
+      var seg = document.createElement("div");
+      seg.className = segClass;
+      seg.style.left = left.toFixed(4) + "%";
+      seg.style.width = (right - left).toFixed(4) + "%";
+      seg.style.backgroundColor = state.colors[k] || "#93c5fd";
+      seg.style.opacity = (k === symbolIndex) ? "0.95" : "0.30";
+      segContainer.appendChild(seg);
+    }
+
+    // 現ステップで選ばれた区間 [childL, childH)
+    if (childH > childL) {
+      var cClip = clip(childL, childH);
+      if (cClip) {
+        var cLeft = toPct(cClip.L);
+        var cRight = toPct(cClip.H);
+        currentBox.style.left = cLeft.toFixed(4) + "%";
+        currentBox.style.width = (cRight - cLeft).toFixed(4) + "%";
+      } else {
+        currentBox.style.left = "0%";
+        currentBox.style.width = "0%";
+      }
+    } else {
+      currentBox.style.left = "0%";
+      currentBox.style.width = "0%";
+    }
+  }
+
+  // 目盛り（view 範囲に対して描画、ラベルは絶対座標）
+  function renderTicksOnGlobalAxis(parentL, parentH, childL, childH, viewL, viewH) {
+    var container = $("intervalTicks");
+    if (!container) return;
+    container.innerHTML = "";
+
+    viewL = (viewL !== undefined) ? clamp01(viewL) : 0.0;
+    viewH = (viewH !== undefined) ? clamp01(viewH) : 1.0;
+    if (viewH < viewL) { var t = viewL; viewL = viewH; viewH = t; }
+    var width = viewH - viewL;
+    if (!(width > 0)) width = 1.0;
+
+    var points = [];
+    function addPoint(x, label, priority) {
+      if (!isFinite(x)) return;
+      x = clamp01(x);
+      if (x < viewL - 1e-15 || x > viewH + 1e-15) return;
+      points.push({ x: x, label: label, priority: priority || 0 });
+    }
+
+    addPoint(0, "0.0000", 10);
+    addPoint(1, "1.0000", 10);
+
+    // view 境界（ズームしていることがわかるように）
+    addPoint(viewL, viewL.toFixed(6), 9);
+    addPoint(viewH, viewH.toFixed(6), 9);
+
+    parentL = clamp01(parentL);
+    parentH = clamp01(parentH);
+    if (parentH > parentL) {
+      addPoint(parentL, parentL.toFixed(6), 8);
+      addPoint(parentH, parentH.toFixed(6), 8);
+      var range = parentH - parentL;
+      var cum = state.cumulative;
+      for (var i = 0; i < cum.length; i++) {
+        var x = parentL + range * cum[i];
+        addPoint(x, x.toFixed(6), 6);
+      }
+    }
+
+    childL = clamp01(childL);
+    childH = clamp01(childH);
+    if (childH > childL) {
+      addPoint(childL, childL.toFixed(6), 7);
+      addPoint(childH, childH.toFixed(6), 7);
+    }
+
+    // グリッド目盛り（ズームに応じて細かく）
+    var step = niceTickStep(width);
+    var decimals = decimalsForStep(step);
+    var start = Math.ceil((viewL - 1e-15) / step) * step;
+    for (var gx = start; gx <= viewH + 1e-15; gx += step) {
+      addPoint(gx, gx.toFixed(decimals), 1);
+    }
+
+    // sort + unique（近い点は priority の高い方を残す）
+    points.sort(function(a,b){ return a.x - b.x; });
+    var uniq = [];
+    var eps = 1e-12;
+    for (var u = 0; u < points.length; u++) {
+      var p = points[u];
+      if (uniq.length === 0 || Math.abs(p.x - uniq[uniq.length - 1].x) > eps) {
+        uniq.push(p);
+      } else {
+        if (p.priority > uniq[uniq.length - 1].priority) uniq[uniq.length - 1] = p;
+      }
+    }
+
+    var labelMinGapPct = 4.0;
+    var lastLabeled = -1e9;
+    function toPct(x){ return (x - viewL) / width * 100; }
+
+    for (var i2 = 0; i2 < uniq.length; i2++) {
+      var x2 = uniq[i2].x;
+      if (x2 < viewL - 1e-15 || x2 > viewH + 1e-15) continue;
+      var posPct = toPct(x2);
+
+      var tick = document.createElement("div");
+      tick.className = "interval-tick" + (i2 % 2 === 1 ? " alt" : "");
+      tick.style.left = posPct.toFixed(2) + "%";
+
+      var line = document.createElement("div");
+      line.className = "interval-tick-line";
+      tick.appendChild(line);
+
+      var label = document.createElement("div");
+      label.className = "interval-tick-label";
+
+      var canLabel = (uniq[i2].priority >= 6) || (posPct - lastLabeled >= labelMinGapPct);
+      label.textContent = canLabel ? uniq[i2].label : "";
+      if (canLabel) lastLabeled = posPct;
+
+      tick.appendChild(label);
+      container.appendChild(tick);
+    }
+  }
+
+  function resetStepViewUI() {
+    setText("currentStepIndex", "-");
+    setText("totalSteps", "-");
+    setText("animSymbolLabel", "-");
+    setText("animParentLabel", "-");
+    setText("animIntervalLabel", "-");
+
+    var seg = $("intervalSymbolSegments");
+    if (seg) seg.innerHTML = "";
+
+    var parentBox = $("intervalParent");
+    var currentBox = $("intervalCurrent");
+    if (parentBox) { parentBox.style.left = "0%"; parentBox.style.width = "0%"; }
+    if (currentBox) { currentBox.style.left = "0%"; currentBox.style.width = "0%"; }
+
+    var ticks = $("intervalTicks");
+    if (ticks) ticks.innerHTML = "";
+
+    var prevBtn = $("stepPrevBtn");
+    var nextBtn = $("stepNextBtn");
+    if (prevBtn) prevBtn.disabled = true;
+    if (nextBtn) nextBtn.disabled = true;
+
+    updateZoomUI();
+  }
+
+  function updateSingleStepView() {
+    var total = encodeSteps.length;
+    if (total === 0 || stepPos < 0 || stepPos >= total) {
+      resetStepViewUI();
+      return;
+    }
+
+    var s = encodeSteps[stepPos];
+
+    setText("currentStepIndex", s.step);
+    setText("totalSteps", total);
+    setText("animSymbolLabel", s.symbol);
+    setText("animParentLabel", "[" + fmt(s.parentLow, 6) + ", " + fmt(s.parentHigh, 6) + ")");
+    setText("animIntervalLabel", "[" + fmt(s.low, 6) + ", " + fmt(s.high, 6) + ")");
+
+    renderStepGraphicsOnly();
+
+    var prevBtn = $("stepPrevBtn");
+    var nextBtn = $("stepNextBtn");
+    if (prevBtn) prevBtn.disabled = (stepPos === 0);
+    if (nextBtn) nextBtn.disabled = (stepPos === total - 1);
+
+    updateZoomUI();
+  }
+
+  function renderHistory(steps) {
+    var container = $("intervalHistory");
+    if (!container) return;
+    container.innerHTML = "";
+
+    for (var idx = 0; idx < steps.length; idx++) {
+      var s = steps[idx];
+
+      var row = document.createElement("div");
+      row.className = "history-row";
+
+      var caption = document.createElement("div");
+      caption.className = "history-caption";
+
+      var line1 = document.createElement("div");
+      line1.textContent = "step " + s.step + ": symbol '" + s.symbol + "'";
+      var line2 = document.createElement("div");
+      line2.textContent = "親区間 [" + fmt(s.parentLow, 6) + ", " + fmt(s.parentHigh, 6) + ")";
+      var line3 = document.createElement("div");
+      line3.textContent = "選択区間 [" + fmt(s.low, 6) + ", " + fmt(s.high, 6) + ")";
+
+      caption.appendChild(line1);
+      caption.appendChild(line2);
+      caption.appendChild(line3);
+      row.appendChild(caption);
+
+      var right = document.createElement("div");
+      right.className = "history-bar-block";
+
+      var bar = document.createElement("div");
+      bar.className = "history-bar";
+
+      var segDiv = document.createElement("div");
+      segDiv.className = "history-symbols";
+
+      var parentBox = document.createElement("div");
+      parentBox.className = "history-parent";
+
+      var currentBox = document.createElement("div");
+      currentBox.className = "history-current";
+
+      bar.appendChild(segDiv);
+      bar.appendChild(parentBox);
+      bar.appendChild(currentBox);
+
+      // 一覧は常に [0,1) 表示（ズームは適用しない）
+      renderPartitionOnGlobalAxis({
+        segContainer: segDiv,
+        parentBox: parentBox,
+        currentBox: currentBox,
+        parentL: s.parentLow,
+        parentH: s.parentHigh,
+        symbolIndex: s.symbolIndex,
+        childL: s.low,
+        childH: s.high,
+        segClass: "history-symbol-seg",
+        viewL: 0.0,
+        viewH: 1.0
+      });
+
+      right.appendChild(bar);
+      row.appendChild(right);
+      container.appendChild(row);
+    }
+  }
+
+  function clearAll() {
+    setValue("messageInput", "");
+    setText("encodeError", "");
+    setText("encodeNotice", "");
+    setText("intervalOut", "-");
+    setText("widthOut", "-");
+    setText("pOut", "-");
+    setText("pBinaryOut", "-");
+    setText("codeOut", "-");
+    setText("lenBitsLabel", "-");
+    setHTML("encodeStepsContainer", "");
+    state.lastEncodedBits = "";
+    state.lastMessageLength = 0;
+
+    setValue("codeInput", "");
+    setValue("decodeLengthInput", 0);
+    setText("decodeError", "");
+    setText("decodedMessageOut", "-");
+    setHTML("decodeStepsContainer", "");
+
+    encodeSteps = [];
+    stepPos = -1;
+    cancelZoomAnim();
+    zoomView = { L: 0.0, H: 1.0 };
+    resetStepViewUI();
+    setHTML("intervalHistory", "");
+  }
+
+  function randomFillMessage() {
+    hideBanner();
+    setText("encodeError",""); setText("encodeNotice","");
+    var n = 10;
+    var lenInput = $("randomLenInput");
+    if (lenInput) {
+      var parsed = parseInt(lenInput.value, 10);
+      if (!isNaN(parsed) && parsed > 0) n = parsed;
+    }
+    var msg = "";
+    for (var i = 0; i < n; i++) {
+      var r = Math.floor(Math.random() * state.symbols.length);
+      msg += state.symbols[r];
+    }
+    setValue("messageInput", msg);
+    if (n > 40) setText("encodeNotice","入力が長いと浮動小数点精度で符号化に失敗することがあります。");
+  }
+
+  function encodeMessage() {
+    hideBanner();
+    setText("encodeError", "");
+    setText("encodeNotice", "");
+
+    var msg = ($("messageInput") && $("messageInput").value) || "";
+    if (!msg) { setText("encodeError","記号列を入力してください。"); return; }
+
+    for (var i = 0; i < msg.length; i++) {
+      var ch = msg.charAt(i);
+      if (state.symbols.indexOf(ch) < 0) {
+        setText("encodeError", "アルファベットに含まれない文字があります: '" + ch + "'");
+        return;
+      }
+    }
+
+    var low = 0.0, high = 1.0;
+    var steps = [];
+    for (i = 0; i < msg.length; i++) {
+      var c = msg.charAt(i);
+      var upd = updateInterval(low, high, c);
+      if (!(upd.newLow < upd.newHigh) || !isFinite(upd.newLow) || !isFinite(upd.newHigh)) {
+        setText("encodeError","区間が極端に小さくなり、浮動小数点精度の限界で符号化できません。入力を短くしてください。");
+        return;
+      }
+      var parentL = (i === 0) ? 0.0 : low;
+      var parentH = (i === 0) ? 1.0 : high;
+
+      steps.push({
+        step: i + 1,
+        symbol: c,
+        symbolIndex: upd.idx,
+        low: upd.newLow,
+        high: upd.newHigh,
+        parentLow: parentL,
+        parentHigh: parentH
+      });
+
+      low = upd.newLow;
+      high = upd.newHigh;
+    }
+
+    var L = low, H = high, W = H - L;
+    var sel = chooseDyadicInside(L, H);
+    if (!sel) {
+      setText("encodeError","符号語（dyadic 区間）が見つかりませんでした。入力を短くするか、分布を変えてください。");
+      return;
+    }
+    var lenBits = sel.m, codeInt = sel.k;
+    var pow2 = Math.pow(2, lenBits);
+    var x = (codeInt + 0.5) / pow2;
+    var bits = intToBits(codeInt, lenBits);
+
+    setText("intervalOut", "[" + fmt(L, 12) + ", " + fmt(H, 12) + ")");
+    setText("widthOut", fmt(W, 12));
+    setText("pOut", fmt(x, 15));
+    setText("pBinaryOut", "0." + fractionToBinaryPrefix(x, Math.min(lenBits + 8, 48)) + " ...");
+    setText("codeOut", bits);
+    setText("lenBitsLabel", String(lenBits));
+
+    var html = "<table><thead><tr><th>step</th><th>symbol</th><th>L(after)</th><th>H(after)</th></tr></thead><tbody>";
+    for (i = 0; i < steps.length; i++) {
+      var s = steps[i];
+      html += "<tr><td>" + s.step + "</td><td style=\"text-align:center;\">" + s.symbol +
+              "</td><td>" + fmt(s.low, 12) + "</td><td>" + fmt(s.high, 12) + "</td></tr>";
+    }
+    html += "</tbody></table>";
+    setHTML("encodeStepsContainer", html);
+
+    state.lastEncodedBits = bits;
+    state.lastMessageLength = msg.length;
+
+    encodeSteps = steps;
+    stepPos = steps.length > 0 ? 0 : -1;
+
+    // 新しい結果なので表示はリセット
+    cancelZoomAnim();
+    zoomView = { L: 0.0, H: 1.0 };
+    updateZoomUI();
+
+    setText("encodeNotice", "エンコード成功。ステップボタンで区間の変化を辿ってください。");
+
+    renderHistory(steps);
+    updateSingleStepView();
+  }
+
+  function decodeMessage() {
+    hideBanner(); setText("decodeError", "");
+    var rawBits = (($("codeInput") && $("codeInput").value) || "").replace(/\s+/g, "");
+    if (!rawBits) { setText("decodeError", "符号語ビット列を入力してください。"); return; }
+    if (!/^[01]+$/.test(rawBits)) { setText("decodeError", "符号語は 0/1 のみで入力してください。"); return; }
+
+    var n = $("decodeLengthInput") ? parseInt($("decodeLengthInput").value, 10) : 0;
+    if (!n || n <= 0) { setText("decodeError", "記号列の長さ n を正しく入力してください。"); return; }
+
+    var m = rawBits.length, k = bitsToInt(rawBits);
+    var x = (k + 0.5) / Math.pow(2, m);
+
+    var low = 0.0, high = 1.0, out = "", steps = [];
+    for (var step = 1; step <= n; step++) {
+      var range = high - low, chosen = -1, symLow = 0, symHigh = 0;
+      for (var i = 0; i < state.symbols.length; i++) {
+        var L = low + range * state.cumulative[i];
+        var H = low + range * state.cumulative[i+1];
+        if (x >= L && x < H) { chosen = i; symLow = L; symHigh = H; break; }
+      }
+      if (chosen < 0) {
+        setText("decodeError", "復号に失敗しました（x がどの区間にも入らない）。モデルや n を確認してください。");
+        return;
+      }
+      var sym = state.symbols[chosen];
+      out += sym;
+      steps.push({
+        step: step,
+        symbol: sym,
+        symbolIndex: chosen,
+        lowBefore: low, highBefore: high,
+        lowAfter: symLow, highAfter: symHigh
+      });
+      low = symLow; high = symHigh;
+    }
+
+    setText("decodedMessageOut", out);
+
+    var html = "<table><thead><tr><th>step</th><th>symbol</th><th>L(before)</th><th>H(before)</th><th>L(after)</th><th>H(after)</th></tr></thead><tbody>";
+    for (var j = 0; j < steps.length; j++) {
+      var t = steps[j];
+      html += "<tr><td>" + t.step + "</td><td style=\"text-align:center;\">" + t.symbol +
+              "</td><td>" + fmt(t.lowBefore, 12) + "</td><td>" + fmt(t.highBefore, 12) +
+              "</td><td>" + fmt(t.lowAfter, 12) + "</td><td>" + fmt(t.highAfter, 12) + "</td></tr>";
+    }
+    html += "</tbody></table>";
+    setHTML("decodeStepsContainer", html);
+  }
+
+  function useEncodeResultInDecoder() {
+    if (!state.lastEncodedBits || !state.lastMessageLength) {
+      setText("decodeError", "まず左側でエンコードを行ってください。");
+      return;
+    }
+    setValue("codeInput", state.lastEncodedBits);
+    setValue("decodeLengthInput", state.lastMessageLength);
+    setText("decodeError", "");
+  }
+
+  function handleRandomProb() {
+    randomizeProbs();
+    renderModel();
+    clearAll();
+    randomFillMessage();
+    setText("encodeNotice", "確率をランダム初期化しました。");
+  }
+
+  function init() {
+    try {
+      initFixedAlphabet(MODEL_SIZE);
+      // 初期確率は一様→見た目が単純すぎるので、軽くランダム化
+      randomizeProbs();
+      renderModel();
+      clearAll();
+
+      // 初期メッセージをランダムで入れる
+      randomFillMessage();
+
+      var b;
+      b = $("encodeBtn"); if (b) b.addEventListener("click", encodeMessage, false);
+      b = $("decodeBtn"); if (b) b.addEventListener("click", decodeMessage, false);
+      b = $("useEncodeResultBtn"); if (b) b.addEventListener("click", useEncodeResultInDecoder, false);
+      b = $("clearBtn"); if (b) b.addEventListener("click", clearAll, false);
+      b = $("randomProbBtn"); if (b) b.addEventListener("click", handleRandomProb, false);
+      b = $("randomMessageBtn"); if (b) b.addEventListener("click", randomFillMessage, false);
+
+      b = $("stepPrevBtn"); if (b) b.addEventListener("click", function () {
+        if (stepPos > 0) { stepPos--; updateSingleStepView(); }
+      }, false);
+
+      b = $("stepNextBtn"); if (b) b.addEventListener("click", function () {
+        if (stepPos + 1 < encodeSteps.length) { stepPos++; updateSingleStepView(); }
+      }, false);
+
+      b = $("zoomInBtn"); if (b) b.addEventListener("click", handleZoomIn, false);
+      b = $("zoomOutBtn"); if (b) b.addEventListener("click", handleZoomOut, false);
+      b = $("zoomResetBtn"); if (b) b.addEventListener("click", handleZoomReset, false);
+      b = $("zoomFitParentBtn"); if (b) b.addEventListener("click", handleZoomFitParent, false);
+
+      updateZoomUI();
+      updateSingleStepView();
+    } catch (e) {
+      console.error(e);
+      showBanner("初期化中にエラーが発生しました。Console を確認してください。");
+    }
+  }
+
+  window.addEventListener("DOMContentLoaded", init, false);
+})();
+</script>
+</body>
+</html>
