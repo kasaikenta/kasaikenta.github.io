@@ -1,0 +1,1048 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <title>RS符号風 学習アプリ（実数版）: 評価点とラグランジュ補間</title>
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      margin: 16px;
+    }
+    h1 {
+      font-size: 20px;
+      margin-bottom: 8px;
+    }
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+      margin-bottom: 8px;
+      font-size: 14px;
+    }
+    .controls label {
+      margin-right: 4px;
+    }
+    #canvasContainer {
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      padding: 8px;
+      display: inline-block;
+    }
+    #plot {
+      border: 1px solid #aaa;
+      border-radius: 4px;
+      cursor: pointer;
+      background: #fafafa;
+    }
+    #info {
+      margin-top: 8px;
+      font-size: 14px;
+      white-space: pre-line;
+      max-width: 880px;
+    }
+    .legend {
+      font-size: 13px;
+      margin-top: 4px;
+    }
+    .legend span {
+      display: inline-block;
+      margin-right: 12px;
+    }
+    .legend-box {
+      display: inline-block;
+      width: 12px;
+      height: 12px;
+      margin-right: 4px;
+      vertical-align: middle;
+      border: 1px solid #555;
+    }
+    input[type="number"] {
+      width: 60px;
+    }
+    button {
+      cursor: pointer;
+    }
+    #theory {
+      margin-top: 16px;
+      padding: 12px;
+      border-radius: 8px;
+      background: #f5f5f5;
+      font-size: 14px;
+      max-width: 880px;
+    }
+    #theory h2 {
+      font-size: 16px;
+      margin-top: 0;
+      margin-bottom: 8px;
+    }
+    #theory h3 {
+      font-size: 15px;
+      margin-bottom: 4px;
+      margin-top: 10px;
+    }
+    #theory p {
+      margin: 4px 0;
+    }
+    #theory ul {
+      margin: 4px 0 4px 20px;
+      padding: 0;
+    }
+  </style>
+
+  <!-- MathJax 設定 -->
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']]
+      },
+      svg: {
+        fontCache: 'global'
+      }
+    };
+  </script>
+</head>
+<body>
+  <h1>RS符号風アプリ：評価点 \( \alpha_i = i \)・送信曲線・ラグランジュ補間</h1>
+
+  <div class="controls">
+    <label>n:
+      <input type="number" id="nInput" value="10" min="4" max="30">
+    </label>
+    <label>k:
+      <input type="number" id="kInput" value="4" min="2" max="10">
+    </label>
+    <button id="newCodeBtn">新しい送信語を生成</button>
+    <button id="clearSelectionBtn">選択クリア</button>
+    <button id="autoPickBtn">正しい k 点を自動選択</button>
+  </div>
+
+  <div id="canvasContainer">
+    <canvas id="plot" width="640" height="420"></canvas>
+    <div class="legend">
+      <span><span class="legend-box" style="background:#bbdefb;"></span>真の送信多項式 \( f(x) \) の曲線（次数 \( < k \)）</span><br>
+      <span><span class="legend-box" style="background:#1976d2;"></span>送信語の点 \( c_i = f(\alpha_i) \)</span>
+      <span><span class="legend-box" style="background:#777;"></span>受信語の点 \( y_i \)（正しい位置）</span>
+      <span><span class="legend-box" style="background:#ffb74d;"></span>受信語の点 \( y_i \)（誤り位置：学習用にハイライト）</span><br>
+      <span><span class="legend-box" style="background:#ffffff;"></span>赤い輪 ◎ が付いた点が「選択された \( k \) 個の評価点 \( (\alpha_i, y_i) \)」</span><br>
+      <span><span class="legend-box" style="background:#43a047;"></span>選択された \( k \) 点から補間した次数 \( < k \) の多項式 \( g(x) \)</span>
+    </div>
+  </div>
+
+  <div id="info"></div>
+
+  <!-- 理論説明ブロック -->
+  <div id="theory">
+    <h2>Reed–Solomon符号風モデルとラグランジュ補間</h2>
+
+    <h3>1. パラメータと送信多項式（次数 \( < k \)）</h3>
+    <p>
+      一般の \([n,k]\) RS 符号では、有限体 \(\mathbb{F}_q\) 上で互いに異なる評価点
+      \(\alpha_1,\alpha_2,\dots,\alpha_n\) を固定し、長さ \(k\) のメッセージ
+    </p>
+    <p>
+      \[
+        m = (m_0, m_1, \dots, m_{k-1}) \in \mathbb{F}_q^k
+      \]
+    </p>
+    <p>
+      を係数とする「次数高々 \(k-1\)」の多項式
+    </p>
+    <p>
+      \[
+        f(x) = m_0 + m_1 x + \cdots + m_{k-1} x^{k-1}
+      \]
+    </p>
+    <p>
+      を作ります。ここで \(\deg f \le k-1\)、すなわち「送信された曲線は \(k\) 次未満の多項式曲線」です。
+    </p>
+
+    <p id="theory-params"></p>
+
+    <h3>2. 評価点 \( \alpha_i \) と送信語 \( c_i = f(\alpha_i) \)</h3>
+    <p>
+      評価点で多項式を評価すると、コード語（送信語）
+    </p>
+    <p>
+      \[
+        c = (c_1, \dots, c_n), \qquad
+        c_i = f(\alpha_i)
+      \]
+    </p>
+    <p>
+      を得ます。これは「評価点 \(\alpha_i\) における評価値 \(f(\alpha_i)\) を並べたもの」です。
+      このアプリでは、有限体の代わりに実数上で
+    </p>
+    <p>
+      \[
+        \alpha_i = i \quad (i = 1,\dots,n)
+      \]
+    </p>
+    <p>
+      とおき、実数係数の多項式 \(f(x)\) を用いて“RS符号風”の状況を可視化しています。
+      青い点が送信値 \(c_i = f(\alpha_i)\) です。
+    </p>
+
+    <h3>3. 受信語 \( y_i \) と誤り \( e_i \)</h3>
+    <p>
+      送信途中で誤りが入ると、受信側では
+    </p>
+    <p>
+      \[
+        y_i = c_i + e_i = f(\alpha_i) + e_i
+      \]
+    </p>
+    <p>
+      のように、誤りベクトル \(e = (e_1,\dots,e_n)\) が加わった受信語
+      \(y = (y_1,\dots,y_n)\) を観測します。
+      RS 符号の最小距離は \(d_{\min} = n - k + 1\) で、訂正能力は
+    </p>
+    <p>
+      \[
+        t = \left\lfloor \frac{d_{\min} - 1}{2} \right\rfloor
+      \]
+    </p>
+    <p>
+      と与えられ、理論的には \(t\) 個までの誤りを訂正できます。このアプリでは
+      「常に \(e = t\) 個」の誤りを入れた例を表示しています。
+    </p>
+
+    <p id="theory-poly"></p>
+    <ul id="theory-sample"></ul>
+
+    <h3>4. k 個の評価点から次数 \( < k \) の多項式が一意に定まる</h3>
+    <p>
+      評価点 \(\alpha_i\) が互いに異なるとき、
+      任意の \(k\) 個のペア
+      \((\alpha_{i_1}, v_{i_1}),\dots,(\alpha_{i_k}, v_{i_k})\) に対して、
+      \[
+        g(x) = a_0 + a_1 x + \cdots + a_{k-1} x^{k-1}
+      \]
+      という形の多項式で
+      \[
+        g(\alpha_{i_j}) = v_{i_j} \quad (j = 1,\dots,k)
+      \]
+      を満たすものは「ちょうど 1 つ」だけ存在します。
+    </p>
+    <p>
+      つまり「次数 \( < k \) の多項式は、k 個の評価点での値を指定すると一意に決まる」ので、
+      \(k\) 個の正しい評価点 \((\alpha_i, f(\alpha_i))\) が分かれば、
+      元の送信多項式 \(f(x)\) を完全に復元でき、その結果、すべての \(f(\alpha_i)\) が分かります。
+    </p>
+
+    <h3>5. ラグランジュ補間多項式（ラグランジュ曲線）</h3>
+    <p>
+      実際に多項式 \(g(x)\) を構成する方法の 1 つが「ラグランジュ補間多項式」です。
+      \(k\) 個の評価点
+      \((\alpha_{i_1}, v_{i_1}),\dots,(\alpha_{i_k}, v_{i_k})\)
+      に対して、ラグランジュ基底多項式
+    </p>
+    <p>
+      \[
+        L_j(x)
+          = \prod_{\substack{m=1 \\ m \ne j}}^{k}
+            \frac{x - \alpha_{i_m}}{\alpha_{i_j} - \alpha_{i_m}}
+        \quad (j = 1,\dots,k)
+      \]
+    </p>
+    <p>
+      を定義すると、
+    </p>
+    <p>
+      \[
+        g(x) = \sum_{j=1}^{k} v_{i_j} \, L_j(x)
+      \]
+    </p>
+    <p>
+      が、すべての評価点を通る次数高々 \(k-1\) の多項式になります。
+      このアプリで描いている緑の曲線 \(g(x)\) は、
+      「選択した \(k\) 個の評価点を通る唯一の次数 \(< k\) の多項式」という意味で、
+      ラグランジュ補間多項式と同じ役割を果たしています
+      （実装上は線形方程式を解いていますが、理論的にはラグランジュ公式と同値です）。
+    </p>
+
+    <h3>6. このアプリで確認できること</h3>
+    <p>
+      このアプリでは、常に訂正能力と同じ個数 \(e = t\) の誤りを入れた受信語を表示しています。
+    </p>
+    <ul>
+      <li>青い点：送信値 \(c_i = f(\alpha_i)\)</li>
+      <li>灰色/オレンジの点：受信値 \(y_i = c_i + e_i\)</li>
+      <li>オレンジ色の点が「誤り位置」（本来の復号器には見えませんが、学習用に表示）</li>
+      <li>赤い輪 ◎ を付けた \(k\) 個の点から、緑の曲線 \(g(x)\) を補間</li>
+    </ul>
+    <p>
+      エラーのない点だけを \(k\) 個選べば、補間多項式 \(g(x)\) は真の送信多項式 \(f(x)\) と一致し、
+      送信語全体を正しく復元できます。<br>
+      一方、選んだ \(k\) 個の中に誤り位置が混ざると、\(g(x)\) は \(f(x)\) からずれてしまい、
+      青い送信点を通らない別の曲線になります。これが「誤り訂正限界 \(t\)」の直感的なイメージです。
+    </p>
+  </div>
+
+  <script>
+    const canvas = document.getElementById("plot");
+    const ctx = canvas.getContext("2d");
+    const info = document.getElementById("info");
+
+    const nInput = document.getElementById("nInput");
+    const kInput = document.getElementById("kInput");
+    const newCodeBtn = document.getElementById("newCodeBtn");
+    const clearSelectionBtn = document.getElementById("clearSelectionBtn");
+    const autoPickBtn = document.getElementById("autoPickBtn");
+
+    const theoryDiv = document.getElementById("theory");
+    const theoryParamsElem = document.getElementById("theory-params");
+    const theoryPolyElem = document.getElementById("theory-poly");
+    const theorySampleElem = document.getElementById("theory-sample");
+
+    let n = Number(nInput.value);
+    let k = Number(kInput.value);
+
+    // RS風パラメータ
+    let d = 0;
+    let t = 0;
+
+    // 送信多項式の係数
+    let trueCoeffs = [];
+    // 各位置の情報
+    // {x, yTrue, yRecv, isError, selected, selectOrder}
+    let points = [];
+
+    // y軸の描画範囲（固定）
+    let yMinGlobal = -1;
+    let yMaxGlobal = 1;
+
+    const marginLeft = 40;
+    const marginRight = 20;
+    const marginTop = 20;
+    const marginBottom = 40;
+
+    // 選択順管理
+    let selectionCounter = 0;
+
+    // フィット曲線のアニメーション用
+    let currentFitCoeffs = null;
+    let targetFitCoeffs = null;
+    let animStartCoeffs = null;
+    let animStartTime = null;
+    const ANIM_DURATION = 600; // ms
+    let animating = false;
+    let fitFailed = false;
+
+    // ========== 数学ユーティリティ ==========
+
+    function evalPoly(coeffs, x) {
+      let res = 0;
+      let power = 1;
+      for (let j = 0; j < coeffs.length; j++) {
+        res += coeffs[j] * power;
+        power *= x;
+      }
+      return res;
+    }
+
+    function solveLinearSystem(A, b) {
+      const n = A.length;
+      const M = [];
+      for (let i = 0; i < n; i++) {
+        M[i] = A[i].slice();
+        M[i].push(b[i]);
+      }
+
+      for (let col = 0; col < n; col++) {
+        let pivotRow = col;
+        let maxAbs = Math.abs(M[col][col]);
+        for (let r = col + 1; r < n; r++) {
+          const v = Math.abs(M[r][col]);
+          if (v > maxAbs) {
+            maxAbs = v;
+            pivotRow = r;
+          }
+        }
+        if (maxAbs < 1e-12) {
+          return null;
+        }
+        if (pivotRow !== col) {
+          const tmp = M[col];
+          M[col] = M[pivotRow];
+          M[pivotRow] = tmp;
+        }
+        const pivot = M[col][col];
+        for (let c = col; c <= n; c++) {
+          M[col][c] /= pivot;
+        }
+        for (let r = 0; r < n; r++) {
+          if (r === col) continue;
+          const factor = M[r][col];
+          for (let c = col; c <= n; c++) {
+            M[r][c] -= factor * M[col][c];
+          }
+        }
+      }
+
+      const x = new Array(n);
+      for (let i = 0; i < n; i++) {
+        x[i] = M[i][n];
+      }
+      return x;
+    }
+
+    // 任意の k 個の点から f(x) をラグランジュ的に構成（Vandermonde で係数計算）
+    function buildPolyFromKeyPoints(xs, ys) {
+      const m = xs.length;
+      if (m === 0) return null;
+      const A = [];
+      const b = [];
+      for (let i = 0; i < m; i++) {
+        const row = [];
+        let power = 1;
+        for (let j = 0; j < m; j++) {
+          row.push(power);
+          power *= xs[i];
+        }
+        A.push(row);
+        b.push(ys[i]);
+      }
+      return solveLinearSystem(A, b);
+    }
+
+    // k個の点から次数 < k の多項式を補間（受信語から g(x) を作る）
+    function interpolateFromKPoints(selectedPoints) {
+      const m = selectedPoints.length;
+      if (m !== k) return null;
+
+      const A = [];
+      const b = [];
+      for (let i = 0; i < m; i++) {
+        const row = [];
+        const x = selectedPoints[i].x;
+        let power = 1;
+        for (let j = 0; j < k; j++) {
+          row.push(power);
+          power *= x;
+        }
+        A.push(row);
+        b.push(selectedPoints[i].yRecv);
+      }
+      const coeffs = solveLinearSystem(A, b);
+      return coeffs;
+    }
+
+    function maxAbsDiff(a, b) {
+      const len = Math.min(a.length, b.length);
+      let m = 0;
+      for (let i = 0; i < len; i++) {
+        const diff = Math.abs(a[i] - b[i]);
+        if (diff > m) m = diff;
+      }
+      return m;
+    }
+
+    function polyToLatexNumeric(coeffs, variable) {
+      let s = "";
+      for (let j = 0; j < coeffs.length; j++) {
+        const a = coeffs[j];
+        if (Math.abs(a) < 1e-3) continue;
+        const absA = Math.abs(a).toFixed(2);
+        let term = absA;
+        if (j >= 1) {
+          term += " " + variable;
+          if (j >= 2) {
+            term += "^{" + j + "}";
+          }
+        }
+        if (s === "") {
+          s = (a < 0 ? "-" : "") + term;
+        } else {
+          s += (a < 0 ? " - " : " + ") + term;
+        }
+      }
+      if (s === "") s = "0";
+      return s;
+    }
+
+    // ========== データ生成 ==========
+
+    function generateNewCode() {
+      n = Number(nInput.value);
+      k = Number(kInput.value);
+
+      if (k < 2) {
+        alert("k は少なくとも 2 にしてください。");
+        return;
+      }
+      if (n <= k) {
+        alert("RS符号風にするために n > k を推奨します。");
+      }
+
+      d = n - k + 1;
+      t = Math.floor((d - 1) / 2);
+      if (t < 0) t = 0;
+
+      // --- (1) 評価点から k 個をランダムに選ぶ（α_i = i）
+      const allIdx = [];
+      for (let i = 0; i < n; i++) allIdx.push(i);
+      for (let i = allIdx.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [allIdx[i], allIdx[j]] = [allIdx[j], allIdx[i]];
+      }
+      const keyIdx = allIdx.slice(0, k).sort((a, b) => a - b); // 昇順
+
+      const keyXs = [];
+      const keyYs = [];
+      const baseAmp = 1.0 + 0.2 * (k - 2); // k が大きいほど少しだけ振幅をアップ
+
+      for (let j = 0; j < k; j++) {
+        const idx = keyIdx[j];
+        const alpha = idx + 1;          // α_i = i
+        keyXs.push(alpha);
+        const sign = (j % 2 === 0) ? 1 : -1; // +, -, +, -, ...
+        const magBase = 0.7 + 0.6 * Math.random(); // 0.7〜1.3
+        const y = sign * magBase * baseAmp;
+        keyYs.push(y);
+      }
+
+      // --- (2) その k 点を通るラグランジュ補間多項式として f(x) を構成
+      let coeffs = buildPolyFromKeyPoints(keyXs, keyYs);
+      if (!coeffs) {
+        // 万一失敗したら、旧来のランダム係数にフォールバック
+        coeffs = [];
+        for (let j = 0; j < k; j++) {
+          let scale = 1.2 + 0.3 * j;
+          let a = (Math.random() * 2 - 1) * scale;
+          if (j === k - 1) {
+            let tries = 0;
+            while (Math.abs(a) < 0.3 && tries < 10) {
+              a = (Math.random() * 2 - 1) * scale;
+              tries++;
+            }
+          }
+          coeffs.push(a);
+        }
+      }
+      trueCoeffs = coeffs;
+
+      // --- (3) 評価点 α_i = i での送信値 c_i = f(α_i) を計算
+      points = [];
+      for (let i = 0; i < n; i++) {
+        const alpha = i + 1;
+        const yTrue = evalPoly(trueCoeffs, alpha);
+        points.push({
+          x: alpha,
+          yTrue: yTrue,
+          yRecv: yTrue,
+          isError: false,
+          selected: false,
+          selectOrder: null
+        });
+      }
+
+      // --- (4) 送信値レンジからノイズスケールを決めて、誤り e = t 個を入れる
+      let minTrue = Infinity;
+      let maxTrue = -Infinity;
+      for (const pt of points) {
+        if (pt.yTrue < minTrue) minTrue = pt.yTrue;
+        if (pt.yTrue > maxTrue) maxTrue = pt.yTrue;
+      }
+      let rangeTrue = maxTrue - minTrue;
+      if (!isFinite(rangeTrue) || rangeTrue < 1e-3) rangeTrue = 1.0;
+      const noiseScale = 0.5 * rangeTrue;
+
+      const e = t;
+      const idxAll = [];
+      for (let i = 0; i < n; i++) idxAll.push(i);
+      for (let i = idxAll.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [idxAll[i], idxAll[j]] = [idxAll[j], idxAll[i]];
+      }
+      const errorIndices = idxAll.slice(0, e);
+      const errorSet = new Set(errorIndices);
+
+      for (let i = 0; i < n; i++) {
+        if (errorSet.has(i)) {
+          const offset = (Math.random() * 2 - 1) * noiseScale;
+          points[i].yRecv = points[i].yTrue + offset;
+          points[i].isError = true;
+        } else {
+          points[i].yRecv = points[i].yTrue;
+          points[i].isError = false;
+        }
+        points[i].selected = false;
+        points[i].selectOrder = null;
+      }
+
+      selectionCounter = 0;
+      currentFitCoeffs = null;
+      targetFitCoeffs = null;
+      animating = false;
+      fitFailed = false;
+
+      computeGlobalYRange();
+
+      info.textContent =
+        "評価点 α_i = i (i = 1,...," + n + ") を固定し、そのうち k 個の評価点で上下に振れる値を指定して、\n" +
+        "それらを通るラグランジュ補間多項式として送信曲線 f(x) を構成しています（薄い青の曲線）。\n" +
+        "その評価点での値 c_i = f(α_i) を送信語とし、訂正能力 t と同じ個数 e = t の誤りを加えて\n" +
+        "受信語 y_i = c_i + e_i を作っています（灰色/オレンジの点）。";
+
+      updateTheoryDynamic();
+      drawScene();
+    }
+
+    // ========== yレンジの固定 ==========
+
+    function computeGlobalYRange() {
+      let yMin = Infinity;
+      let yMax = -Infinity;
+
+      if (trueCoeffs && trueCoeffs.length > 0) {
+        const S = Math.max(50, n);
+        for (let i = 0; i < S; i++) {
+          const x = 1 + (n - 1) * i / (S - 1);
+          const y = evalPoly(trueCoeffs, x);
+          if (y < yMin) yMin = y;
+          if (y > yMax) yMax = y;
+        }
+      }
+
+      for (const pt of points) {
+        if (pt.yTrue < yMin) yMin = pt.yTrue;
+        if (pt.yTrue > yMax) yMax = pt.yTrue;
+        if (pt.yRecv < yMin) yMin = pt.yRecv;
+        if (pt.yRecv > yMax) yMax = pt.yRecv;
+      }
+
+      if (!isFinite(yMin) || !isFinite(yMax)) {
+        yMin = -1;
+        yMax = 1;
+      }
+
+      if (yMin > 0) yMin = 0;
+      if (yMax < 0) yMax = 0;
+
+      let range = yMax - yMin;
+      if (range < 1e-6) {
+        range = 1;
+        yMin -= 0.5;
+        yMax += 0.5;
+      } else {
+        const margin = 0.1 * range;
+        yMin -= margin;
+        yMax += margin;
+      }
+
+      yMinGlobal = yMin;
+      yMaxGlobal = yMax;
+    }
+
+    // ========== 座標変換 & 描画 ==========
+
+    function dataToPixel(x, y) {
+      const width = canvas.width;
+      const height = canvas.height;
+      const xMin = 0;
+      const xMax = n + 1;
+      const plotWidth = width - marginLeft - marginRight;
+      const plotHeight = height - marginTop - marginBottom;
+
+      const px = marginLeft + (x - xMin) * plotWidth / (xMax - xMin);
+      const py = height - marginBottom - (y - yMinGlobal) * plotHeight / (yMaxGlobal - yMinGlobal);
+      return [px, py];
+    }
+
+    function drawAxes() {
+      const width = canvas.width;
+      const height = canvas.height;
+
+      ctx.strokeStyle = "#444";
+      ctx.lineWidth = 1;
+
+      const [originX, originY] = dataToPixel(0, 0);
+
+      ctx.beginPath();
+      // y軸
+      ctx.moveTo(originX, marginTop);
+      ctx.lineTo(originX, height - marginBottom);
+      // x軸
+      ctx.moveTo(marginLeft, originY);
+      ctx.lineTo(width - marginRight, originY);
+      ctx.stroke();
+
+      ctx.font = "12px system-ui, sans-serif";
+      ctx.fillStyle = "#333";
+
+      ctx.fillText("x（評価点 α_i = i）", width - marginRight - 150, height - marginBottom + 20);
+      ctx.fillText("値（c_i, y_i）", originX - 40, marginTop + 10);
+
+      // x軸の目盛り：0,1,...,n
+      for (let xv = 0; xv <= n; xv++) {
+        const [px, py] = dataToPixel(xv, 0);
+        ctx.beginPath();
+        ctx.moveTo(px, py - 4);
+        ctx.lineTo(px, py + 4);
+        ctx.stroke();
+        ctx.fillText(String(xv), px - 4, py + 16);
+      }
+
+      // y軸の目盛り：min, 0, max
+      const ys = [yMinGlobal, 0, yMaxGlobal];
+      ys.forEach(val => {
+        const [px, py] = dataToPixel(0, val);
+        ctx.beginPath();
+        ctx.moveTo(px - 4, py);
+        ctx.lineTo(px + 4, py);
+        ctx.stroke();
+        ctx.fillText(val.toFixed(1), px - 35, py + 4);
+      });
+    }
+
+    function drawCurve(coeffs, color, lineWidth) {
+      if (!coeffs || coeffs.length === 0) return;
+      const S = Math.max(200, n * 4);
+      ctx.strokeStyle = color;
+      ctx.lineWidth = lineWidth;
+      ctx.beginPath();
+      for (let i = 0; i < S; i++) {
+        const x = 1 + (n - 1) * i / (S - 1);
+        const y = evalPoly(coeffs, x);
+        const [px, py] = dataToPixel(x, y);
+        if (i === 0) ctx.moveTo(px, py);
+        else ctx.lineTo(px, py);
+      }
+      ctx.stroke();
+    }
+
+    function drawScene() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      drawAxes();
+
+      if (trueCoeffs && trueCoeffs.length > 0) {
+        drawCurve(trueCoeffs, "#bbdefb", 2);
+      }
+
+      for (const pt of points) {
+        const [px, py] = dataToPixel(pt.x, pt.yTrue);
+        ctx.beginPath();
+        ctx.arc(px, py, 3, 0, Math.PI * 2);
+        ctx.fillStyle = "#1976d2";
+        ctx.fill();
+      }
+
+      if (currentFitCoeffs && currentFitCoeffs.length) {
+        drawCurve(currentFitCoeffs, "#43a047", 2);
+      }
+
+      for (const pt of points) {
+        const [px, py] = dataToPixel(pt.x, pt.yRecv);
+        ctx.beginPath();
+        ctx.arc(px, py, 6, 0, Math.PI * 2);
+        ctx.fillStyle = pt.isError ? "#ffb74d" : "#777777";
+        ctx.fill();
+        if (pt.selected) {
+          ctx.lineWidth = 2;
+          ctx.strokeStyle = "#e53935";
+          ctx.stroke();
+        }
+      }
+
+      updateInfo();
+    }
+
+    // ========== 情報表示 ==========
+
+    function updateInfo() {
+      const e = points.filter(pt => pt.isError).length;
+      const selected = points.filter(pt => pt.selected);
+      const kSel = selected.length;
+      const selectedErrors = selected.filter(pt => pt.isError).length;
+
+      let msg = "";
+      msg += "パラメータ: n = " + n + ", k = " + k + "\n";
+      msg += "RS符号なら最小距離 d_min = n − k + 1 = " + d + ", ";
+      msg += "訂正能力 t = ⌊(d_min − 1)/2⌋ = " + t + "\n";
+      msg += "今回の誤り数 e = " + e + "（常に e = t になるように生成）\n\n";
+
+      msg += "選択された評価点 (α_i, y_i) の個数: " + kSel + "\n";
+      msg += "（そのうち誤り位置だった点の数: " + selectedErrors + "）\n";
+
+      if (kSel < k) {
+        msg += "\nまだ k 個に足りません。\n";
+        msg += "理論上、互いに異なる評価点での値が k 個与えられると、\n";
+        msg += "次数 < k の多項式はちょうど 1 つに決まります。";
+        info.textContent = msg;
+        return;
+      }
+
+      if (kSel > k) {
+        info.textContent = msg + "\nちょうど k 個だけ選んでください。";
+        return;
+      }
+
+      if (fitFailed) {
+        msg += "\n選ばれた k 個の点からは、安定した次数 < k の補間多項式を求められませんでした。";
+        info.textContent = msg;
+        return;
+      }
+
+      if (!targetFitCoeffs) {
+        msg += "\n現在の選択に対する補間多項式はまだ計算されていません。";
+        info.textContent = msg;
+        return;
+      }
+
+      const diff = maxAbsDiff(targetFitCoeffs, trueCoeffs);
+      const success = (selectedErrors === 0 && diff < 1e-3);
+
+      msg += "\n選んだ k 個の評価点 (α_i, y_i) から次数 < k の多項式 g(x) を補間しました（緑の曲線）。\n";
+      msg += "g(x) と真の送信多項式 f(x) の係数差の最大値 ≈ " + diff.toExponential(2) + "\n\n";
+
+      if (success) {
+        msg += "【成功】選んだ k 個の点には誤りが含まれておらず、\n";
+        msg += "補間された g(x) は真の送信多項式 f(x) とほぼ一致しています。";
+      } else if (selectedErrors > 0) {
+        msg += "【エラー混入】選んだ k 個の点の中に誤り位置が " + selectedErrors + " 個含まれています。\n";
+        msg += "その結果、補間された g(x) は真の f(x) とは異なり、青い送信語 c_i = f(α_i) の点を通っていません。";
+      } else {
+        msg += "選んだ点には誤りは含まれていませんが、数値誤差などで係数がわずかにズレています。";
+      }
+
+      info.textContent = msg;
+    }
+
+    // ========== 理論ブロックの動的更新 ==========
+
+    function updateTheoryDynamic() {
+      const paramsHTML =
+        "現在の設定は \\([n,k] = [" + n + "," + k + "]\\) であり、" +
+        "\\(d_{\\min} = n - k + 1 = " + d +
+        "\\)、\\(t = \\left\\lfloor \\dfrac{d_{\\min} - 1}{2} \\right\\rfloor = " + t + "\\) です。";
+      theoryParamsElem.innerHTML = paramsHTML;
+
+      const polyLatex = polyToLatexNumeric(trueCoeffs, "x");
+      theoryPolyElem.innerHTML =
+        "このアプリでは、評価点集合 \\(\\{1,2,\\dots,n\\}\\) の中からランダムに選んだ k 個の点 \\(\\alpha_{i_j}\\) に対し、" +
+        "上下に振れる値 \\(v_{i_j}\\) を与え、" +
+        "それらの点をすべて通るラグランジュ補間多項式として送信曲線 \\(f(x)\\) を構成しています。<br>" +
+        "係数を数値で書くと概ね次のようになっています：<br>" +
+        "\\[ f(x) \\approx " + polyLatex + " \\]";
+
+      let listHTML = "";
+      const mShow = Math.min(3, points.length);
+      for (let i = 0; i < mShow; i++) {
+        const alpha = points[i].x;
+        const c = points[i].yTrue;
+        const y = points[i].yRecv;
+        const eVal = y - c;
+
+        const approxAlpha = alpha.toFixed(2);
+        const approxC = c.toFixed(2);
+        const approxY = y.toFixed(2);
+        const approxE = eVal.toFixed(2);
+        const idx = i + 1;
+
+        listHTML +=
+          "<li>" +
+          "\\( \\alpha_" + idx + " = " + approxAlpha +
+          ",\\quad c_" + idx + " = f(\\alpha_" + idx + ") \\approx " + approxC +
+          ",\\quad y_" + idx + " = c_" + idx + " + e_" + idx + " \\approx " + approxY + " \\)" +
+          "</li>";
+
+        if (Math.abs(eVal) > 1e-6) {
+          listHTML +=
+            "<li>" +
+            "\\( e_" + idx + " = y_" + idx + " - c_" + idx + " \\approx " + approxE + " \\) （この位置は誤り）" +
+            "</li>";
+        } else {
+          listHTML +=
+            "<li>" +
+            "\\( e_" + idx + " = y_" + idx + " - c_" + idx + " \\approx 0 \\) （この位置は正しい）" +
+            "</li>";
+        }
+      }
+      theorySampleElem.innerHTML = listHTML;
+
+      if (window.MathJax && window.MathJax.typesetPromise) {
+        MathJax.typesetPromise([theoryDiv]);
+      } else if (window.MathJax && window.MathJax.typeset) {
+        MathJax.typeset();
+      }
+    }
+
+    // ========== フィット多項式とアニメーション ==========
+
+    function updateFitAndRedraw(startAnimation) {
+      animating = false;
+
+      const selected = points.filter(pt => pt.selected);
+      const kSel = selected.length;
+
+      if (kSel !== k) {
+        targetFitCoeffs = null;
+        currentFitCoeffs = null;
+        fitFailed = false;
+        drawScene();
+        return;
+      }
+
+      const coeffs = interpolateFromKPoints(selected);
+      if (!coeffs) {
+        targetFitCoeffs = null;
+        currentFitCoeffs = null;
+        fitFailed = true;
+        drawScene();
+        return;
+      }
+
+      targetFitCoeffs = coeffs.slice();
+      fitFailed = false;
+
+      if (!startAnimation) {
+        currentFitCoeffs = coeffs.slice();
+        drawScene();
+        return;
+      }
+
+      const startCoeffs =
+        (currentFitCoeffs && currentFitCoeffs.length === k)
+          ? currentFitCoeffs.slice()
+          : new Array(k).fill(0);
+
+      animStartCoeffs = startCoeffs;
+      animStartTime = performance.now();
+      animating = true;
+
+      function step(now) {
+        if (!animating) return;
+        const progress = Math.min(1, (now - animStartTime) / ANIM_DURATION);
+        const interp = new Array(k);
+        for (let i = 0; i < k; i++) {
+          const a0 = animStartCoeffs[i] || 0;
+          const a1 = targetFitCoeffs[i] || 0;
+          interp[i] = a0 + (a1 - a0) * progress;
+        }
+        currentFitCoeffs = interp;
+        drawScene();
+        if (progress < 1) {
+          requestAnimationFrame(step);
+        } else {
+          animating = false;
+          currentFitCoeffs = targetFitCoeffs.slice();
+          drawScene();
+        }
+      }
+
+      requestAnimationFrame(step);
+    }
+
+    // ========== マウス操作 & ボタン ==========
+
+    canvas.addEventListener("click", function (evt) {
+      if (!points || points.length === 0) return;
+      const rect = canvas.getBoundingClientRect();
+      const xPixel = evt.clientX - rect.left;
+      const yPixel = evt.clientY - rect.top;
+
+      let bestIndex = -1;
+      let bestDist2 = Infinity;
+      for (let i = 0; i < points.length; i++) {
+        const pt = points[i];
+        const [px, py] = dataToPixel(pt.x, pt.yRecv);
+        const dx = xPixel - px;
+        const dy = yPixel - py;
+        const dist2 = dx * dx + dy * dy;
+        if (dist2 < bestDist2) {
+          bestDist2 = dist2;
+          bestIndex = i;
+        }
+      }
+
+      const threshold2 = 15 * 15;
+      if (bestIndex < 0 || bestDist2 > threshold2) {
+        return;
+      }
+
+      const pt = points[bestIndex];
+
+      if (pt.selected) {
+        pt.selected = false;
+        pt.selectOrder = null;
+        updateFitAndRedraw(true);
+        return;
+      }
+
+      const selected = points.filter(p => p.selected);
+      if (selected.length >= k) {
+        let oldestIndex = -1;
+        let oldestOrder = Infinity;
+        for (let i = 0; i < points.length; i++) {
+          const p = points[i];
+          if (p.selected && p.selectOrder != null && p.selectOrder < oldestOrder) {
+            oldestOrder = p.selectOrder;
+            oldestIndex = i;
+          }
+        }
+        if (oldestIndex >= 0) {
+          points[oldestIndex].selected = false;
+          points[oldestIndex].selectOrder = null;
+        } else {
+          for (let i = 0; i < points.length; i++) {
+            if (points[i].selected) {
+              points[i].selected = false;
+              points[i].selectOrder = null;
+              break;
+            }
+          }
+        }
+      }
+
+      pt.selected = true;
+      pt.selectOrder = selectionCounter++;
+      updateFitAndRedraw(true);
+    });
+
+    clearSelectionBtn.addEventListener("click", function () {
+      for (const pt of points) {
+        pt.selected = false;
+        pt.selectOrder = null;
+      }
+      selectionCounter = 0;
+      updateFitAndRedraw(false);
+    });
+
+    autoPickBtn.addEventListener("click", function () {
+      const correctPoints = points
+        .map((pt, idx) => ({ pt, idx }))
+        .filter(o => !o.pt.isError);
+      if (correctPoints.length < k) {
+        alert("エラーのない点が k 個未満なので、自動選択できません。");
+        return;
+      }
+      for (let i = correctPoints.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [correctPoints[i], correctPoints[j]] = [correctPoints[j], correctPoints[i]];
+      }
+      const chosen = correctPoints.slice(0, k).map(o => o.idx);
+
+      for (let i = 0; i < points.length; i++) {
+        points[i].selected = false;
+        points[i].selectOrder = null;
+      }
+      selectionCounter = 0;
+      for (const idx of chosen) {
+        points[idx].selected = true;
+        points[idx].selectOrder = selectionCounter++;
+      }
+      updateFitAndRedraw(true);
+    });
+
+    newCodeBtn.addEventListener("click", generateNewCode);
+
+    // 初期化（n=10, k=4）
+    generateNewCode();
+  </script>
+
+  <!-- MathJax 本体（CDN） -->
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+</body>
+</html>
