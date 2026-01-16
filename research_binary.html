@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-YY8X0H44J2"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-YY8X0H44J2');
+  </script>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>二元LDPC符号に基づく研究 | 笠井健太</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 40px;
+      line-height: 1.6;
+    }
+    h1 {
+      color: #2c3e50;
+    }
+    a {
+      color: #2980b9;
+      text-decoration: none;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+    .lang-switch {
+      text-align: right;
+      margin-bottom: 20px;
+    }
+    .lang-switch a {
+      background-color: #2980b9;
+      color: white;
+      padding: 8px 14px;
+      text-decoration: none;
+      border-radius: 5px;
+      font-size: 0.95em;
+      transition: background-color 0.3s ease;
+    }
+    .lang-switch a:hover {
+      background-color: #1c5985;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="lang-switch">
+    <a href="en.html">English</a>
+  </div>
+
+  <p>
+    <a href="index.html">← ホームへ戻る</a> |
+    <a href="research.html">研究トップ</a> |
+    <a href="research_nonbinary.html">多元LDPC研究</a>
+  </p>
+
+  <h1>二元（binary）LDPC符号に基づく研究</h1>
+  <p>
+    二元 LDPC 符号における直交性制約（orthogonality barrier）や誤り率遷移の課題に焦点を当て、
+    構成法と復号アルゴリズムの両面から研究を進めています。
+    Joint BP decoding と後処理を組み合わせた実用的な復号設計を通じて、
+    量子 LDPC 符号の性能限界に迫ることを目指しています。
+  </p>
+
+  <h2>主要トピック</h2>
+  <ul>
+    <li>直交性制約（orthogonality barrier）を乗り越える構成と理論枠組み</li>
+    <li>Joint BP decoding による鋭い誤り率遷移の解析と実証</li>
+    <li>後処理（post-processing）を含む実用的な復号アルゴリズム</li>
+  </ul>
+
+  <h2>関連プレプリント</h2>
+  <ul>
+    <li>
+      <a href="https://arxiv.org/abs/2601.08824" target="_blank" rel="noopener">
+        arXiv:2601.08824 — Breaking the Orthogonality Barrier in Quantum LDPC Codes
+      </a>
+    </li>
+    <li>
+      <a href="https://arxiv.org/abs/2507.11534" target="_blank" rel="noopener">
+        arXiv:2507.11534 — Sharp Error-Rate Transitions in Quantum QC-LDPC Codes under Joint BP Decoding
+      </a>
+    </li>
+  </ul>
+
+  <h2>デモ / コード</h2>
+  <ul>
+    <li>
+      APM 置換行列を用いた CSS 符号構成デモ:
+      <a href="https://github.com/kasaikenta/construct_apm_css_code" target="_blank" rel="noopener">
+        https://github.com/kasaikenta/construct_apm_css_code
+      </a>
+    </li>
+    <li>
+      Joint BP + Post-Processing 復号デモ:
+      <a href="https://github.com/kasaikenta/joint_BP_plus_PP" target="_blank" rel="noopener">
+        https://github.com/kasaikenta/joint_BP_plus_PP
+      </a>
+    </li>
+  </ul>
+</body>
+</html>
