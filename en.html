@@ -136,31 +136,46 @@ body {
 </p>
 <h2>Our Research Direction</h2>
 <p>
-  To address this situation, our research focuses on quantum error correction using LDPC codes,  
-  particularly the construction and decoding of Calderbank–Shor–Steane (CSS) quantum codes  
-  based on sparse binary or non-binary matrices.  
-  Our aim is to design quantum codes that approach the hashing bound under practical decoding algorithms.
+  We pursue two complementary lines of research in quantum error correction with LDPC codes:
+  binary LDPC-based quantum codes and non-binary LDPC-based quantum codes.
+  Both aim at scalable constructions and practical decoding while pushing performance toward fundamental limits.
+</p>
+
+<h3>Binary LDPC-based quantum codes</h3>
+<p>
+  In
+  <a href="https://arxiv.org/abs/2601.08824" target="_blank" rel="noopener">
+    Breaking the Orthogonality Barrier in Quantum LDPC Codes
+  </a>,
+  we focus on the orthogonality constraints between X/Z parity-check matrices, which tend to introduce short
+  cycles and limit code distance and decoding performance. We control the commutativity of permutation matrices
+  and restrict orthogonality constraints to the “active” part of the construction, while preserving a regular
+  sparse structure. This yields explicit CSS LDPC codes with large girth, avoiding short cycles in the Tanner graph.
 </p>
 
 <p>
-  One of our major achievements is the development of explicit quantum LDPC codes constructed from permutation matrices,  
-  which demonstrate excellent error-correcting performance over depolarizing channels.  
-  These constructions are carefully designed to avoid short cycles in the Tanner graph,  
-  thereby suppressing the error floor phenomenon.
+  As a concrete demonstration, we construct a girth-8, \((3,12)\)-regular \([[9216,4612, \leq 48]]\) CSS LDPC code
+  and evaluate it under BP decoding combined with low-complexity post-processing on the depolarizing channel.
+  The results show FER \(10^{-8}\) at \(p=4\%\), and density-evolution analysis estimates the decoding threshold
+  at \(p=0.05702\).
+</p>
+
+<h3>Non-binary LDPC-based quantum codes</h3>
+<p>
+  In our
+  <a href="https://www.nature.com/articles/s41534-025-01090-1" target="_blank" rel="noopener">
+    npj Quantum Information paper
+  </a>,
+  we develop non-binary LDPC-CSS constructions and decoding methods that leverage larger field alphabets.
+  The goal is to achieve strong finite-length performance with practical decoding complexity, especially
+  in the low-FER (error-floor) regime relevant to reliable quantum information processing.
 </p>
 
 <p>
-  We are also developing decoding algorithms that account for degeneracy in quantum noise models,  
-  including syndrome-based decoding and belief propagation methods adapted for Galois fields.  
-  Recent results indicate that combining dual codes with appropriate post-processing  
-  significantly improves the decoding success rate.
-</p>
-
-<p>
-  Through this line of work, we have attained performance close to the hashing bound,  
-  reduced error floors in low-rate regimes, constructed codes with large cycle lengths,  
-  and discovered binary LDPC codes with sharp error-rate transitions.  
-  This research contributes to the long-term goal of realizing scalable and fault-tolerant quantum communication and computation.
+  Our decoding approach incorporates belief-propagation variants adapted to non-binary structures and
+  explores post-processing strategies that account for degeneracy. The study reports performance
+  close to the hashing bound under practical decoding, highlighting the promise of non-binary LDPC codes
+  for scalable quantum error correction.
 </p>
 <p style="text-align:center;">
   <img src="./files/figures.png" alt="Decoding performance of the proposed quantum LDPC codes" width="70%">
