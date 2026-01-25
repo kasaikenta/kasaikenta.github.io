@@ -241,6 +241,18 @@ body {
 
 <h3>Binary LDPC-based quantum codes</h3>
 <div class="news-item">
+  <h3>Q. What do you mean by the “orthogonality barrier” in binary CSS LDPC codes?</h3>
+  <p>
+    A: The commutativity condition \(H_X H_Z^{T} = 0\) is essential, but enforcing it directly at the level of the
+    parent matrices (the final binary parity-check matrices) severely restricts edge placements. In sparse regular designs,
+    this tends to introduce many short cycles (especially 4- and 6-cycles), which reduces girth and hurts distance and BP performance.
+    Our construction introduces latent matrices that carry the design freedom; we control commutativity there and then generate
+    parent matrices that satisfy orthogonality. By imposing orthogonality only where necessary in the latent design,
+    we retain regularity while avoiding short cycles and achieving larger girth.
+  </p>
+</div>
+
+<div class="news-item">
   <h3>Q. Can you construct shorter block-length codes to obtain convincing lower bounds on distance?</h3>
   <p>
     A: This is a very reasonable concern. At very long block lengths, it is often difficult to obtain solid lower bounds,
@@ -272,12 +284,39 @@ body {
 </div>
 
 <div class="news-item">
+  <h3>Q. What decoding method is used in the binary experiments?</h3>
+  <p>
+    A: We use belief propagation (BP) decoding with lightweight post-processing.
+    In particular, we apply PP-flip and PP-OSD to correct residual trapping-cycle errors,
+    improving the low-FER regime without heavy complexity.
+  </p>
+</div>
+
+<div class="news-item">
   <h3>Q. What does the notation \([[9216,4612,\le 48]]\) indicate?</h3>
   <p>
     A: The “\(\le 48\)” indicates an upper bound on the minimum distance.
     This bound is derived from a potential (latent) matrix associated with the construction.
     Obtaining convincing lower bounds—especially at very long block lengths—is challenging and is a key motivation
     for exploring shorter instances.
+  </p>
+</div>
+
+<div class="news-item">
+  <h3>Q. What does the density-evolution threshold \(p=0.05702\) represent?</h3>
+  <p>
+    A: Density evolution tracks the message distributions of BP under the cycle-free (tree) assumption in the infinite-length limit.
+    The threshold is the crossover point where BP transitions from successful to unsuccessful decoding on average.
+    It serves as an analytical benchmark, not a finite-length guarantee.
+  </p>
+</div>
+
+<div class="news-item">
+  <h3>Q. How does this binary construction differ from earlier QLDPC constructions?</h3>
+  <p>
+    A: I am not exhaustively familiar with every previous construction, but from a performance perspective,
+    our approach preserves sparse regular structure while controlling commutativity to achieve large girth,
+    and it shows strong finite-length performance under BP with post-processing.
   </p>
 </div>
 
