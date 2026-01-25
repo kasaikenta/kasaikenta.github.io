@@ -243,12 +243,12 @@ body {
 <div class="news-item">
   <h3>Q. What do you mean by the “orthogonality barrier” in binary CSS LDPC codes?</h3>
   <p>
-    A: The commutativity condition \(H_X H_Z^{T} = 0\) is essential, but enforcing it directly at the level of the
-    parent matrices (the final binary parity-check matrices) severely restricts edge placements. In sparse regular designs,
-    this tends to introduce many short cycles (especially 4- and 6-cycles), which reduces girth and hurts distance and BP performance.
-    Our construction introduces latent matrices that carry the design freedom; we control commutativity there and then generate
-    parent matrices that satisfy orthogonality. By imposing orthogonality only where necessary in the latent design,
-    we retain regularity while avoiding short cycles and achieving larger girth.
+    A: The commutativity condition \(H_X H_Z^{T} = 0\) is essential, but enforcing it directly at the level of
+    sparse regular binary parity-check matrices severely restricts edge placements. This tends to introduce many short cycles
+    (especially 4- and 6-cycles), which reduces girth and hurts distance and BP performance. In our framework, the construction
+    uses latent matrices that provide design freedom together with parent matrices, and orthogonality is enforced only on the
+    active matrices (not on the parent matrices themselves). By controlling commutativity on the active part, we retain regularity
+    while avoiding short cycles and achieving larger girth.
   </p>
 </div>
 
