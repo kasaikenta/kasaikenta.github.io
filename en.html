@@ -239,6 +239,22 @@ body {
 <hr>
 <h2>Q&amp;A (Frequently Asked Questions)</h2>
 
+<h3>Binary LDPC-based quantum codes</h3>
+<div class="news-item">
+  <h3>Q. Can you construct shorter block-length codes to obtain convincing lower bounds on distance?</h3>
+  <p>
+    A: This is a very reasonable concern. At very long block lengths, it is often difficult to obtain solid lower bounds,
+    and relying only on upper bounds can make it hard to judge how much the construction helps.
+    Shorter instances would make it easier to compute convincing lower bounds and verify whether the distance is genuinely improved.
+  </p>
+  <p>
+    The latest arXiv version includes a brief discussion of an idea to relax some construction constraints
+    to target shorter block lengths while aiming to keep girth 8 and (hopefully) minimum distance 48:
+    <a href="https://arxiv.org/abs/2601.08824" target="_blank" rel="noopener">arXiv:2601.08824</a>.
+  </p>
+</div>
+
+<h3>Non-binary LDPC-based quantum codes</h3>
 <div class="news-item">
   <h3>Q. What key idea enables the proposed codes to approach the hashing bound?</h3>
   <p>
@@ -287,25 +303,13 @@ body {
     theory tend not to emphasize minimum distance as the decisive factor: good iterative decoding performance 
     can be achieved without relying on very large minimum distance.
   </p>
-</div>
-<p>
-While minimum distance is an important metric for characterizing the error-floor regime, achieving linearly growing minimum distance is not strictly necessary for excellent iterative decoding performance.
-This insight can be traced back to lessons from classical coding theory.
-During the 1980s and early 1990s, much of the community’s attention was directed toward the algebraic aspects of minimum-distance theory, and practical iterative methods received less focus.
-Consequently, the (re)discovery of turbo codes (1993) and LDPC codes (reintroduced in the mid-1990s, following Gallager’s original 1962 work) came somewhat later, even though their effectiveness derives not primarily from large minimum distance but from efficient iterative decoding and code structures that are well suited for BP.
-</p>
-</div>
-<div class="news-item">
-  <h3>Q. Why is a new construction of quantum LDPC codes necessary?</h3>
   <p>
-    Conventional quantum LDPC codes suffer from low coding rates, high error floors,
-    lack of scalability, and heavy post-processing requirements.
-    As a result, performance does not scale with blocklength and remains far from the hashing bound.
-    Our work aims to construct codes with non-vanishing rate and efficient decoding
-    that achieve performance close to the hashing bound.
+    While minimum distance is an important metric for characterizing the error-floor regime, achieving linearly growing minimum distance is not strictly necessary for excellent iterative decoding performance.
+    This insight can be traced back to lessons from classical coding theory.
+    During the 1980s and early 1990s, much of the community’s attention was directed toward the algebraic aspects of minimum-distance theory, and practical iterative methods received less focus.
+    Consequently, the (re)discovery of turbo codes (1993) and LDPC codes (reintroduced in the mid-1990s, following Gallager’s original 1962 work) came somewhat later, even though their effectiveness derives not primarily from large minimum distance but from efficient iterative decoding and code structures that are well suited for BP.
   </p>
 </div>
-
 
 <div class="news-item">
   <h3>Q. What are the main components of the proposed coding framework?</h3>
@@ -330,31 +334,12 @@ Consequently, the (re)discovery of turbo codes (1993) and LDPC codes (reintroduc
 </div>
 
 <div class="news-item">
-  <h3>Q. Why do the results focus on large blocklengths?</h3>
-  <p>
-    Threshold phenomena and error-floor behavior become visible only at very large blocklengths.
-    Demonstrating sharp threshold-like performance without error floors in this regime
-    provides the strongest evidence of scalability.
-    While short blocklengths also show good scaling, long blocklength results best highlight the theory.
-  </p>
-</div>
-
-<div class="news-item">
   <h3>Q. What is the stabilizer weight?</h3>
   <p>
     The stabilizer weight is upper bounded by e × L, where e is the field extension degree
     and L is the row weight.
     For example, with e = 8 and L = 6, the stabilizer weight is at most 48,
     and crucially remains constant regardless of code length.
-  </p>
-</div>
-
-<div class="news-item">
-  <h3>Q. Are measurement errors considered?</h3>
-  <p>
-    No. The analysis assumes an idealized setting where all gate operations, stabilizer measurements,
-    and recovery operations are error-free.
-    The purpose is to isolate the coding-theoretic limitations apart from engineering constraints.
   </p>
 </div>
 
@@ -367,6 +352,54 @@ Consequently, the (re)discovery of turbo codes (1993) and LDPC codes (reintroduc
     ensuring the code remains a binary CSS code.
   </p>
 </div>
+
+<div class="news-item">
+  <h3>Q. How are orthogonal matrices constructed using APM (Affine Permutation Matrices)?</h3>
+  <p>
+    Our method generalizes the Hagiwara–Imai construction.  
+    Specifically, we place affine permutation matrices (APMs) at cyclically shifted positions within the parity-check matrices.  
+    By carefully choosing the shifts and the APM entries, the resulting non-binary matrices 
+    \( H_{\Gamma} \) and \( H_{\Delta} \) become orthogonal over \( \mathbb{F}_q \).
+  </p>
+  <p>
+    In other words, the inner product between any row of \( H_{\Gamma} \) and any row of \( H_{\Delta} \) cancels to zero in \( \mathbb{F}_q \).  
+    After expanding each field element into an \( e \times e \) binary companion matrix, we obtain binary parity-check matrices 
+    \( H_X \) and \( H_Z \) that satisfy \( H_X H_Z^{T} = 0 \).  
+    This approach ensures orthogonality while avoiding short cycles, leading to improved decoding performance.
+  </p>
+</div>
+
+<h3>General / Methodological</h3>
+<div class="news-item">
+  <h3>Q. Why is a new construction of quantum LDPC codes necessary?</h3>
+  <p>
+    Conventional quantum LDPC codes suffer from low coding rates, high error floors,
+    lack of scalability, and heavy post-processing requirements.
+    As a result, performance does not scale with blocklength and remains far from the hashing bound.
+    Our work aims to construct codes with non-vanishing rate and efficient decoding
+    that achieve performance close to the hashing bound.
+  </p>
+</div>
+
+<div class="news-item">
+  <h3>Q. Why do the results focus on large blocklengths?</h3>
+  <p>
+    Threshold phenomena and error-floor behavior become visible only at very large blocklengths.
+    Demonstrating sharp threshold-like performance without error floors in this regime
+    provides the strongest evidence of scalability.
+    While short blocklengths also show good scaling, long blocklength results best highlight the theory.
+  </p>
+</div>
+
+<div class="news-item">
+  <h3>Q. Are measurement errors considered?</h3>
+  <p>
+    No. The analysis assumes an idealized setting where all gate operations, stabilizer measurements,
+    and recovery operations are error-free.
+    The purpose is to isolate the coding-theoretic limitations apart from engineering constraints.
+  </p>
+</div>
+
 <div class="news-item">
   <h3>Q. How is decoding success or failure determined?</h3>
   <p>
@@ -383,21 +416,7 @@ Consequently, the (re)discovery of turbo codes (1993) and LDPC codes (reintroduc
     resolving small trapping-cycle structures.
   </p>
 </div>
-<div class="news-item">
-  <h3>Q. How are orthogonal matrices constructed using APM (Affine Permutation Matrices)?</h3>
-  <p>
-    Our method generalizes the Hagiwara–Imai construction.  
-    Specifically, we place affine permutation matrices (APMs) at cyclically shifted positions within the parity-check matrices.  
-    By carefully choosing the shifts and the APM entries, the resulting non-binary matrices 
-    \( H_{\Gamma} \) and \( H_{\Delta} \) become orthogonal over \( \mathbb{F}_q \).
-  </p>
-  <p>
-    In other words, the inner product between any row of \( H_{\Gamma} \) and any row of \( H_{\Delta} \) cancels to zero in \( \mathbb{F}_q \).  
-    After expanding each field element into an \( e \times e \) binary companion matrix, we obtain binary parity-check matrices 
-    \( H_X \) and \( H_Z \) that satisfy \( H_X H_Z^{T} = 0 \).  
-    This approach ensures orthogonality while avoiding short cycles, leading to improved decoding performance.
-  </p>
-</div>
+
 <div class="news-item">
   <h3>
     Q. Could the unusually sharp performance curves be an artifact of incorrect decoding criteria?  
