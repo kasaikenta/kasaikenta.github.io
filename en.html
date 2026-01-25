@@ -763,6 +763,7 @@ body {
       event.stopPropagation();
       const isOpen = menuPanel.classList.toggle("open");
       menuButton.setAttribute("aria-expanded", isOpen ? "true" : "false");
+      menuButton.textContent = menuButton.textContent === "☰" ? "🍔" : "☰";
     });
 
     menuPanel.addEventListener("click", (event) => {
