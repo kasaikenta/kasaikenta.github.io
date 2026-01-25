@@ -89,6 +89,43 @@
     .lang-switch a:hover {
       background-color: #1c5985;
     }
+    .menu-toggle {
+      position: fixed;
+      top: 16px;
+      left: 16px;
+      z-index: 1000;
+    }
+    .menu-button {
+      background-color: #2980b9;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      padding: 8px 12px;
+      font-size: 20px;
+      cursor: pointer;
+    }
+    .menu-panel {
+      display: none;
+      position: fixed;
+      top: 56px;
+      left: 16px;
+      background: #fff;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      padding: 10px 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+      max-height: 70vh;
+      overflow-y: auto;
+      min-width: 220px;
+    }
+    .menu-panel.open {
+      display: block;
+    }
+    .menu-panel a {
+      display: block;
+      padding: 4px 0;
+      color: #2980b9;
+    }
     .news-item {
       margin-bottom: 30px;
       padding: 10px 15px;
@@ -146,7 +183,23 @@
   </script>
 </head>
 
-<body>
+<body id="top">
+  <div class="menu-toggle">
+    <button class="menu-button" id="menu-button" aria-expanded="false" aria-controls="menu-panel">&#9776;</button>
+    <nav class="menu-panel" id="menu-panel" aria-label="On-page navigation">
+      <a href="#top">トップ</a>
+      <a href="#research-highlight">研究紹介</a>
+      <a href="#files">授業・ゼミ用資料</a>
+      <a href="#webapps">ウェブアプリ</a>
+      <a href="#preprints">プレプリント</a>
+      <a href="#research-background">研究背景と成果</a>
+      <a href="#research-direction">研究の方向性</a>
+      <a href="#news">研究室ニュース</a>
+      <a href="#software">ソフトウェアとデータ</a>
+      <a href="#donation">奨学寄附金</a>
+      <a href="#contact">連絡先</a>
+    </nav>
+  </div>
   <div class="lang-switch">
     <a href="en.html">English</a>
   </div>
@@ -164,7 +217,7 @@
   <p><a href="https://scholar.google.com/citations?user=CHJLpOkAAAAJ">Google Scholar プロフィール</a></p>
   <p><a href="https://x.com/kasai_lab">研究室X（旧Twitter）アカウント</a></p>
   <hr>
-  <h2>研究紹介：量子LDPC符号の直交性の壁を突破</h2>
+  <h2 id="research-highlight">研究紹介：量子LDPC符号の直交性の壁を突破</h2>
   <p>
     量子LDPC符号では、X/Z検査行列の直交性制約がタナーグラフに短いサイクルを生み、
     最小距離やデコーディング性能に本質的な制約（orthogonality barrier）を与えることが知られています。
@@ -192,7 +245,7 @@
   <ul id="file-list"></ul>
 
   <hr>
-  <h2>ウェブアプリ</h2>
+  <h2 id="webapps">ウェブアプリ</h2>
   <p>
     ・Reed-Solomon符号
     <a href="https://kasaikenta.github.io/RS.html" target="_blank" rel="noopener">link</a><br>
@@ -211,11 +264,11 @@
 </p>
 
   <hr>
-  <h2>プレプリント</h2>
+  <h2 id="preprints">プレプリント</h2>
   <p><a href="https://arxiv.org/search/cs?searchtype=author&query=Kasai,+Kenta" target="_blank">arXiv 上のプレプリント一覧</a></p>
 
 <hr>
-<h2>研究背景と成果</h2>
+<h2 id="research-background">研究背景と成果</h2>
 <p>
   実用的な量子計算を実現するためには、多数の信頼できる論理量子ビットを構築することが不可欠です。  
   しかし現在の量子コンピュータの規模では、物理量子ビットが数千個あっても、論理量子ビットは数十個程度しか得られません。  
@@ -247,7 +300,7 @@
   量子誤り訂正符号は依然として同等の水準には到達していません。
 </p>
 
-<h2>私たちの研究の方向性</h2>
+<h2 id="research-direction">私たちの研究の方向性</h2>
 <p>
   この状況に対応するため、私たちの研究グループは量子 LDPC 符号を用いた誤り訂正、  
   特にスパースな二元または非二元行列に基づく CSS (Calderbank–Shor–Steane) 符号の構成と復号に取り組んでいます。  
@@ -276,7 +329,7 @@
   <img src="./files/figures.png" alt="提案する量子LDPC符号の復号性能" width="70%">
 </p>
 
-  <h2>研究室ニュース</h2>
+  <h2 id="news">研究室ニュース</h2>
 <div class="news-item">
   <h3>プレプリントを公開：「Breaking the Orthogonality Barrier in Quantum LDPC Codes」（2026年1月13日）</h3>
   <p>
@@ -491,7 +544,7 @@
   </div>
 
   <hr>
-  <h2>ソフトウェアとデータ</h2>
+  <h2 id="software">ソフトウェアとデータ</h2>
   <p>
     最近の研究で使用したソフトウェアおよびパリティ検査行列のデータは、現時点では公開用に整備されておらず、コードも洗練されたものではありません。  
     それでも構わなければ、妥当なご要望に応じて提供可能です。  
@@ -517,7 +570,7 @@
     </li>
   </ul>
   <hr>
-  <h2>奨学寄附金のお願い</h2>
+  <h2 id="donation">奨学寄附金のお願い</h2>
   <p>
     研究・教育の発展のため、奨学寄附金によるご支援をお願いしております。
     奨学寄附金は、企業・団体・個人の皆様が本学の事業担当者（教員等）を指定して寄附できる制度で、
@@ -537,7 +590,7 @@
     Mail: don.gra[at]cim.isct.ac.jp（[at]を@に変更してください）
   </p>
   <hr>
-  <h2>連絡先</h2>
+  <h2 id="contact">連絡先</h2>
   <p>Email: <a href="mailto:kenta@ict.eng.isct.ac.jp">kenta@ict.eng.isct.ac.jp</a></p>
   <p>居室: 東京科学大学 大岡山キャンパス南3号館418号室 〒152-8550 東京都目黒区大岡山2-12-1 S3-61</p>
 
@@ -575,6 +628,42 @@
       const lastNewsItem = newsItems[newsItems.length - 1];
       lastNewsItem.insertAdjacentElement("afterend", moreBtn);
     }
+  });
+</script>
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const menuButton = document.getElementById("menu-button");
+    const menuPanel = document.getElementById("menu-panel");
+    if (!menuButton || !menuPanel) return;
+
+    const closeMenu = () => {
+      menuPanel.classList.remove("open");
+      menuButton.setAttribute("aria-expanded", "false");
+    };
+
+    menuButton.addEventListener("click", (event) => {
+      event.stopPropagation();
+      const isOpen = menuPanel.classList.toggle("open");
+      menuButton.setAttribute("aria-expanded", isOpen ? "true" : "false");
+    });
+
+    menuPanel.addEventListener("click", (event) => {
+      if (event.target.tagName === "A") {
+        closeMenu();
+      }
+    });
+
+    document.addEventListener("click", (event) => {
+      if (!menuPanel.contains(event.target) && event.target !== menuButton) {
+        closeMenu();
+      }
+    });
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") {
+        closeMenu();
+      }
+    });
   });
 </script>
 </body>
