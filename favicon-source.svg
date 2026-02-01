@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs>
+    <linearGradient id="towerOrange" x1="0" x2="0" y1="0" y2="1">
+      <stop offset="0" stop-color="#ff6a3d"/>
+      <stop offset="1" stop-color="#e33a1f"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="96" fill="#fff2e8"/>
+
+  <!-- Base platform -->
+  <rect x="112" y="412" width="288" height="22" rx="9" fill="#f6c9b8"/>
+
+  <!-- Tower legs -->
+  <g fill="url(#towerOrange)">
+    <polygon points="130,412 206,412 250,160 214,160"/>
+    <polygon points="382,412 306,412 262,160 298,160"/>
+  </g>
+
+  <!-- Lattice crossbars -->
+  <g stroke="#ffd6c6" stroke-width="12" stroke-linecap="round">
+    <line x1="172" y1="370" x2="340" y2="250"/>
+    <line x1="340" y1="370" x2="172" y2="250"/>
+    <line x1="188" y1="330" x2="324" y2="230"/>
+    <line x1="324" y1="330" x2="188" y2="230"/>
+    <line x1="204" y1="290" x2="308" y2="210"/>
+    <line x1="308" y1="290" x2="204" y2="210"/>
+  </g>
+
+  <!-- Observation deck (white band) -->
+  <g>
+    <rect x="180" y="190" width="152" height="30" rx="12" fill="#ffffff"/>
+    <rect x="190" y="198" width="132" height="14" rx="7" fill="#f6c9b8"/>
+  </g>
+
+  <!-- Upper tower -->
+  <g fill="url(#towerOrange)">
+    <polygon points="210,190 302,190 280,92 232,92"/>
+    <polygon points="232,92 280,92 268,44 244,44"/>
+  </g>
+
+  <!-- Antenna -->
+  <g fill="#e33a1f">
+    <rect x="250" y="20" width="12" height="28"/>
+    <polygon points="256,4 244,20 268,20"/>
+  </g>
+</svg>
