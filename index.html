@@ -628,9 +628,9 @@
 <script>
   document.addEventListener("DOMContentLoaded", () => {
     const newsItems = document.querySelectorAll(".news-item");
-    const showCount = 2;
+    const showCount = 5;
 
-    // 最初の2件以外を非表示にする
+    // 最初の5件以外を非表示にする
     newsItems.forEach((item, index) => {
       if (index >= showCount) {
         item.style.display = "none";
