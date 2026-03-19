@@ -39,6 +39,34 @@
   margin-bottom: 10px;
   display: block;
 }
+.code-table-wrap {
+  overflow-x: auto;
+  margin: 20px 0 24px;
+}
+.code-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.95em;
+  background-color: #fff;
+}
+.code-table th,
+.code-table td {
+  border: 1px solid #d7dde3;
+  padding: 10px 12px;
+  text-align: left;
+  vertical-align: top;
+}
+.code-table th {
+  background-color: #eef5fb;
+  color: #2c3e50;
+}
+.code-table code {
+  font-size: 0.95em;
+}
+.code-note {
+  font-size: 0.92em;
+  color: #555;
+}
 body {
       font-family: Arial, sans-serif;
       margin: 40px;
@@ -220,6 +248,73 @@ body {
     FER performance for the \((3,12)\)-regular \([[9216,4612, \leq 48]]\) code.
   </figcaption>
 </figure>
+
+<p>
+  The table below summarizes our current best binary CSS LDPC construction files by \(P\),
+  using the notation <code>[[n,k,&lt;=ub]]</code>. Each row links directly to the corresponding parameter file.
+</p>
+<div class="code-table-wrap">
+  <table class="code-table">
+    <thead>
+      <tr>
+        <th>P</th>
+        <th>Code</th>
+        <th>Parameter file</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>216</td>
+        <td><code>[[2592,1300,&lt;=24]]</code></td>
+        <td><a href="files/2601.08824_codes/H_P216_J3_L12_dmax3_nc0-3_seed17265494505985166_ub24.txt">H_P216_J3_L12_dmax3_nc0-3_seed17265494505985166_ub24.txt</a></td>
+      </tr>
+      <tr>
+        <td>288</td>
+        <td><code>[[3456,1732,&lt;=24]]</code></td>
+        <td><a href="files/2601.08824_codes/H_P288_J3_L12_dmax3_nc0-3_seed17230036422081291_ub24.txt">H_P288_J3_L12_dmax3_nc0-3_seed17230036422081291_ub24.txt</a></td>
+      </tr>
+      <tr>
+        <td>384</td>
+        <td><code>[[4608,2308,&lt;=24]]</code></td>
+        <td><a href="files/2601.08824_codes/H_P384_J3_L12_dmax3_nc0-3_seed17229885754182916_ub24.txt">H_P384_J3_L12_dmax3_nc0-3_seed17229885754182916_ub24.txt</a></td>
+      </tr>
+      <tr>
+        <td>576</td>
+        <td><code>[[6912,3460,&lt;=48]]</code></td>
+        <td><a href="files/2601.08824_codes/H_P576_J3_L12_dmax3_nc0-3_seed17646913617314833_best2_ub48_att9401.txt">H_P576_J3_L12_dmax3_nc0-3_seed17646913617314833_best2_ub48_att9401.txt</a></td>
+      </tr>
+      <tr>
+        <td>768</td>
+        <td><code>[[9216,4612,&lt;=48]]</code></td>
+        <td><a href="files/2601.08824_codes/H_P768_J3_L12_dmax3_nc0-3_seed17592239305062458_best70_ub48_att24751.txt">H_P768_J3_L12_dmax3_nc0-3_seed17592239305062458_best70_ub48_att24751.txt</a></td>
+      </tr>
+      <tr>
+        <td>1536</td>
+        <td><code>[[18432,9220,&lt;=48]]</code></td>
+        <td><a href="files/2601.08824_codes/H_P1536_J3_L12_dmax3_nc0-3_seed17613728482828666_best183_ub48_att64436.txt">H_P1536_J3_L12_dmax3_nc0-3_seed17613728482828666_best183_ub48_att64436.txt</a></td>
+      </tr>
+      <tr>
+        <td>1920</td>
+        <td><code>[[23040,11524,&lt;=60]]</code></td>
+        <td><a href="files/2601.08824_codes/H_P1920_J3_L12_dmax3_nc0-3_seed17622415249116583_best11_ub60_att15549.txt">H_P1920_J3_L12_dmax3_nc0-3_seed17622415249116583_best11_ub60_att15549.txt</a></td>
+      </tr>
+      <tr>
+        <td>3072</td>
+        <td><code>[[36864,18436,&lt;=48]]</code></td>
+        <td><a href="files/2601.08824_codes/H_P3072_J3_L12_dmax3_nc0-3_seed17613741499129833_best36_ub48_att8979.txt">H_P3072_J3_L12_dmax3_nc0-3_seed17613741499129833_best36_ub48_att8979.txt</a></td>
+      </tr>
+      <tr>
+        <td>3840</td>
+        <td><code>[[46080,23044,&lt;=96]]</code></td>
+        <td><a href="files/2601.08824_codes/H_P3840_J3_L12_dmax3_nc0-3_seed17622378158439083_best1_ub96_att423.txt">H_P3840_J3_L12_dmax3_nc0-3_seed17622378158439083_best1_ub96_att423.txt</a></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+<p class="code-note">
+  Here \(n=LP\), and \(k\) is computed from the active-check ranks as \(k=n-\mathrm{rank}(H_X)-\mathrm{rank}(H_Z)\).
+  The reported \(ub\) is the current best overall upper bound found in our available construction files for each \(P\).
+</p>
 
 <h3>Non-binary LDPC-based quantum codes</h3>
 <p>
