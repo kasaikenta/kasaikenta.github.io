@@ -249,6 +249,7 @@ body {
 <p>
   The table below summarizes our current best \((3,12)\)-regular girth-8 binary CSS LDPC construction files by \(P\),
   using the notation \(\left[\left[n,k,d\right]\right]\). Each row links directly to the corresponding parameter file.
+  The current strongest entry in this best-by-\(P\) ladder is \(\left[\left[46080,23044,\leq 120\right]\right]\).
 </p>
 <div class="code-table-wrap">
   <table class="code-table">
@@ -283,7 +284,7 @@ body {
       <tr>
         <td>768</td>
         <td>\(\left[\left[9216,4612,\leq 48\right]\right]\)</td>
-        <td><a href="files/2601.08824_codes/H_P768_J3_L12_dmax3_nc0-3_seed17592239305062458_best70_ub48_att24751.txt">H_P768_J3_L12_dmax3_nc0-3_seed17592239305062458_best70_ub48_att24751.txt</a></td>
+        <td><a href="files/2601.08824_codes/H_P768_J3_L12_dmax3_nc0-3_seed17592239305062458_best300_ub48_att109700.txt">H_P768_J3_L12_dmax3_nc0-3_seed17592239305062458_best300_ub48_att109700.txt</a></td>
       </tr>
       <tr>
         <td>1536</td>
@@ -298,19 +299,20 @@ body {
       <tr>
         <td>3072</td>
         <td>\(\left[\left[36864,18436,\leq 48\right]\right]\)</td>
-        <td><a href="files/2601.08824_codes/H_P3072_J3_L12_dmax3_nc0-3_seed17613741499129833_best36_ub48_att8979.txt">H_P3072_J3_L12_dmax3_nc0-3_seed17613741499129833_best36_ub48_att8979.txt</a></td>
+        <td><a href="files/2601.08824_codes/H_P3072_J3_L12_dmax3_nc0-3_seed17613741499129833_best239_ub48_att61752.txt">H_P3072_J3_L12_dmax3_nc0-3_seed17613741499129833_best239_ub48_att61752.txt</a></td>
       </tr>
       <tr>
         <td>3840</td>
-        <td>\(\left[\left[46080,23044,\leq 96\right]\right]\)</td>
-        <td><a href="files/2601.08824_codes/H_P3840_J3_L12_dmax3_nc0-3_seed17622378158439083_best1_ub96_att423.txt">H_P3840_J3_L12_dmax3_nc0-3_seed17622378158439083_best1_ub96_att423.txt</a></td>
+        <td>\(\left[\left[46080,23044,\leq 120\right]\right]\)</td>
+        <td><a href="files/2601.08824_codes/H_P3840_J3_L12_dmax3_nc0-3_seed17622378158439083_best16_ub120_att30664.txt">H_P3840_J3_L12_dmax3_nc0-3_seed17622378158439083_best16_ub120_att30664.txt</a></td>
       </tr>
     </tbody>
   </table>
 </div>
 <p class="code-note">
   Here \(n=LP\), and \(k\) is computed from the active-check ranks as \(k=n-\mathrm{rank}(H_X)-\mathrm{rank}(H_Z)\).
-  The reported \(ub\) is the current best overall upper bound found in our available construction files for each \(P\).
+  The reported \(ub\) is the current best overall upper bound found in our available construction files for each \(P\),
+  combining latent and non-latent structural bounds.
 </p>
 
 <h3>Non-binary LDPC-based quantum codes</h3>
