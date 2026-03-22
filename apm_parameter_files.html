@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>How to Read APM Parameter Files</title>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 40px;
+      line-height: 1.7;
+      color: #1f2933;
+    }
+    h1, h2 {
+      color: #2c3e50;
+    }
+    a {
+      color: #2980b9;
+      text-decoration: none;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+    code, pre {
+      font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+    }
+    pre {
+      background: #f7f9fb;
+      border: 1px solid #d7dde3;
+      border-radius: 8px;
+      padding: 14px;
+      overflow-x: auto;
+    }
+    .note {
+      background: #eef5fb;
+      border-left: 4px solid #2980b9;
+      padding: 12px 14px;
+      margin: 18px 0;
+    }
+  </style>
+</head>
+<body>
+  <p><a href="en.html">Back to the main page</a></p>
+  <h1>How to Read APM Parameter Files</h1>
+
+  <p>
+    The files linked from the binary CSS LDPC table contain the affine-permutation parameters used to build the
+    \(H_X\) and \(H_Z\) parity-check matrices. Each file defines a family member with a specific lift size \(P\),
+    regularity \((J,L)=(3,12)\), and a current structural upper bound on the minimum distance.
+  </p>
+
+  <h2>Header Lines</h2>
+  <p>
+    The first lines encode the construction parameters and the affine maps.
+  </p>
+  <pre>216 3 12
+17265506054090875
+181 91 37 181 91 37
+105 57 192 186 57 156
+193 97 193 181 97 193
+112 116 64 54 44 100</pre>
+
+  <p>
+    The first line is \(P\), \(J\), and \(L\). The second line is the random seed used by the search program.
+    The next three lines are the multiplicative and additive coefficients defining the affine permutation maps
+    \(f_i(x)=a_i x+b_i \bmod P\) and \(g_i(x)=c_i x+d_i \bmod P\).
+  </p>
+
+  <h2>Comment Section</h2>
+  <p>
+    The remaining lines start with <code>#</code> and summarize the best structural certificates currently known
+    for that file.
+  </p>
+
+  <pre># distance_bound_overall 14
+# latent_x_upper 24
+# latent_z_upper 24
+# nonlatent_x_upper 42
+# nonlatent_z_upper 36
+# decoderlog_z_upper 14</pre>
+
+  <p>
+    The most important fields are:
+  </p>
+  <ul>
+    <li><code>distance_bound_overall</code>: the current best upper bound on the quantum minimum distance.</li>
+    <li><code>latent_*</code>: upper bounds coming from the latent-space witness construction.</li>
+    <li><code>nonlatent_*</code>: upper bounds from \(m\)-block row-space-external witnesses.</li>
+    <li><code>cycle8_ets_*</code>: upper bounds found by the cycle-8 ETS search, when available.</li>
+    <li><code>decoderlog_*</code>: upper bounds extracted from decoder failures that produced a syndrome-matched non-stabilizer residual.</li>
+  </ul>
+
+  <div class="note">
+    The filename itself is only a snapshot. A suffix such as <code>ub48</code> means that, at the time the file was
+    written, the best known overall upper bound was 48. Later experiments can improve that number, so the summary
+    comments inside the file should be treated as the authoritative source.
+  </div>
+
+  <h2>Interpretation</h2>
+  <p>
+    If a file is listed on the main page as \(\left[\left[n,k,\leq u\right]\right]\), then \(n=12P\),
+    \(k\) is the CSS code dimension computed from the ranks of \(H_X\) and \(H_Z\), and \(u\) is the smallest
+    currently certified upper bound among the available witnesses.
+  </p>
+
+  <p>
+    These files are updated as our search and certification pipeline evolves, so the published table on the main page
+    should be understood as a living record rather than a frozen final benchmark.
+  </p>
+</body>
+</html>
