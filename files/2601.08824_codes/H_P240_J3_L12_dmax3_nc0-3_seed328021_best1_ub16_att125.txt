@@ -29,7 +29,7 @@
 # cycle8_ets_min_upper n/a
 # decoderlog_method syndrome-matched logical witness from jointbp_ets_ppub fail log
 # decoderlog_note pure-X residual of weight 16 lies outside Row(H_Z), hence d_X <= 16
-# decoderlog_source network-wide p=0.03 sampling on same-network hosts
+# decoderlog_source extended p=0.03 decoder-fail sampling campaign
 # decoderlog_file faillog_seed8010_p0.03_seed10394381021594444695_trial420594.txt
 # decoderlog_x_upper 16
 # decoderlog_min_upper 16
