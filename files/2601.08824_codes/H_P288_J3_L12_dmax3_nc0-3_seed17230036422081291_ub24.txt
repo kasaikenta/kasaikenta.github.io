@@ -22,3 +22,10 @@
 # nonlatent_z_m 2
 # nonlatent_x_support [(0,41) (0,44) (0,113) (0,116) (0,185) (0,188) (0,257) (0,260) (1,47) (1,50) (1,119) (1,122) (1,191) (1,194) (1,263) (1,266) (6,1) (6,73) (6,145) (6,217) (8,35) (8,107) (8,179) (8,251)]
 # nonlatent_z_support [(1,0) (1,18) (1,36) (1,54) (1,72) (1,90) (1,108) (1,126) (1,144) (1,162) (1,180) (1,198) (1,216) (1,234) (1,252) (1,270) (2,8) (2,26) (2,44) (2,62) (2,80) (2,98) (2,116) (2,134) ...]
+# decoderlog_method syndrome-matched logical witness from jointbp_ets_ppub fail log
+# decoderlog_note pure-X residual of weight 28 lies outside Row(H_Z), hence d_X <= 28
+# decoderlog_source extended p=0.03 decoder-fail sampling campaign
+# decoderlog_file faillog_seed19024_p0.03_seed14616978870147541716_trial632858.txt
+# decoderlog_x_upper 28
+# decoderlog_min_upper 24
+# decoderlog_x_support [34,48,124,178,330,474,596,716,734,740,956,964,986,1006,1210,1238,1254,1398,1412,1558,1616,1702,1813,2446,2780,2818,3032,3144]
