@@ -251,9 +251,9 @@ body {
 <p>
   For reference, the live table below also includes a separate <em>paper code</em> row for the \(P=768\) example from
   <a href="https://arxiv.org/abs/2601.08824" target="_blank" rel="noopener">arXiv:2601.08824</a>. The linked checkpoint
-  is now an exact transcription of the printed Table 1 parameters. For that exact paper row, the currently tracked
-  algebraic information is a non-latent \(m\)-block upper bound of \(32\), so we keep it distinct from the current
-  best-by-\(P\) row.
+  is an exact transcription of the printed Table 1 parameters. For that exact paper row, the currently tracked
+  structural bounds are latent \(48\) and non-latent \(64\), so the overall structural upper bound matches the
+  published value \(48\).
 </p>
 
 <p>
@@ -382,14 +382,14 @@ body {
       </tr>
       <tr>
         <td>768 (paper code)</td>
-        <td><a href="files/2601.08824_codes/H_P768_J3_L12_dmax3_nc0-3_paper_table1_ub32.txt">\(\left[\left[9216,4612,\leq 32\right]\right]\)</a></td>
-        <td>--</td>
-        <td>32</td>
+        <td><a href="files/2601.08824_codes/H_P768_J3_L12_dmax3_nc0-3_paper_table1_ub48.txt">\(\left[\left[9216,4612,\leq 48\right]\right]\)</a></td>
+        <td>48</td>
+        <td>64</td>
         <td>--</td>
         <td>--</td>
         <td>--</td>
         <td>Reference</td>
-        <td>Exact transcription of the printed Table 1 parameters in <a href="https://arxiv.org/abs/2601.08824" target="_blank" rel="noopener">arXiv:2601.08824</a>. The currently tracked algebraic information for this exact row is a non-latent \(m\)-block upper bound of 32.</td>
+        <td>Exact transcription of the printed Table 1 parameters in <a href="https://arxiv.org/abs/2601.08824" target="_blank" rel="noopener">arXiv:2601.08824</a>. Recomputing the exact row gives latent upper bound \(48\), non-latent \(m\)-block upper bound \(64\), and overall structural upper bound \(48\).</td>
       </tr>
       <tr>
         <td>1536</td>
