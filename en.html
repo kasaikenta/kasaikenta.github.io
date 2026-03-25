@@ -285,9 +285,9 @@ body {
   in particular, we are not tuning the decoder for best low-FER behavior before reporting these bounds.
 </p>
 <p class="code-note">
-  In the trials column, each entry is written as <code>completed / incl. active-batch budget</code>.
-  The first number counts completed decoder-fail trials, while the second number is a conservative in-flight budget
-  obtained by adding the currently active 1M-trial worker batches.
+  In the trials column, each entry is written as <code>completed / incl. submitted budget</code>.
+  The first number counts completed decoder-fail trials, while the second number is a conservative submitted budget
+  obtained by adding the currently active worker batches and the TSUBAME waves already submitted to the queue.
 </p>
 
 <div id="live-upper-bound-table-body" class="code-table-wrap">
@@ -403,7 +403,7 @@ body {
         <td>64.00M / &gt;128.00M</td>
         <td>\([0,6.00]\times 10^{-8}\)</td>
         <td>Running</td>
-        <td>First 64.00M decoder-fail trials on TSUBAME produced no fail log; a fresh second 64M TSUBAME wave is now in flight.</td>
+        <td>First 64.00M decoder-fail trials on TSUBAME produced no fail log; an additional 64M TSUBAME wave has been submitted.</td>
       </tr>
       <tr>
         <td>1920</td>
@@ -414,7 +414,7 @@ body {
         <td>64.00M / &gt;160.00M</td>
         <td>\([0,6.00]\times 10^{-8}\)</td>
         <td>Running</td>
-        <td>First 64.00M decoder-fail trials on TSUBAME produced no fail log; a fresh second 64M TSUBAME wave and four active 8M home-mini batches are in flight.</td>
+        <td>First 64.00M decoder-fail trials on TSUBAME produced no fail log; an additional 64M TSUBAME wave has been submitted and four active 8M home-mini batches remain in progress.</td>
       </tr>
       <tr>
         <td>2688</td>
@@ -425,7 +425,7 @@ body {
         <td>64.00M / &gt;176.00M</td>
         <td>\([0,6.00]\times 10^{-8}\)</td>
         <td>Running</td>
-        <td>First 64.00M decoder-fail trials on TSUBAME produced no fail log; a fresh second 64M TSUBAME wave and six active 8M home-mini batches are in flight.</td>
+        <td>First 64.00M decoder-fail trials on TSUBAME produced no fail log; an additional 64M TSUBAME wave has been submitted and six active 8M home-mini batches remain in progress.</td>
       </tr>
       <tr>
         <td>3072</td>
@@ -436,7 +436,7 @@ body {
         <td>64.00M / &gt;148.00M</td>
         <td>\([0,6.00]\times 10^{-8}\)</td>
         <td>Running</td>
-        <td>First 64.00M decoder-fail trials on TSUBAME produced no fail log; a fresh second 64M TSUBAME wave and two active 10M lab-mini batches are in flight.</td>
+        <td>First 64.00M decoder-fail trials on TSUBAME produced no fail log; an additional 64M TSUBAME wave has been submitted and two active 10M lab-mini batches remain in progress.</td>
       </tr>
       <tr>
         <td>3840</td>
@@ -447,7 +447,7 @@ body {
         <td>64.00M / &gt;184.00M</td>
         <td>\([0,6.00]\times 10^{-8}\)</td>
         <td>Running</td>
-        <td>First 64.00M decoder-fail trials on TSUBAME produced no fail log; a fresh second 64M TSUBAME wave and seven active 8M home-pro batches are in flight.</td>
+        <td>First 64.00M decoder-fail trials on TSUBAME produced no fail log; an additional 64M TSUBAME wave has been submitted and seven active 8M home-pro batches remain in progress.</td>
       </tr>
     </tbody>
   </table>
