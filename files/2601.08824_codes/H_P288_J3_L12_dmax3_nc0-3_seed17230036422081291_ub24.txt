@@ -27,5 +27,5 @@
 # decoderlog_source extended p=0.03 decoder-fail sampling campaign
 # decoderlog_file faillog_seed19024_p0.03_seed14616978870147541716_trial632858.txt
 # decoderlog_x_upper 28
-# decoderlog_min_upper 24
+# decoderlog_min_upper 28
 # decoderlog_x_support [34,48,124,178,330,474,596,716,734,740,956,964,986,1006,1210,1238,1254,1398,1412,1558,1616,1702,1813,2446,2780,2818,3032,3144]
