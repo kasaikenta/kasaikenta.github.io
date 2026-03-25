@@ -56,27 +56,28 @@
 </head>
 <body>
   <p><a href="en.html#live-upper-bound-table">Back to the live table</a></p>
-  <h1>How the Three Upper-Bound Columns Are Computed</h1>
+  <h1>A Note on the Three Upper-Bound Columns</h1>
 
   <p>
-    The live table on the main page lists three different upper-bound mechanisms side by side. They are complementary:
-    the first two are algebraic certificates extracted from the APM structure, while the third comes from decoder-fail
-    simulations. The displayed code parameter \(\left[\left[n,k,\le u\right]\right]\) uses the smallest currently available
-    upper bound for that row.
+    This note records the three upper-bound mechanisms displayed in the live table on the main page.
+    Throughout, the reported code parameter \(\left[\left[n,k,\le u\right]\right]\) is obtained by taking the
+    minimum among the currently available structural and simulation-based upper bounds for the same row.
+    The first two columns are algebraic in nature and are extracted from the APM structure itself, whereas
+    the third column is obtained from decoder-fail experiments at a fixed physical error rate.
   </p>
 
   <table>
     <thead>
       <tr>
         <th>Column</th>
-        <th>What it measures</th>
+        <th>Meaning</th>
         <th>Typical parameter-file fields</th>
       </tr>
     </thead>
     <tbody>
       <tr>
         <td>Latent UB</td>
-        <td>An upper bound obtained from latent witnesses built from the \(\Psi_3\) kernel.</td>
+        <td>An upper bound obtained from latent witnesses constructed from the \(\Psi_3\) kernel.</td>
         <td><code>latent_x_upper</code>, <code>latent_z_upper</code>, <code>latent_min_upper</code></td>
       </tr>
       <tr>
@@ -86,47 +87,52 @@
       </tr>
       <tr>
         <td>Decoder-fail UB</td>
-        <td>A direct upper bound coming from a syndrome-matched logical residual observed in simulation.</td>
+        <td>A direct upper bound obtained from a syndrome-matched logical residual observed in simulation.</td>
         <td><code>decoderlog_x_upper</code>, <code>decoderlog_z_upper</code></td>
       </tr>
     </tbody>
   </table>
 
-  <h2>1. Latent Distance Upper Bound</h2>
+  <h2 id="latent-upper-bound">1. Latent Upper Bound</h2>
   <p>
-    For the \((J,L)=(3,12)\) family considered here, a low-weight latent logical operator can be produced by searching
-    the kernels of \(\Psi_3\) and \(\Psi_3^{\mathsf T}\). A nonzero kernel vector \(\mathbf{u}\) or \(\mathbf{v}\) is
-    converted into a codeword candidate such as \(\mathbf{u}^{\mathsf T}\widetilde H_X\) or
-    \(\mathbf{v}^{\mathsf T}\widetilde H_Z\), and the resulting support size gives a latent upper bound.
+    For the \((J,L)=(3,12)\) family treated here, the latent upper bound is derived from explicit latent witnesses
+    obtained from the kernels of \(\Psi_3\) and \(\Psi_3^{\mathsf T}\). A nonzero kernel vector
+    \(\mathbf{u}\) or \(\mathbf{v}\) is converted into a latent logical candidate such as
+    \(\mathbf{u}^{\mathsf T}\widetilde H_X\) or \(\mathbf{v}^{\mathsf T}\widetilde H_Z\), and the Hamming weight
+    of the resulting support yields an upper bound on the latent \(X\)- or \(Z\)-distance.
   </p>
   <p>
-    In the parameter files this appears as <code>latent_x_upper</code>, <code>latent_z_upper</code>, and
-    <code>latent_min_upper</code>. The live table reports the minimum of the \(X\) and \(Z\) latent witnesses.
-  </p>
-
-  <h2>2. \(m\)-Block-Constant Non-Latent Upper Bound</h2>
-  <p>
-    The second algebraic bound uses a divisor \(m\mid P\). One compresses the affine-permutation construction to a
-    quotient problem of size \(P/m\), finds a low-weight witness there, and then lifts it back to the full code.
-    In the non-latent case, the lifted vector must remain outside the opposite row space so that it certifies a genuine
-    non-stabilizer logical operator.
-  </p>
-  <p>
-    This is why the parameter files also record the best block sizes <code>nonlatent_x_m</code> and
-    <code>nonlatent_z_m</code>. The live table shows the resulting non-latent minimum upper bound as the
-    <em>\(m\)-block UB</em> column.
+    In the parameter files this information is stored in
+    <code>latent_x_upper</code>, <code>latent_z_upper</code>, and <code>latent_min_upper</code>.
+    The live table reports the minimum of the \(X\)- and \(Z\)-side latent witnesses.
   </p>
 
-  <h2>3. Decoder-Fail-Based Upper Bound</h2>
+  <h2 id="mblock-upper-bound">2. \(m\)-Block Upper Bound</h2>
   <p>
-    The third bound does not come from algebraic compression. Instead, we run decoder-fail campaigns at \(p=0.03\)
-    and search for failures where the decoder output matches the observed syndrome but differs from the true error by a
-    non-stabilizer logical residual. If the residual has weight \(w\), then the corresponding logical distance is at most
-    \(w\).
+    The \(m\)-block upper bound is a non-latent structural upper bound derived from block-constant compression.
+    Given a divisor \(m\mid P\), the APM construction is compressed to a quotient problem of length \(P/m\).
+    A low-weight quotient witness is then lifted back to the original blocklength. In the non-latent setting,
+    the lifted vector must remain outside the opposite row space so that it certifies a genuine non-stabilizer
+    logical operator.
   </p>
   <p>
-    This is recorded as <code>decoderlog_x_upper</code> or <code>decoderlog_z_upper</code>. If no logical fail has been
-    observed yet, the table shows <code>--</code> in the decoder-fail column.
+    The corresponding parameter-file fields are
+    <code>nonlatent_x_upper</code>, <code>nonlatent_z_upper</code>, <code>nonlatent_min_upper</code>,
+    together with the selected block sizes <code>nonlatent_x_m</code> and <code>nonlatent_z_m</code>.
+    The live table shows the minimum non-latent structural upper bound in the <em>\(m\)-block UB</em> column.
+  </p>
+
+  <h2 id="decoder-fail-upper-bound">3. Decoder-Fail Upper Bound</h2>
+  <p>
+    The third bound is obtained from decoder-fail sampling at \(p=0.03\). We search for failure events in which the
+    decoder output matches the observed syndrome but differs from the true error by a non-stabilizer logical residual.
+    If that residual has Hamming weight \(w\), then the corresponding logical distance is at most \(w\).
+  </p>
+  <p>
+    This information is recorded in
+    <code>decoderlog_x_upper</code>, <code>decoderlog_z_upper</code>, and, when available, the associated fail-log
+    support written into the parameter file. If no logical fail has been observed yet, the live table displays
+    <code>--</code> in the decoder-fail column.
   </p>
 
   <div class="note">
@@ -135,9 +141,12 @@
     and conversely a decoder-fail witness can tighten a row beyond its original structural bound.
   </div>
 
-  <h2>How the Live Table Uses Them</h2>
+  <h2>4. Use in the Live Table</h2>
   <p>
-    The live table keeps all three ingredients visible because they play different roles. For example:
+    The live table retains all three columns because they serve different purposes.
+    The first two columns report algebraic upper bounds extracted from the code structure,
+    whereas the third reports simulation-based logical-error witnesses. The displayed row bound is therefore
+    updated whenever any one of the three mechanisms yields a strictly smaller valid upper bound.
   </p>
   <ul>
     <li>A row such as \(P=288\) can have latent and \(m\)-block bounds equal to 24 while the best decoder-fail witness is still 28.</li>

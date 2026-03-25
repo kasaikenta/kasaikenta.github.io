@@ -266,16 +266,16 @@ body {
 <p class="code-note">
   The parameter files themselves are linked from the code entries below. See
   <a href="apm_parameter_files.html">this short guide</a> for how to read those files, and
-  <a href="distance_upper_bounds.html">this note</a> for how the three upper-bound columns are computed.
+  <a href="distance_upper_bounds.html">this note on upper-bound constructions</a> for formal definitions of
+  <code>Latent UB</code>, <code>m-block UB</code>, and <code>Decoder-fail UB</code>.
 </p>
 <h4 id="live-upper-bound-table" style="margin-bottom:0.3em;">Live Upper-Bound Table</h4>
 <p class="code-note">
-  Direct link: <a href="#live-upper-bound-table">this section</a>.
   We are actively trying to tighten these upper bounds as ongoing searches and decoder-fail campaigns accumulate.
 </p>
 <p class="code-note">
-  The meanings of <code>Latent UB</code>, <code>m-block UB</code>, and <code>Decoder-fail UB</code> are explained on the
-  separate page linked above.
+  A formal description of the three upper-bound mechanisms used in this table is available on
+  <a href="distance_upper_bounds.html">the dedicated upper-bound page</a>.
 </p>
 <p class="code-note">
   The decoder-fail campaigns below are meant to collect logical-error witnesses, not to optimize error-floor performance;
@@ -293,9 +293,9 @@ body {
       <tr>
         <th>\(P\)</th>
         <th>Current best code</th>
-        <th>Latent UB</th>
-        <th>\(m\)-block UB</th>
-        <th>Decoder-fail UB</th>
+        <th><a href="distance_upper_bounds.html#latent-upper-bound">Latent UB</a></th>
+        <th><a href="distance_upper_bounds.html#mblock-upper-bound">\(m\)-block UB</a></th>
+        <th><a href="distance_upper_bounds.html#decoder-fail-upper-bound">Decoder-fail UB</a></th>
         <th>Completed / incl. active at \(p=0.03\)</th>
         <th>FER 95% CI (completed only)</th>
         <th>Status</th>
@@ -408,10 +408,10 @@ body {
         <td>120</td>
         <td>64</td>
         <td>--</td>
-        <td>64.00M / --</td>
+        <td>64.00M / &gt;88.00M</td>
         <td>\([0,6.00]\times 10^{-8}\)</td>
         <td>Running</td>
-        <td>First 64.00M decoder-fail trials on TSUBAME produced no fail log.</td>
+        <td>First 64.00M decoder-fail trials on TSUBAME produced no fail log; three active 8M home-mini batches are in flight.</td>
       </tr>
       <tr>
         <td>2688</td>
@@ -419,10 +419,10 @@ body {
         <td>84</td>
         <td>128</td>
         <td>--</td>
-        <td>64.00M / --</td>
+        <td>64.00M / &gt;96.00M</td>
         <td>\([0,6.00]\times 10^{-8}\)</td>
         <td>Running</td>
-        <td>First 64.00M decoder-fail trials on TSUBAME produced no fail log.</td>
+        <td>First 64.00M decoder-fail trials on TSUBAME produced no fail log; four active 8M home-mini batches are in flight.</td>
       </tr>
       <tr>
         <td>3072</td>
@@ -441,10 +441,10 @@ body {
         <td>480</td>
         <td>128</td>
         <td>--</td>
-        <td>64.00M / --</td>
+        <td>64.00M / &gt;104.00M</td>
         <td>\([0,6.00]\times 10^{-8}\)</td>
         <td>Running</td>
-        <td>First 64.00M decoder-fail trials on TSUBAME produced no fail log.</td>
+        <td>First 64.00M decoder-fail trials on TSUBAME produced no fail log; five active 8M home-pro batches are in flight.</td>
       </tr>
     </tbody>
   </table>
