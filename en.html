@@ -153,6 +153,7 @@ body {
       <a href="#research-background">Research Background</a>
       <a href="#research-direction">Research Direction</a>
       <a href="#software">Software and Code Data</a>
+      <a href="distance_upper_bounds.html">Three Upper Bounds</a>
       <a href="#live-upper-bound-table">Live Upper-Bound Table</a>
       <a href="#faq">Q&amp;A</a>
       <a href="#open-problems">Open Problems</a>
@@ -263,7 +264,8 @@ body {
 </p>
 <p class="code-note">
   The parameter files themselves are linked from the code entries below. See
-  <a href="apm_parameter_files.html">this short guide</a> for how to read those files.
+  <a href="apm_parameter_files.html">this short guide</a> for how to read those files, and
+  <a href="distance_upper_bounds.html">this note</a> for how the three upper-bound columns are computed.
 </p>
 <h4 id="live-upper-bound-table" style="margin-bottom:0.3em;">Live Upper-Bound Table</h4>
 <p class="code-note">
@@ -290,116 +292,158 @@ body {
       <tr>
         <th>\(P\)</th>
         <th>Current best code</th>
+        <th>Latent UB</th>
+        <th>\(m\)-block UB</th>
+        <th>Decoder-fail UB</th>
         <th>Completed / incl. active at \(p=0.03\)</th>
         <th>FER 95% CI (completed only)</th>
-        <th>Decoder-fail snapshot at \(p=0.03\)</th>
         <th>Status</th>
+        <th>Note</th>
       </tr>
     </thead>
     <tbody>
       <tr>
         <td>216</td>
         <td><a href="files/2601.08824_codes/H_P216_J3_L12_dmax3_nc0-3_seed17265506054090875_ub14.txt">\(\left[\left[2592,1300,\leq 14\right]\right]\)</a></td>
+        <td>24</td>
+        <td>36</td>
+        <td>14</td>
         <td>&gt;10.55M / --</td>
         <td>--</td>
-        <td>An archived decoder-fail scan found a logical-\(Z\) residual of weight 14.</td>
         <td>Archived</td>
+        <td>An archived decoder-fail scan found a logical-\(Z\) residual of weight 14.</td>
       </tr>
       <tr>
         <td>240</td>
         <td><a href="files/2601.08824_codes/H_P240_J3_L12_dmax3_nc0-3_seed328021_best1_ub16_att125.txt">\(\left[\left[2880,1444,\leq 16\right]\right]\)</a></td>
+        <td>24</td>
+        <td>24</td>
+        <td>16</td>
         <td>&gt;15.8M / --</td>
         <td>--</td>
-        <td>Decoder-fail sampling found a logical-\(X\) residual of weight 16; the parameter file records the 16 support positions.</td>
         <td>Closed</td>
+        <td>Decoder-fail sampling found a logical-\(X\) residual of weight 16; the parameter file records the 16 support positions.</td>
       </tr>
       <tr>
         <td>264</td>
         <td><a href="files/2601.08824_codes/H_P264_J3_L12_dmax3_nc0-3_seed275023_best1_ub22_att94.txt">\(\left[\left[3168,1588,\leq 22\right]\right]\)</a></td>
+        <td>24</td>
+        <td>44</td>
+        <td>22</td>
         <td>128.00M / --</td>
         <td>\([1.20,2.70]\times 10^{-7}\)</td>
-        <td>The first 64.00M decoder-fail trials were clean, but the second 64.00M TSUBAME screening produced 23 fail logs, including a logical-\(Z\) residual of weight 22 for the selected candidate seed275023. The other structural \(\leq 24\) candidates had already been screened down to 26, 16, and 8.</td>
         <td>Applied</td>
+        <td>The first 64.00M decoder-fail trials were clean, but the second 64.00M TSUBAME screening produced a logical-\(Z\) residual of weight 22 for the selected candidate seed275023.</td>
       </tr>
       <tr>
         <td>288</td>
         <td><a href="files/2601.08824_codes/H_P288_J3_L12_dmax3_nc0-3_seed17230036422081291_ub24.txt">\(\left[\left[3456,1732,\leq 24\right]\right]\)</a></td>
+        <td>24</td>
+        <td>24</td>
+        <td>28</td>
         <td>&gt;448M / --</td>
         <td>\([1.20,1.92]\times 10^{-7}\)</td>
-        <td>More than 448M completed trials so far; the best decoder witness is now a logical-\(X\) residual of weight 28.</td>
         <td>Running</td>
+        <td>More than 448M completed trials so far; the best decoder witness is now a logical-\(X\) residual of weight 28.</td>
       </tr>
       <tr>
         <td>384</td>
         <td><a href="files/2601.08824_codes/H_P384_J3_L12_dmax3_nc0-3_seed17229885754182916_ub24.txt">\(\left[\left[4608,2308,\leq 24\right]\right]\)</a></td>
+        <td>24</td>
+        <td>48</td>
+        <td>306</td>
         <td>84.00M / --</td>
         <td>\([0.12,1.05]\times 10^{-7}\)</td>
-        <td>84.00M trials so far; three fail logs have been observed, and the best logical-\(X\) residual has weight 306, so it still does not improve the current upper bound.</td>
         <td>Running</td>
+        <td>84.00M trials so far; the best logical-\(X\) residual has weight 306, so it still does not improve the current upper bound.</td>
       </tr>
       <tr>
         <td>576</td>
         <td><a href="files/2601.08824_codes/H_P576_J3_L12_dmax3_nc0-3_seed17646913617314833_best2_ub48_att9401.txt">\(\left[\left[6912,3460,\leq 48\right]\right]\)</a></td>
+        <td>48</td>
+        <td>64</td>
+        <td>--</td>
         <td>49.81M / &gt;133.81M</td>
         <td>\([0,0.77]\times 10^{-7}\)</td>
-        <td>49.81M trials so far; no logical fail observed yet.</td>
         <td>Running</td>
+        <td>49.81M completed trials so far; no logical fail observed yet.</td>
       </tr>
       <tr>
         <td>768</td>
         <td><a href="files/2601.08824_codes/H_P768_J3_L12_dmax3_nc0-3_seed17592239305062458_best300_ub48_att109700.txt">\(\left[\left[9216,4612,\leq 48\right]\right]\)</a></td>
+        <td>48</td>
+        <td>108</td>
+        <td>--</td>
         <td>62.24M / &gt;244.24M</td>
         <td>\([0,6.17]\times 10^{-8}\)</td>
-        <td>62.24M trials so far; no logical fail observed yet.</td>
         <td>Running</td>
+        <td>62.24M completed trials so far; no logical fail observed yet.</td>
       </tr>
       <tr>
         <td>768 (paper code)</td>
         <td><a href="files/2601.08824_codes/H_P768_J3_L12_dmax3_nc0-3_seed17592239305062458_best1_ub24_att444.txt">\(\left[\left[9216,4612,\leq 24\right]\right]\)</a></td>
+        <td>24</td>
+        <td>32</td>
         <td>--</td>
         <td>--</td>
-        <td>Reference row for the code highlighted in <a href="https://arxiv.org/abs/2601.08824" target="_blank" rel="noopener">arXiv:2601.08824</a>; the linked parameter file currently records latent/non-latent algebraic upper bounds \(24/32\).</td>
+        <td>--</td>
         <td>Reference</td>
+        <td>Reference row for the code highlighted in <a href="https://arxiv.org/abs/2601.08824" target="_blank" rel="noopener">arXiv:2601.08824</a>; the linked checkpoint records latent/non-latent algebraic upper bounds \(24/32\).</td>
       </tr>
       <tr>
         <td>1536</td>
         <td><a href="files/2601.08824_codes/H_P1536_J3_L12_dmax3_nc0-3_seed17613728482828666_best183_ub48_att64436.txt">\(\left[\left[18432,9220,\leq 48\right]\right]\)</a></td>
+        <td>48</td>
+        <td>256</td>
+        <td>--</td>
         <td>64.00M / &gt;69.00M</td>
         <td>\([0,6.00]\times 10^{-8}\)</td>
-        <td>First 64.00M decoder-fail trials on TSUBAME produced no fail log.</td>
         <td>Running</td>
+        <td>First 64.00M decoder-fail trials on TSUBAME produced no fail log.</td>
       </tr>
       <tr>
         <td>1920</td>
         <td><a href="files/2601.08824_codes/H_P1920_J3_L12_dmax3_nc0-3_seed17622415249116583_best41_ub64_att65735.txt">\(\left[\left[23040,11524,\leq 64\right]\right]\)</a></td>
+        <td>120</td>
+        <td>64</td>
+        <td>--</td>
         <td>64.00M / --</td>
         <td>\([0,6.00]\times 10^{-8}\)</td>
-        <td>First 64.00M decoder-fail trials on TSUBAME produced no fail log.</td>
         <td>Running</td>
+        <td>First 64.00M decoder-fail trials on TSUBAME produced no fail log.</td>
       </tr>
       <tr>
         <td>2688</td>
         <td><a href="files/2601.08824_codes/H_P2688_J3_L12_dmax3_nc0-3_seed17715147614460666_best10_ub84_att26174.txt">\(\left[\left[32256,16132,\leq 84\right]\right]\)</a></td>
+        <td>84</td>
+        <td>128</td>
+        <td>--</td>
         <td>64.00M / --</td>
         <td>\([0,6.00]\times 10^{-8}\)</td>
-        <td>First 64.00M decoder-fail trials on TSUBAME produced no fail log.</td>
         <td>Running</td>
+        <td>First 64.00M decoder-fail trials on TSUBAME produced no fail log.</td>
       </tr>
       <tr>
         <td>3072</td>
         <td><a href="files/2601.08824_codes/H_P3072_J3_L12_dmax3_nc0-3_seed17613741499129833_best681_ub96_att207167.txt">\(\left[\left[36864,18436,\leq 96\right]\right]\)</a></td>
+        <td>96</td>
+        <td>192</td>
+        <td>--</td>
         <td>64.00M / &gt;74.00M</td>
         <td>\([0,6.00]\times 10^{-8}\)</td>
-        <td>First 64.00M decoder-fail trials on TSUBAME produced no fail log.</td>
         <td>Running</td>
+        <td>First 64.00M decoder-fail trials on TSUBAME produced no fail log.</td>
       </tr>
       <tr>
         <td>3840</td>
         <td><a href="files/2601.08824_codes/H_P3840_J3_L12_dmax3_nc0-3_seed17622378158439083_best39_ub128_att56640.txt">\(\left[\left[46080,23044,\leq 128\right]\right]\)</a></td>
+        <td>480</td>
+        <td>128</td>
+        <td>--</td>
         <td>64.00M / --</td>
         <td>\([0,6.00]\times 10^{-8}\)</td>
-        <td>First 64.00M decoder-fail trials on TSUBAME produced no fail log.</td>
         <td>Running</td>
+        <td>First 64.00M decoder-fail trials on TSUBAME produced no fail log.</td>
       </tr>
     </tbody>
   </table>

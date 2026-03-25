@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>How the Three Upper-Bound Columns Are Computed</title>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 40px;
+      line-height: 1.7;
+      color: #1f2933;
+    }
+    h1, h2 {
+      color: #2c3e50;
+    }
+    a {
+      color: #2980b9;
+      text-decoration: none;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+    code, pre {
+      font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+    }
+    pre {
+      background: #f7f9fb;
+      border: 1px solid #d7dde3;
+      border-radius: 8px;
+      padding: 14px;
+      overflow-x: auto;
+    }
+    .note {
+      background: #eef5fb;
+      border-left: 4px solid #2980b9;
+      padding: 12px 14px;
+      margin: 18px 0;
+    }
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      margin: 18px 0;
+    }
+    th, td {
+      border: 1px solid #d7dde3;
+      padding: 10px 12px;
+      text-align: left;
+      vertical-align: top;
+    }
+    th {
+      background: #f7f9fb;
+    }
+  </style>
+</head>
+<body>
+  <p><a href="en.html#live-upper-bound-table">Back to the live table</a></p>
+  <h1>How the Three Upper-Bound Columns Are Computed</h1>
+
+  <p>
+    The live table on the main page lists three different upper-bound mechanisms side by side. They are complementary:
+    the first two are algebraic certificates extracted from the APM structure, while the third comes from decoder-fail
+    simulations. The displayed code parameter \(\left[\left[n,k,\le u\right]\right]\) uses the smallest currently available
+    upper bound for that row.
+  </p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Column</th>
+        <th>What it measures</th>
+        <th>Typical parameter-file fields</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Latent UB</td>
+        <td>An upper bound obtained from latent witnesses built from the \(\Psi_3\) kernel.</td>
+        <td><code>latent_x_upper</code>, <code>latent_z_upper</code>, <code>latent_min_upper</code></td>
+      </tr>
+      <tr>
+        <td>\(m\)-block UB</td>
+        <td>A non-latent upper bound obtained from block-constant compression and lifting.</td>
+        <td><code>nonlatent_x_upper</code>, <code>nonlatent_z_upper</code>, <code>nonlatent_min_upper</code></td>
+      </tr>
+      <tr>
+        <td>Decoder-fail UB</td>
+        <td>A direct upper bound coming from a syndrome-matched logical residual observed in simulation.</td>
+        <td><code>decoderlog_x_upper</code>, <code>decoderlog_z_upper</code></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>1. Latent Distance Upper Bound</h2>
+  <p>
+    For the \((J,L)=(3,12)\) family considered here, a low-weight latent logical operator can be produced by searching
+    the kernels of \(\Psi_3\) and \(\Psi_3^{\mathsf T}\). A nonzero kernel vector \(\mathbf{u}\) or \(\mathbf{v}\) is
+    converted into a codeword candidate such as \(\mathbf{u}^{\mathsf T}\widetilde H_X\) or
+    \(\mathbf{v}^{\mathsf T}\widetilde H_Z\), and the resulting support size gives a latent upper bound.
+  </p>
+  <p>
+    In the parameter files this appears as <code>latent_x_upper</code>, <code>latent_z_upper</code>, and
+    <code>latent_min_upper</code>. The live table reports the minimum of the \(X\) and \(Z\) latent witnesses.
+  </p>
+
+  <h2>2. \(m\)-Block-Constant Non-Latent Upper Bound</h2>
+  <p>
+    The second algebraic bound uses a divisor \(m\mid P\). One compresses the affine-permutation construction to a
+    quotient problem of size \(P/m\), finds a low-weight witness there, and then lifts it back to the full code.
+    In the non-latent case, the lifted vector must remain outside the opposite row space so that it certifies a genuine
+    non-stabilizer logical operator.
+  </p>
+  <p>
+    This is why the parameter files also record the best block sizes <code>nonlatent_x_m</code> and
+    <code>nonlatent_z_m</code>. The live table shows the resulting non-latent minimum upper bound as the
+    <em>\(m\)-block UB</em> column.
+  </p>
+
+  <h2>3. Decoder-Fail-Based Upper Bound</h2>
+  <p>
+    The third bound does not come from algebraic compression. Instead, we run decoder-fail campaigns at \(p=0.03\)
+    and search for failures where the decoder output matches the observed syndrome but differs from the true error by a
+    non-stabilizer logical residual. If the residual has weight \(w\), then the corresponding logical distance is at most
+    \(w\).
+  </p>
+  <p>
+    This is recorded as <code>decoderlog_x_upper</code> or <code>decoderlog_z_upper</code>. If no logical fail has been
+    observed yet, the table shows <code>--</code> in the decoder-fail column.
+  </p>
+
+  <div class="note">
+    The decoder-fail campaigns are used to collect logical-error witnesses, not to optimize the error floor itself.
+    A row can therefore have a very tight algebraic bound even if the decoder-fail column still shows <code>--</code>,
+    and conversely a decoder-fail witness can tighten a row beyond its original structural bound.
+  </div>
+
+  <h2>How the Live Table Uses Them</h2>
+  <p>
+    The live table keeps all three ingredients visible because they play different roles. For example:
+  </p>
+  <ul>
+    <li>A row such as \(P=288\) can have latent and \(m\)-block bounds equal to 24 while the best decoder-fail witness is still 28.</li>
+    <li>A row such as \(P=240\) was tightened by decoder-fail sampling from a structural value of 24 down to 16.</li>
+    <li>The separate \(P=768\) paper-code reference row is included because the checkpoint highlighted in arXiv:2601.08824 currently records latent/non-latent bounds \(24/32\), even though the current best-by-\(P\) row at \(P=768\) is different.</li>
+  </ul>
+
+  <p>
+    For a description of the rest of the comment fields inside the parameter files themselves, see
+    <a href="apm_parameter_files.html">How to Read APM Parameter Files</a>.
+  </p>
+</body>
+</html>
