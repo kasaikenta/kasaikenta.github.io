@@ -1,0 +1,17 @@
+768 3 12
+260108824
+763 679 397 61 697 373
+435 69 330 18 612 246
+289 257 625 41 193 449
+496 640 200 524 672 672
+# source arXiv:2601.08824 Table 1
+# source_note exact transcription of the P=768, J=3, L=12 parameter table printed in the paper
+# paper_published_code [[9216,4612,<=48]]
+# distance_bound_overall 32
+# latent_method not yet recomputed for this exact Table 1 transcription
+# latent_min_upper n/a
+# nonlatent_method m-block-constant compression kernel -> lift
+# nonlatent_note current tracked non-latent upper bound for the exact paper parameters
+# nonlatent_min_upper 32
+# decoderlog_method no dedicated decoder-fail campaign yet for this exact Table 1 transcription
+# decoderlog_min_upper n/a

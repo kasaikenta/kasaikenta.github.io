@@ -251,16 +251,17 @@ body {
 <p>
   For reference, the live table below also includes a separate <em>paper code</em> row for the \(P=768\) example from
   <a href="https://arxiv.org/abs/2601.08824" target="_blank" rel="noopener">arXiv:2601.08824</a>. The linked checkpoint
-  currently records latent/non-latent algebraic upper bounds \(24/32\), so we keep it distinct from the current best-by-\(P\)
-  row.
+  is now an exact transcription of the printed Table 1 parameters. For that exact paper row, the currently tracked
+  algebraic information is a non-latent \(m\)-block upper bound of \(32\), so we keep it distinct from the current
+  best-by-\(P\) row.
 </p>
 
 <p>
   We also maintain a living snapshot of our current best girth-8, \((J,L)=(3,12)\)-regular binary CSS LDPC codes.
   The table below is updated on a near-daily basis as new search runs, structural certificates, and decoder-fail
   witnesses become available, so individual entries may improve over time. Besides the current best-by-\(P\) rows,
-  we also include a small number of reference rows for historically important codes, such as the \(P=768\) paper code
-  from <a href="https://arxiv.org/abs/2601.08824" target="_blank" rel="noopener">arXiv:2601.08824</a>.
+  we also include a small number of reference rows for historically important codes, such as the exact \(P=768\)
+  Table 1 code from <a href="https://arxiv.org/abs/2601.08824" target="_blank" rel="noopener">arXiv:2601.08824</a>.
 </p>
 <p class="code-note">
   The parameter files themselves are linked from the code entries below. See
@@ -381,14 +382,14 @@ body {
       </tr>
       <tr>
         <td>768 (paper code)</td>
-        <td><a href="files/2601.08824_codes/H_P768_J3_L12_dmax3_nc0-3_seed17592239305062458_best1_ub24_att444.txt">\(\left[\left[9216,4612,\leq 24\right]\right]\)</a></td>
-        <td>24</td>
+        <td><a href="files/2601.08824_codes/H_P768_J3_L12_dmax3_nc0-3_paper_table1_ub32.txt">\(\left[\left[9216,4612,\leq 32\right]\right]\)</a></td>
+        <td>--</td>
         <td>32</td>
         <td>--</td>
         <td>--</td>
         <td>--</td>
         <td>Reference</td>
-        <td>Reference row for the code highlighted in <a href="https://arxiv.org/abs/2601.08824" target="_blank" rel="noopener">arXiv:2601.08824</a>; the linked checkpoint records latent/non-latent algebraic upper bounds \(24/32\).</td>
+        <td>Exact transcription of the printed Table 1 parameters in <a href="https://arxiv.org/abs/2601.08824" target="_blank" rel="noopener">arXiv:2601.08824</a>. The currently tracked algebraic information for this exact row is a non-latent \(m\)-block upper bound of 32.</td>
       </tr>
       <tr>
         <td>1536</td>
