@@ -1,0 +1,715 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Finite-Degree GV Certification Scripts and Constants</title>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-YY8X0H44J2"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-YY8X0H44J2');
+  </script>
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [['\\(', '\\)'], ['$', '$']],
+        displayMath: [['\\[', '\\]'], ['$$', '$$']]
+      }
+    };
+  </script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+  <style>
+    :root {
+      --bg: #f4f1e9;
+      --paper: #fffdf8;
+      --ink: #1f1f1c;
+      --muted: #63635e;
+      --line: #ddd5c8;
+      --accent: #8b2e1f;
+      --accent-2: #2f5d62;
+      --soft: #f0e3d9;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background:
+        radial-gradient(circle at top left, rgba(139, 46, 31, 0.08), transparent 28%),
+        linear-gradient(180deg, #f0ede4 0%, var(--bg) 100%);
+      color: var(--ink);
+      font-family: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Palatino, serif;
+      line-height: 1.58;
+    }
+    main {
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 52px 24px 80px;
+    }
+    header {
+      margin-bottom: 28px;
+    }
+    .eyebrow {
+      display: inline-block;
+      margin-bottom: 14px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: var(--soft);
+      color: var(--accent);
+      font-size: 0.86rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+    h1 {
+      margin: 0 0 14px;
+      font-size: clamp(2.2rem, 5vw, 4rem);
+      line-height: 0.98;
+      letter-spacing: -0.03em;
+    }
+    .lead {
+      max-width: 760px;
+      font-size: 1.08rem;
+      color: var(--muted);
+    }
+    .grid {
+      display: grid;
+      gap: 18px;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      margin: 26px 0 32px;
+    }
+    .card {
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 22px 22px 18px;
+      box-shadow: 0 18px 50px rgba(40, 32, 18, 0.06);
+    }
+    .card h2, .section h2 {
+      margin: 0 0 10px;
+      font-size: 1.25rem;
+      line-height: 1.15;
+    }
+    p { margin: 0 0 14px; }
+    code {
+      font-family: "SFMono-Regular", ui-monospace, Menlo, Consolas, monospace;
+      font-size: 0.94em;
+      background: #f5f1ea;
+      padding: 0.12em 0.32em;
+      border-radius: 0.32em;
+    }
+    a {
+      color: var(--accent);
+      text-decoration: none;
+      border-bottom: 1px solid rgba(139, 46, 31, 0.35);
+    }
+    a:hover { border-bottom-color: var(--accent); }
+    .section {
+      margin-top: 28px;
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 24px;
+      box-shadow: 0 18px 50px rgba(40, 32, 18, 0.05);
+    }
+    ul {
+      margin: 0;
+      padding-left: 1.2rem;
+    }
+    li { margin: 0 0 10px; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 12px;
+      font-size: 0.96rem;
+    }
+    th, td {
+      padding: 10px 8px;
+      border-top: 1px solid var(--line);
+      vertical-align: top;
+      text-align: left;
+    }
+    th {
+      color: var(--accent-2);
+      font-weight: 700;
+    }
+    .meta {
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+    .callout {
+      margin-top: 14px;
+      padding: 14px 16px;
+      border-left: 4px solid var(--accent);
+      background: #faf5ef;
+      color: var(--muted);
+    }
+    .mathblock {
+      overflow-x: auto;
+      margin: 12px 0 16px;
+      padding: 10px 14px;
+      border-radius: 12px;
+      background: #faf6ef;
+      border: 1px solid var(--line);
+    }
+    .tablewrap {
+      overflow-x: auto;
+      margin-top: 12px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: #fffaf3;
+    }
+    .datatable {
+      min-width: 760px;
+      margin-top: 0;
+      font-size: 0.9rem;
+    }
+    .datatable thead th {
+      position: sticky;
+      top: 0;
+      background: #f9f2e8;
+      z-index: 1;
+    }
+    .smallnote {
+      color: var(--muted);
+      font-size: 0.94rem;
+    }
+    .loading {
+      color: var(--muted);
+      font-style: italic;
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <div class="eyebrow">Supplementary Material</div>
+      <h1>Finite-Degree GV Certification Scripts and Constants</h1>
+      <p class="lead">
+        This page provides the scripts that certify finite-degree
+        Gilbert&ndash;Varshamov distance for the 56 triples in
+        \(T_{\mathrm{GV}}\), together with the resulting HA-side and MN-side
+        constant tables.
+      </p>
+      <p class="lead">
+        Associated paper:
+        <a href="https://arxiv.org/abs/2603.24588">arXiv:2603.24588</a>.
+      </p>
+    </header>
+
+    <div class="grid">
+      <section class="card">
+        <h2>Certified Set</h2>
+        <p>
+          In the scanned window
+        </p>
+        <div class="mathblock">
+          \[
+          T_{\mathrm{scan}}
+          =
+          \{(j_Z,j_X,k): k \le 30,\ j_Z \le 10,\ j_Z < k/2,\ j_X = k-j_Z\},
+          \]
+          \[
+          T_{\mathrm{GV}}
+          =
+          \{(j_Z,j_X,k)\in T_{\mathrm{scan}}: j_Z \ge 4,\ k \equiv 0 \pmod 2\}.
+          \]
+        </div>
+        <p>
+          The set \(T_{\mathrm{GV}}\) is exactly the certified set in the paper.
+        </p>
+        <p class="meta">Total certified triples in this window: 56.</p>
+      </section>
+      <section class="card">
+        <h2>What Is Included</h2>
+        <p>
+          The page below first points to the exact scripts used to certify the
+          56 triples in \(T_{\mathrm{GV}}\), and then displays the full 56-row
+          HA-side and MN-side tables of certified constants obtained from those
+          scripts. The paper itself keeps the shorter 7-row representative
+          tables in Appendices D and E.
+        </p>
+        <p class="meta">Updated: 2026-03-27.</p>
+      </section>
+    </div>
+
+    <section class="section">
+      <h2>Certification Scripts</h2>
+      <p>
+        The certification of the 56 triples in \(T_{\mathrm{GV}}\) is produced by
+        the following Python scripts.
+      </p>
+      <ul>
+        <li><a href="./downloads/certify_finite_gv_triples.py"><code>certify_finite_gv_triples.py</code></a>: main rigorous computer-assisted proof script based on interval arithmetic and adaptive subdivision.</li>
+        <li><a href="./downloads/build_full_finite_gv_tables.py"><code>build_full_finite_gv_tables.py</code></a>: builds the full 56-row CSV and TeX tables from the certification results.</li>
+        <li><a href="./downloads/export_finite_gv_proof_tables.py"><code>export_finite_gv_proof_tables.py</code></a>: exports the shorter paper tables from the certificate data.</li>
+      </ul>
+      <div class="callout">
+        These scripts are the ones that generate the constants displayed below.
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>Full 56-Row Constant Tables</h2>
+      <p>
+        The certified set \(T_{\mathrm{GV}}\) contains 56 triples in the scanned
+        window. The full HA-side and MN-side constant tables for those 56
+        triples are rendered below from the downloadable CSV files.
+      </p>
+      <p class="smallnote">
+        The downloadable CSV files use machine-readable column names such as
+        <code>j_z</code> and <code>j_x</code>, while the tables below display
+        the notation used in the paper.
+      </p>
+      <h2>HA-Side Table</h2>
+      <p class="smallnote">
+        Columns:
+        \((j_Z,j_X,k)\), \(j_Z\), \(j_X\), \(k\),
+        \(\beta_Z\), \(\bar{\delta}\), \(\lambda_Z\), \(\varepsilon_Z\).
+      </p>
+      <div class="tablewrap">
+        <table class="datatable">
+          <thead><tr><th>\((j_Z,j_X,k)\)</th><th>\(j_Z\)</th><th>\(j_X\)</th><th>\(k\)</th><th>\(\beta_Z\)</th><th>\(\bar{\delta}\)</th><th>\(\lambda_Z\)</th><th>\(\varepsilon_Z\)</th></tr></thead>
+          <tbody>
+            <tr><td><code>(4,6,10)</code></td><td>4</td><td>6</td><td>10</td><td>0.25</td><td>0.07938261</td><td>0.9196986029286058</td><td>1.4334991471631753e-06</td></tr>
+            <tr><td><code>(4,8,12)</code></td><td>4</td><td>8</td><td>12</td><td>0.2</td><td>0.06149048</td><td>0.8829106588114618</td><td>1.4281469548071968e-06</td></tr>
+            <tr><td><code>(5,7,12)</code></td><td>5</td><td>7</td><td>12</td><td>0.2</td><td>0.08415898</td><td>0.8829106588114618</td><td>1.4333905118402157e-06</td></tr>
+            <tr><td><code>(4,10,14)</code></td><td>4</td><td>10</td><td>14</td><td>0.15</td><td>0.04983939</td><td>0.7725468264600289</td><td>1.4475294152216378e-06</td></tr>
+            <tr><td><code>(5,9,14)</code></td><td>5</td><td>9</td><td>14</td><td>0.15</td><td>0.06766342</td><td>0.7725468264600289</td><td>1.4605926782484957e-06</td></tr>
+            <tr><td><code>(6,8,14)</code></td><td>6</td><td>8</td><td>14</td><td>0.15</td><td>0.08764842</td><td>0.7725468264600289</td><td>1.4392699775322981e-06</td></tr>
+            <tr><td><code>(4,12,16)</code></td><td>4</td><td>12</td><td>16</td><td>0.15</td><td>0.0416927</td><td>0.8829106588114616</td><td>1.4231682091692122e-06</td></tr>
+            <tr><td><code>(5,11,16)</code></td><td>5</td><td>11</td><td>16</td><td>0.15</td><td>0.05628065</td><td>0.8829106588114616</td><td>1.4401975994005056e-06</td></tr>
+            <tr><td><code>(6,10,16)</code></td><td>6</td><td>10</td><td>16</td><td>0.15</td><td>0.0724498</td><td>0.8829106588114616</td><td>1.4385616673440182e-06</td></tr>
+            <tr><td><code>(7,9,16)</code></td><td>7</td><td>9</td><td>16</td><td>0.15</td><td>0.09030889</td><td>0.8829106588114616</td><td>1.4550408781177637e-06</td></tr>
+            <tr><td><code>(4,14,18)</code></td><td>4</td><td>14</td><td>18</td><td>0.15</td><td>0.03570112</td><td>0.9932744911628942</td><td>1.4638147207701735e-06</td></tr>
+            <tr><td><code>(5,13,18)</code></td><td>5</td><td>13</td><td>18</td><td>0.15</td><td>0.04798567</td><td>0.9932744911628942</td><td>1.434444064307705e-06</td></tr>
+            <tr><td><code>(6,12,18)</code></td><td>6</td><td>12</td><td>18</td><td>0.15</td><td>0.06149048</td><td>0.9932744911628942</td><td>1.4281469548071968e-06</td></tr>
+            <tr><td><code>(7,11,18)</code></td><td>7</td><td>11</td><td>18</td><td>0.15</td><td>0.07626748</td><td>0.9932744911628942</td><td>1.4606241760528604e-06</td></tr>
+            <tr><td><code>(8,10,18)</code></td><td>8</td><td>10</td><td>18</td><td>0.15</td><td>0.09240427</td><td>0.9932744911628942</td><td>1.4644202542823948e-06</td></tr>
+            <tr><td><code>(4,16,20)</code></td><td>4</td><td>16</td><td>20</td><td>0.12</td><td>0.03112447</td><td>0.8829106588114616</td><td>1.419066691155102e-06</td></tr>
+            <tr><td><code>(5,15,20)</code></td><td>5</td><td>15</td><td>20</td><td>0.12</td><td>0.0416927</td><td>0.8829106588114616</td><td>1.4231682091692122e-06</td></tr>
+            <tr><td><code>(6,14,20)</code></td><td>6</td><td>14</td><td>20</td><td>0.12</td><td>0.05323905</td><td>0.8829106588114616</td><td>1.4288579506249732e-06</td></tr>
+            <tr><td><code>(7,13,20)</code></td><td>7</td><td>13</td><td>20</td><td>0.12</td><td>0.06578671</td><td>0.8829106588114616</td><td>1.4532025407465454e-06</td></tr>
+            <tr><td><code>(8,12,20)</code></td><td>8</td><td>12</td><td>20</td><td>0.12</td><td>0.07938261</td><td>0.8829106588114616</td><td>1.4334991471631753e-06</td></tr>
+            <tr><td><code>(9,11,20)</code></td><td>9</td><td>11</td><td>20</td><td>0.12</td><td>0.09409725</td><td>0.8829106588114616</td><td>1.445417758261236e-06</td></tr>
+            <tr><td><code>(4,18,22)</code></td><td>4</td><td>18</td><td>22</td><td>0.12</td><td>0.02752391</td><td>0.9712017246926077</td><td>1.4669314825077606e-06</td></tr>
+            <tr><td><code>(5,17,22)</code></td><td>5</td><td>17</td><td>22</td><td>0.12</td><td>0.03676814</td><td>0.9712017246926077</td><td>1.4506198364738765e-06</td></tr>
+            <tr><td><code>(6,16,22)</code></td><td>6</td><td>16</td><td>22</td><td>0.12</td><td>0.04681897</td><td>0.9712017246926077</td><td>1.4264400800545474e-06</td></tr>
+            <tr><td><code>(7,15,22)</code></td><td>7</td><td>15</td><td>22</td><td>0.12</td><td>0.057684</td><td>0.9712017246926077</td><td>1.4664722021162646e-06</td></tr>
+            <tr><td><code>(8,14,22)</code></td><td>8</td><td>14</td><td>22</td><td>0.12</td><td>0.0693882</td><td>0.9712017246926077</td><td>1.456197908478174e-06</td></tr>
+            <tr><td><code>(9,13,22)</code></td><td>9</td><td>13</td><td>22</td><td>0.12</td><td>0.08197232</td><td>0.9712017246926077</td><td>1.4377790307218419e-06</td></tr>
+            <tr><td><code>(10,12,22)</code></td><td>10</td><td>12</td><td>22</td><td>0.12</td><td>0.09549354</td><td>0.9712017246926077</td><td>1.4622611838044364e-06</td></tr>
+            <tr><td><code>(4,20,24)</code></td><td>4</td><td>20</td><td>24</td><td>0.1</td><td>0.02462349</td><td>0.8829106588114618</td><td>1.4249954080058913e-06</td></tr>
+            <tr><td><code>(5,19,24)</code></td><td>5</td><td>19</td><td>24</td><td>0.1</td><td>0.0328181</td><td>0.8829106588114618</td><td>1.4665877048347653e-06</td></tr>
+            <tr><td><code>(6,18,24)</code></td><td>6</td><td>18</td><td>24</td><td>0.1</td><td>0.0416927</td><td>0.8829106588114618</td><td>1.4231682091692122e-06</td></tr>
+            <tr><td><code>(7,17,24)</code></td><td>7</td><td>17</td><td>24</td><td>0.1</td><td>0.05124605</td><td>0.8829106588114618</td><td>1.4421633784955645e-06</td></tr>
+            <tr><td><code>(8,16,24)</code></td><td>8</td><td>16</td><td>24</td><td>0.1</td><td>0.06149048</td><td>0.8829106588114618</td><td>1.4281469548071968e-06</td></tr>
+            <tr><td><code>(9,15,24)</code></td><td>9</td><td>15</td><td>24</td><td>0.1</td><td>0.0724498</td><td>0.8829106588114618</td><td>1.4385616673440182e-06</td></tr>
+            <tr><td><code>(10,14,24)</code></td><td>10</td><td>14</td><td>24</td><td>0.1</td><td>0.08415898</td><td>0.8829106588114618</td><td>1.4333905118402157e-06</td></tr>
+            <tr><td><code>(4,22,26)</code></td><td>4</td><td>22</td><td>26</td><td>0.1</td><td>0.02224127</td><td>0.9564865470457501</td><td>1.4626755117097545e-06</td></tr>
+            <tr><td><code>(5,21,26)</code></td><td>5</td><td>21</td><td>26</td><td>0.1</td><td>0.02958527</td><td>0.9564865470457501</td><td>1.4348195604974023e-06</td></tr>
+            <tr><td><code>(6,20,26)</code></td><td>6</td><td>20</td><td>26</td><td>0.1</td><td>0.03751267</td><td>0.9564865470457501</td><td>1.4267318343419433e-06</td></tr>
+            <tr><td><code>(7,19,26)</code></td><td>7</td><td>19</td><td>26</td><td>0.1</td><td>0.04601713</td><td>0.9564865470457501</td><td>1.4400798181712915e-06</td></tr>
+            <tr><td><code>(8,18,26)</code></td><td>8</td><td>18</td><td>26</td><td>0.1</td><td>0.05510337</td><td>0.9564865470457501</td><td>1.4556472310855995e-06</td></tr>
+            <tr><td><code>(9,17,26)</code></td><td>9</td><td>17</td><td>26</td><td>0.1</td><td>0.06478503</td><td>0.9564865470457501</td><td>1.4466477226138252e-06</td></tr>
+            <tr><td><code>(10,16,26)</code></td><td>10</td><td>16</td><td>26</td><td>0.1</td><td>0.07508386</td><td>0.9564865470457501</td><td>1.4309392474265437e-06</td></tr>
+            <tr><td><code>(4,24,28)</code></td><td>4</td><td>24</td><td>28</td><td>0.08</td><td>0.02025272</td><td>0.8240499482240309</td><td>1.4589029929679143e-06</td></tr>
+            <tr><td><code>(5,23,28)</code></td><td>5</td><td>23</td><td>28</td><td>0.08</td><td>0.0268947</td><td>0.8240499482240309</td><td>1.4307024945869884e-06</td></tr>
+            <tr><td><code>(6,22,28)</code></td><td>6</td><td>22</td><td>28</td><td>0.08</td><td>0.03404447</td><td>0.8240499482240309</td><td>1.4370698863119813e-06</td></tr>
+            <tr><td><code>(7,21,28)</code></td><td>7</td><td>21</td><td>28</td><td>0.08</td><td>0.0416927</td><td>0.8240499482240309</td><td>1.4231682091692122e-06</td></tr>
+            <tr><td><code>(8,20,28)</code></td><td>8</td><td>20</td><td>28</td><td>0.08</td><td>0.04983939</td><td>0.8240499482240309</td><td>1.4475294152216378e-06</td></tr>
+            <tr><td><code>(9,19,28)</code></td><td>9</td><td>19</td><td>28</td><td>0.08</td><td>0.0584918</td><td>0.8240499482240309</td><td>1.433674898243531e-06</td></tr>
+            <tr><td><code>(10,18,28)</code></td><td>10</td><td>18</td><td>28</td><td>0.08</td><td>0.06766342</td><td>0.8240499482240309</td><td>1.4605926782484957e-06</td></tr>
+            <tr><td><code>(4,26,30)</code></td><td>4</td><td>26</td><td>30</td><td>0.08</td><td>0.01856981</td><td>0.8829106588114616</td><td>1.4626701478892556e-06</td></tr>
+            <tr><td><code>(5,25,30)</code></td><td>5</td><td>25</td><td>30</td><td>0.08</td><td>0.02462349</td><td>0.8829106588114616</td><td>1.4249954080058913e-06</td></tr>
+            <tr><td><code>(6,24,30)</code></td><td>6</td><td>24</td><td>30</td><td>0.08</td><td>0.03112447</td><td>0.8829106588114616</td><td>1.419066691155102e-06</td></tr>
+            <tr><td><code>(7,23,30)</code></td><td>7</td><td>23</td><td>30</td><td>0.08</td><td>0.03806168</td><td>0.8829106588114616</td><td>1.4329217208342016e-06</td></tr>
+            <tr><td><code>(8,22,30)</code></td><td>8</td><td>22</td><td>30</td><td>0.08</td><td>0.04543217</td><td>0.8829106588114616</td><td>1.434444226178222e-06</td></tr>
+            <tr><td><code>(9,21,30)</code></td><td>9</td><td>21</td><td>30</td><td>0.08</td><td>0.05323905</td><td>0.8829106588114616</td><td>1.4288579506249732e-06</td></tr>
+            <tr><td><code>(10,20,30)</code></td><td>10</td><td>20</td><td>30</td><td>0.08</td><td>0.06149048</td><td>0.8829106588114616</td><td>1.4281469548071968e-06</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2>MN-Side Table</h2>
+      <p class="smallnote">
+        Columns:
+        \((j_Z,j_X,k)\), \(j_Z\), \(j_X\), \(k\),
+        \(\beta_X\), \(B_X\), \(\varepsilon_X\).
+      </p>
+      <div class="tablewrap">
+        <table class="datatable">
+          <thead><tr><th>\((j_Z,j_X,k)\)</th><th>\(j_Z\)</th><th>\(j_X\)</th><th>\(k\)</th><th>\(\beta_X\)</th><th>\(B_X\)</th><th>\(\varepsilon_X\)</th></tr></thead>
+          <tbody>
+            <tr><td><code>(4,6,10)</code></td><td>4</td><td>6</td><td>10</td><td>0.1</td><td>0.3391293558988729</td><td>0.0006144017656131151</td></tr>
+            <tr><td><code>(4,8,12)</code></td><td>4</td><td>8</td><td>12</td><td>0.1</td><td>0.08436462382198416</td><td>0.011086261381212048</td></tr>
+            <tr><td><code>(5,7,12)</code></td><td>5</td><td>7</td><td>12</td><td>0.15</td><td>0.38769051130887333</td><td>0.006983659013511945</td></tr>
+            <tr><td><code>(4,10,14)</code></td><td>4</td><td>10</td><td>14</td><td>0.1</td><td>0.020288414957284676</td><td>0.009808161704059848</td></tr>
+            <tr><td><code>(5,9,14)</code></td><td>5</td><td>9</td><td>14</td><td>0.1</td><td>0.0314291929877289</td><td>0.010623001542449884</td></tr>
+            <tr><td><code>(6,8,14)</code></td><td>6</td><td>8</td><td>14</td><td>0.15</td><td>0.2014223073870397</td><td>0.005280004111189451</td></tr>
+            <tr><td><code>(4,12,16)</code></td><td>4</td><td>12</td><td>16</td><td>0.1</td><td>0.0047569941226258475</td><td>0.007462560761079762</td></tr>
+            <tr><td><code>(5,11,16)</code></td><td>5</td><td>11</td><td>16</td><td>0.1</td><td>0.007356908592097896</td><td>0.013599785883391835</td></tr>
+            <tr><td><code>(6,10,16)</code></td><td>6</td><td>10</td><td>16</td><td>0.1</td><td>0.011549994871309085</td><td>0.008888530478262435</td></tr>
+            <tr><td><code>(7,9,16)</code></td><td>7</td><td>9</td><td>16</td><td>0.15</td><td>0.10325164301975848</td><td>0.004672994076129533</td></tr>
+            <tr><td><code>(4,14,18)</code></td><td>4</td><td>14</td><td>18</td><td>0.1</td><td>0.0010939450733944882</td><td>0.004407098697342349</td></tr>
+            <tr><td><code>(5,13,18)</code></td><td>5</td><td>13</td><td>18</td><td>0.1</td><td>0.0016913491260530415</td><td>0.009820772541592415</td></tr>
+            <tr><td><code>(6,12,18)</code></td><td>6</td><td>12</td><td>18</td><td>0.1</td><td>0.0026454071849456016</td><td>0.01519803814223486</td></tr>
+            <tr><td><code>(7,11,18)</code></td><td>7</td><td>11</td><td>18</td><td>0.1</td><td>0.004197916185375777</td><td>0.006308391653585876</td></tr>
+            <tr><td><code>(8,10,18)</code></td><td>8</td><td>10</td><td>18</td><td>0.15</td><td>0.05235708285359799</td><td>0.003575907402482592</td></tr>
+            <tr><td><code>(4,16,20)</code></td><td>4</td><td>16</td><td>20</td><td>0.1</td><td>0.0002681242280776095</td><td>0.005075977916674024</td></tr>
+            <tr><td><code>(5,15,20)</code></td><td>5</td><td>15</td><td>20</td><td>0.1</td><td>0.0003832082653567528</td><td>0.010656871565757009</td></tr>
+            <tr><td><code>(6,14,20)</code></td><td>6</td><td>14</td><td>20</td><td>0.1</td><td>0.0005981893746086112</td><td>0.016201356971232372</td></tr>
+            <tr><td><code>(7,13,20)</code></td><td>7</td><td>13</td><td>20</td><td>0.1</td><td>0.0009444367762600823</td><td>0.016771744858105397</td></tr>
+            <tr><td><code>(8,12,20)</code></td><td>8</td><td>12</td><td>20</td><td>0.1</td><td>0.0015119327405422214</td><td>0.007357529464166235</td></tr>
+            <tr><td><code>(9,11,20)</code></td><td>9</td><td>11</td><td>20</td><td>0.15</td><td>0.026313299612962807</td><td>0.002137359059778521</td></tr>
+            <tr><td><code>(4,18,22)</code></td><td>4</td><td>18</td><td>22</td><td>0.1</td><td>6.56707524903879e-05</td><td>0.0012690450780540319</td></tr>
+            <tr><td><code>(5,17,22)</code></td><td>5</td><td>17</td><td>22</td><td>0.1</td><td>8.579371177064525e-05</td><td>0.0059310972691506425</td></tr>
+            <tr><td><code>(6,16,22)</code></td><td>6</td><td>16</td><td>22</td><td>0.1</td><td>0.00013379012405585124</td><td>0.010569889753096695</td></tr>
+            <tr><td><code>(7,15,22)</code></td><td>7</td><td>15</td><td>22</td><td>0.1</td><td>0.00021056860422013192</td><td>0.015185426655516032</td></tr>
+            <tr><td><code>(8,14,22)</code></td><td>8</td><td>14</td><td>22</td><td>0.1</td><td>0.00033509875282383694</td><td>0.011606958638320397</td></tr>
+            <tr><td><code>(9,13,22)</code></td><td>9</td><td>13</td><td>22</td><td>0.1</td><td>0.0005404077093855682</td><td>0.003861717291113398</td></tr>
+            <tr><td><code>(10,12,22)</code></td><td>10</td><td>12</td><td>22</td><td>0.15</td><td>0.01312589773996308</td><td>0.0004522955122210348</td></tr>
+            <tr><td><code>(4,20,24)</code></td><td>4</td><td>20</td><td>24</td><td>0.1</td><td>1.588136678415291e-05</td><td>0.0016114568486429448</td></tr>
+            <tr><td><code>(5,19,24)</code></td><td>5</td><td>19</td><td>24</td><td>0.1</td><td>1.976420105693326e-05</td><td>0.0063591119823869224</td></tr>
+            <tr><td><code>(6,18,24)</code></td><td>6</td><td>18</td><td>24</td><td>0.1</td><td>2.9645489137989947e-05</td><td>0.01108350740898012</td></tr>
+            <tr><td><code>(7,17,24)</code></td><td>7</td><td>17</td><td>24</td><td>0.1</td><td>4.6565308380372506e-05</td><td>0.015784647254046713</td></tr>
+            <tr><td><code>(8,16,24)</code></td><td>8</td><td>16</td><td>24</td><td>0.1</td><td>7.381061619609271e-05</td><td>0.020462536392066744</td></tr>
+            <tr><td><code>(9,15,24)</code></td><td>9</td><td>15</td><td>24</td><td>0.1</td><td>0.00011826308378546438</td><td>0.012509477126162794</td></tr>
+            <tr><td><code>(10,14,24)</code></td><td>10</td><td>14</td><td>24</td><td>0.1</td><td>0.00019191183186926852</td><td>0.004463396283008292</td></tr>
+            <tr><td><code>(4,22,26)</code></td><td>4</td><td>22</td><td>26</td><td>0.15</td><td>3.713355333446478e-05</td><td>0.006465188602978178</td></tr>
+            <tr><td><code>(5,21,26)</code></td><td>5</td><td>21</td><td>26</td><td>0.1</td><td>4.678792915459258e-06</td><td>0.0010830443162821446</td></tr>
+            <tr><td><code>(6,20,26)</code></td><td>6</td><td>20</td><td>26</td><td>0.1</td><td>6.51680806241724e-06</td><td>0.004782834191744634</td></tr>
+            <tr><td><code>(7,19,26)</code></td><td>7</td><td>19</td><td>26</td><td>0.1</td><td>1.022311489461366e-05</td><td>0.008469565752051822</td></tr>
+            <tr><td><code>(8,18,26)</code></td><td>8</td><td>18</td><td>26</td><td>0.1</td><td>1.616045438840457e-05</td><td>0.012143240533949329</td></tr>
+            <tr><td><code>(9,17,26)</code></td><td>9</td><td>17</td><td>26</td><td>0.1</td><td>2.5775578783309206e-05</td><td>0.012582000446928587</td></tr>
+            <tr><td><code>(10,16,26)</code></td><td>10</td><td>16</td><td>26</td><td>0.1</td><td>4.15427793883941e-05</td><td>0.006537873843661779</td></tr>
+            <tr><td><code>(4,24,28)</code></td><td>4</td><td>24</td><td>28</td><td>0.15</td><td>1.080036745811165e-05</td><td>0.006795953052098236</td></tr>
+            <tr><td><code>(5,23,28)</code></td><td>5</td><td>23</td><td>28</td><td>0.1</td><td>1.0975011077449174e-06</td><td>0.001286435042207379</td></tr>
+            <tr><td><code>(6,22,28)</code></td><td>6</td><td>22</td><td>28</td><td>0.1</td><td>1.4383690472638905e-06</td><td>0.005026903062854915</td></tr>
+            <tr><td><code>(7,21,28)</code></td><td>7</td><td>21</td><td>28</td><td>0.1</td><td>2.2301412536466365e-06</td><td>0.00875431276834715</td></tr>
+            <tr><td><code>(8,20,28)</code></td><td>8</td><td>20</td><td>28</td><td>0.1</td><td>3.518583035448971e-06</td><td>0.012468665695429704</td></tr>
+            <tr><td><code>(9,19,28)</code></td><td>9</td><td>19</td><td>28</td><td>0.1</td><td>5.593673052989502e-06</td><td>0.016169963616971428</td></tr>
+            <tr><td><code>(10,18,28)</code></td><td>10</td><td>18</td><td>28</td><td>0.1</td><td>8.970802080807042e-06</td><td>0.01328350553381974</td></tr>
+            <tr><td><code>(4,26,30)</code></td><td>4</td><td>26</td><td>30</td><td>0.15</td><td>3.119531530943017e-06</td><td>0.007082615574669049</td></tr>
+            <tr><td><code>(5,25,30)</code></td><td>5</td><td>25</td><td>30</td><td>0.1</td><td>2.5546182702160315e-07</td><td>0.0014627070046758783</td></tr>
+            <tr><td><code>(6,24,30)</code></td><td>6</td><td>24</td><td>30</td><td>0.1</td><td>3.3237270631238387e-07</td><td>0.005238429417817159</td></tr>
+            <tr><td><code>(7,23,30)</code></td><td>7</td><td>23</td><td>30</td><td>0.1</td><td>4.837729455747221e-07</td><td>0.009001093515803027</td></tr>
+            <tr><td><code>(8,22,30)</code></td><td>8</td><td>22</td><td>30</td><td>0.1</td><td>7.622191578223082e-07</td><td>0.012750700835379325</td></tr>
+            <tr><td><code>(9,21,30)</code></td><td>9</td><td>21</td><td>30</td><td>0.1</td><td>1.2088062928068998e-06</td><td>0.016487253149414793</td></tr>
+            <tr><td><code>(10,20,30)</code></td><td>10</td><td>20</td><td>30</td><td>0.1</td><td>1.9314608564611785e-06</td><td>0.020210752466772952</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>Downloads</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>File</th>
+            <th>Purpose</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><a href="./downloads/finite_gv_ha_constants.csv">finite_gv_ha_constants.csv</a></td>
+            <td>Full HA-side table of certified constants for all 56 triples.</td>
+          </tr>
+          <tr>
+            <td><a href="./downloads/finite_gv_mn_constants.csv">finite_gv_mn_constants.csv</a></td>
+            <td>Full MN-side table of certified constants for all 56 triples.</td>
+          </tr>
+          <tr>
+            <td><a href="./downloads/balanced_side_gv_jz_k_status.csv">balanced_side_gv_jz_k_status.csv</a></td>
+            <td>Scan-window status table indicating HA/MN numerical GV matches and current certifications.</td>
+          </tr>
+          <tr>
+            <td><a href="./downloads/finite_gv_ha_rows.tex">finite_gv_ha_rows.tex</a></td>
+            <td>TeX rows for the full HA-side table.</td>
+          </tr>
+          <tr>
+            <td><a href="./downloads/finite_gv_mn_rows.tex">finite_gv_mn_rows.tex</a></td>
+            <td>TeX rows for the full MN-side table.</td>
+          </tr>
+          <tr>
+            <td><a href="./downloads/certify_finite_gv_triples.py">certify_finite_gv_triples.py</a></td>
+            <td>Main script certifying the finite-degree GV inequalities for the 56 triples in \(T_{\mathrm{GV}}\).</td>
+          </tr>
+          <tr>
+            <td><a href="./downloads/build_full_finite_gv_tables.py">build_full_finite_gv_tables.py</a></td>
+            <td>Builds the full 56-row CSV and TeX tables from the certification results.</td>
+          </tr>
+          <tr>
+            <td><a href="./downloads/export_finite_gv_proof_tables.py">export_finite_gv_proof_tables.py</a></td>
+            <td>Exports paper tables from the certificate data.</td>
+          </tr>
+          <tr>
+            <td><a href="./downloads/requirements-proof.txt">requirements-proof.txt</a></td>
+            <td>Minimal Python dependency list for the proof scripts.</td>
+          </tr>
+          <tr>
+            <td><a href="./downloads/scripts_README.md">scripts_README.md</a></td>
+            <td>Short script overview and usage notes.</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="section">
+      <h2>How These Files Relate to the Paper</h2>
+      <ul>
+        <li>The representative tables printed in Appendices D and E show sample certified rows only.</li>
+        <li>This HTML page shows the full 56-row HA-side and MN-side tables for the certified set \(T_{\mathrm{GV}}\).</li>
+        <li>This HTML page also provides the exact scripts used to certify those 56 triples and to generate the tables.</li>
+        <li>The HA-side and MN-side CSV files still contain the full machine-readable data for all 56 certified triples in \(T_{\mathrm{GV}}\).</li>
+        <li>The HA-side CSV records <code>beta_z</code>, <code>delta_bar</code>, <code>lambda_z</code>, and <code>epsilon_z</code>.</li>
+        <li>The MN-side CSV records <code>beta_x</code>, <code>B_x</code>, and <code>epsilon_x</code>.</li>
+        <li>The scan-status CSV records which triples in the search window are numerical GV matches and which ones are currently certified on the HA and MN sides.</li>
+      </ul>
+      <div class="callout">
+        The certification scripts are written to be run from the repository root.
+        The copies hosted here are the exact source files used to generate the
+        public tables.
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>Theory Behind the Constants</h2>
+      <p>
+        The constants in the two 56-row tables are not ad hoc numerical
+        outputs. For each triple in \(T_{\mathrm{GV}}\), they are the certified
+        parameters that remain after the analytic first-moment reductions in
+        the paper.
+      </p>
+      <p>
+        The basic probabilistic framework is the first-moment method followed
+        by Markov's inequality: for a target relative distance
+        \(\delta&lt;\delta_{\mathrm{GV}}\), one bounds the expected number of
+        codewords or witnesses of weight at most \(\delta n\), and then shows
+        that this expectation tends to zero. In the present paper, this
+        reduction is carried out for the HA side in Section&nbsp;3 and
+        Appendix&nbsp;D, and for the MN side in Section&nbsp;4 and
+        Appendix&nbsp;E of
+        <a href="https://arxiv.org/abs/2603.24588">arXiv:2603.24588</a>.
+      </p>
+
+      <h2>HA-Side Constants</h2>
+      <p>
+        The HA-side constants
+        \(\beta_Z\), \(\bar{\delta}\), \(\lambda_Z\), and \(\varepsilon_Z\)
+        come from two different parts of the proof.
+      </p>
+      <ul>
+        <li>
+          The pair \((\beta_Z,\lambda_Z)\) controls the small-input region by a
+          geometric bound on the outer enumerator. This is the finite-degree
+          analogue of the HA weight-distribution analysis.
+        </li>
+        <li>
+          The pair \((\bar{\delta},\varepsilon_Z)\) controls the compact strip
+          after the visible exponent is reduced to the one-variable function
+          \[
+          G_{Z,\delta}(\tau)
+          =
+          h(\tau)-\alpha_Z+\alpha_Z\log_2(1+(1-2\tau)^k)
+          -D\!\left(\delta \middle\| \frac{1-(1-2\tau)^k}{2}\right).
+          \]
+          The certified inequality is
+          \[
+          \sup_{\beta_Z/k \le \tau \le 0.49} G_{Z,\bar{\delta}}(\tau)
+          \le -\varepsilon_Z.
+          \]
+        </li>
+      </ul>
+
+      <h2>MN-Side Constants</h2>
+      <p>
+        The MN-side constants \(\beta_X\), \(B_X\), and \(\varepsilon_X\) come
+        from the low-weight decomposition of the refined witness enumerator.
+      </p>
+      <ul>
+        <li>
+          The pair \((\beta_X,B_X)\) controls the low-weight small-support
+          regime through a geometric bound obtained from the pairing argument
+          and Stirling/Vandermonde reductions.
+        </li>
+        <li>
+          The margin \(\varepsilon_X\) controls the low-weight large-support
+          regime after the trial exponent is reduced to
+          \[
+          \Phi_{\mathrm{MN}}(a,b,\omega)
+          =
+          \alpha_Z h(a)+\alpha_{\Delta} h(b)+h(\omega)-1
+          +\log_2\!\bigl(1+\mu\,y_1^{j_Z}y_{\Delta}^{j_{\Delta}}\bigr),
+          \]
+          where \(y_1=|1-2a|\), \(y_{\Delta}=|1-2b|\), and
+          \(\mu=|1-2\omega|^k\). The certified inequality is
+          \[
+          \sup_{\substack{
+          0 \le \omega \le \omega_*(k),\,
+          0 \le a,b \le 1/2\\
+          \max\{a,b\} \ge \beta_X/k
+          }}
+          \Phi_{\mathrm{MN}}(a,b,\omega)
+          \le -\varepsilon_X.
+          \]
+        </li>
+      </ul>
+
+      <h2>Role of Validated Numerics</h2>
+      <p>
+        After the analytic reductions, the remaining task is to prove that the
+        exponents above are uniformly negative on compact domains. This is done
+        by <em>validated numerics</em>, more specifically interval arithmetic
+        with adaptive subdivision. The domain is partitioned into finitely many
+        boxes, an outward-rounded upper bound is computed on each box, and the
+        worst box upper bound is shown to be negative. The numbers
+        \(\varepsilon_Z\) and \(\varepsilon_X\) are exactly the certified
+        negative margins obtained in this way.
+      </p>
+
+      <h2>References</h2>
+      <ul>
+        <li>
+          K. Kasai, “Finite-Degree Quantum LDPC Codes Reaching the
+          Gilbert--Varshamov Bound,”
+          <a href="https://arxiv.org/abs/2603.24588">arXiv:2603.24588</a>.
+          This is the paper to which the present tables correspond; see
+          Sections 3--4 and Appendices D--E.
+        </li>
+        <li>
+          C.-H. Hsu and A. Anastasopoulos, “Capacity-Achieving Codes with
+          Bounded Graphical Complexity on Noisy Channels,”
+          <a href="https://arxiv.org/abs/cs/0509062">arXiv:cs/0509062</a>.
+          This is the original HA/LDPC-GM weight-distribution framework behind
+          the HA-side exponent analysis.
+        </li>
+        <li>
+          R. E. Moore, R. B. Kearfott, and M. J. Cloud,
+          <em>Introduction to Interval Analysis</em> (2009),
+          <a href="https://books.google.com/books?id=tT7ykKbqfEwC&printsec=frontcover">Google Books entry</a>.
+          Standard reference for interval arithmetic and validated bounds.
+        </li>
+        <li>
+          W. Tucker,
+          <em>Validated Numerics: A Short Introduction to Rigorous Computations</em>
+          (2011),
+          <a href="https://doi.org/10.1515/9781400838974">DOI link</a>.
+          Short introduction to rigorous computer-assisted proof via validated
+          numerics.
+        </li>
+      </ul>
+    </section>
+
+    <section class="section">
+      <h2>Certified Constants and Inequalities</h2>
+      <p>
+        The scripts do not merely export tables; they certify the finite-domain
+        inequalities that remain after the analytic first-moment reductions.
+        The exported constants are the parameters appearing in those certified
+        inequalities.
+      </p>
+
+      <h2>HA Side</h2>
+      <p>
+        The HA-side CSV
+        <a href="./downloads/finite_gv_ha_constants.csv">finite_gv_ha_constants.csv</a>
+        records the columns
+        <code>beta_z</code>, <code>delta_bar</code>, <code>lambda_z</code>,
+        and <code>epsilon_z</code>.
+      </p>
+      <p>For each certified triple, these constants are used to establish:</p>
+      <div class="mathblock">
+        \[
+        \delta_{\mathrm{GV}} = h^{-1}(\alpha_Z) < \bar{\delta},
+        \qquad
+        \lambda_Z < 1,
+        \]
+        \[
+        \sup_{\beta_Z/k \le \tau \le 0.49} G_{Z,\bar{\delta}}(\tau) \le -\varepsilon_Z.
+        \]
+      </div>
+      <p>Here</p>
+      <div class="mathblock">
+        \[
+        G_{Z,\delta}(\tau)
+        =
+        h(\tau)-\alpha_Z+\alpha_Z\log_2(1+(1-2\tau)^k)
+        -D\!\left(\delta \middle\| \frac{1-(1-2\tau)^k}{2}\right).
+        \]
+      </div>
+      <p>
+        In the proof, \(\lambda_Z < 1\) controls the small-input region,
+        while \(\varepsilon_Z > 0\) provides a certified negative margin on
+        the compact strip.
+      </p>
+
+      <h2>MN Side</h2>
+      <p>
+        The MN-side CSV
+        <a href="./downloads/finite_gv_mn_constants.csv">finite_gv_mn_constants.csv</a>
+        records the columns
+        <code>beta_x</code>, <code>B_x</code>, and <code>epsilon_x</code>.
+      </p>
+      <p>For each certified triple, these constants are used to establish:</p>
+      <div class="mathblock">
+        \[
+        B_X < 1,
+        \]
+        \[
+        \sup_{\substack{
+        0 \le \omega \le \omega_*(k),\,
+        0 \le a,b \le 1/2\\
+        \max\{a,b\} \ge \beta_X/k
+        }}
+        \Phi_{\mathrm{MN}}(a,b,\omega)
+        \le -\varepsilon_X.
+        \]
+      </div>
+      <p>Here</p>
+      <div class="mathblock">
+        \[
+        \Phi_{\mathrm{MN}}(a,b,\omega)
+        =
+        \alpha_Z h(a)+\alpha_{\Delta} h(b)+h(\omega)-1
+        +\log_2\!\bigl(1+\mu\,y_1^{j_Z}y_{\Delta}^{j_{\Delta}}\bigr),
+        \]
+        \[
+        y_1 = |1-2a|,
+        \qquad
+        y_{\Delta} = |1-2b|,
+        \qquad
+        \mu = |1-2\omega|^k,
+        \]
+        \[
+        \omega_*(k) = \frac{1-(\alpha_X/2)^{1/k}}{2}.
+        \]
+      </div>
+      <p>
+        In the proof, \(B_X < 1\) controls the low-weight small-support
+        regime, while \(\varepsilon_X > 0\) provides a certified negative
+        margin on the low-weight large-support regime.
+      </p>
+
+      <div class="callout">
+        The scripts on this page therefore provide both the machine-readable
+        constants and the exact finite-domain inequalities that those constants
+        certify.
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>Minimal Reproduction</h2>
+      <p>From the repository root, the core workflow is:</p>
+      <pre><code>python3 scripts/certify_finite_gv_triples.py
+python3 scripts/build_full_finite_gv_tables.py</code></pre>
+      <p>
+        The proof scripts require <code>mpmath</code>. The minimal dependency list
+        is provided in <a href="./downloads/requirements-proof.txt">requirements-proof.txt</a>.
+      </p>
+    </section>
+  </main>
+</body>
+</html>
