@@ -11,7 +11,7 @@
   </script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>How the Three Upper-Bound Columns Are Computed</title>
+  <title>How the Upper-Bound Columns Are Computed</title>
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
   <style>
     body {
@@ -64,14 +64,14 @@
 </head>
 <body>
   <p><a href="en.html#live-upper-bound-table">Back to the live table</a></p>
-  <h1>A Note on the Three Upper-Bound Columns</h1>
+  <h1>A Note on the Upper-Bound Columns</h1>
 
   <p>
-    This note records the three upper-bound mechanisms displayed in the live table on the main page.
+    This note records the upper-bound mechanisms displayed in the live table on the main page.
     Throughout, the reported code parameter \(\left[\left[n,k,\le u\right]\right]\) is obtained by taking the
     minimum among the currently available structural and simulation-based upper bounds for the same row.
-    The first two columns are algebraic in nature and are extracted from the APM structure itself, whereas
-    the third column is obtained from decoder-fail experiments at a fixed physical error rate.
+    The latent, \(m\)-block, and decoder-fail columns are the three core columns used throughout the manuscript,
+    while the CRT and direct-CSS columns report two additional exploratory oracles that we now track in parallel.
   </p>
 
   <table>
@@ -92,6 +92,16 @@
         <td>\(m\)-block UB</td>
         <td>A non-latent upper bound obtained from block-constant compression and lifting.</td>
         <td><code>nonlatent_x_upper</code>, <code>nonlatent_z_upper</code>, <code>nonlatent_min_upper</code></td>
+      </tr>
+      <tr>
+        <td>CRT UB</td>
+        <td>An exploratory upper bound obtained from coprime stripe compression on quotient spaces \(P=q_1q_2\).</td>
+        <td>Currently tracked in experimental logs rather than in the main parameter-file comments.</td>
+      </tr>
+      <tr>
+        <td>Direct CSS UB</td>
+        <td>An exploratory upper bound obtained by directly searching for low-weight vectors in \(\Ker(H_Z)\setminus\Row(H_X)\) or \(\Ker(H_X)\setminus\Row(H_Z)\).</td>
+        <td>Currently tracked in experimental logs rather than in the main parameter-file comments.</td>
       </tr>
       <tr>
         <td>Decoder-fail UB</td>
@@ -130,7 +140,33 @@
     The live table shows the minimum non-latent structural upper bound in the <em>\(m\)-block UB</em> column.
   </p>
 
-  <h2 id="decoder-fail-upper-bound">3. Decoder-Fail Upper Bound</h2>
+  <h2 id="crt-upper-bound">3. CRT-Compression Upper Bound</h2>
+  <p>
+    The CRT upper bound is an experimental extension of the block-compression oracle.
+    Instead of requiring a witness to be constant on a single subgroup quotient, we search over
+    coprime stripe subspaces coming from factorizations \(P=q_1q_2\) with \(\gcd(q_1,q_2)=1\).
+    In practice, we restrict to the binary span of residue-class stripes modulo \(q_1\) and modulo \(q_2\),
+    solve the induced quotient kernel problem, and lift the resulting witness back to the full code.
+  </p>
+  <p>
+    This column is currently used as an auxiliary oracle rather than as part of the parameter-file comments.
+    It is included in the live table because it can sometimes produce witnesses that are structurally different
+    from ordinary \(m\)-block-constant ones.
+  </p>
+
+  <h2 id="direct-css-upper-bound">4. Direct CSS-Search Upper Bound</h2>
+  <p>
+    The direct CSS upper bound dispenses with quotient structure altogether and searches directly for a low-weight
+    vector in \(\Ker(H_Z)\setminus\Row(H_X)\) or in \(\Ker(H_X)\setminus\Row(H_Z)\).
+    The current implementation is randomized: it samples low-combination vectors in a nullspace basis and rejects
+    those that fall back into the opposite row space.
+  </p>
+  <p>
+    This oracle is expensive and therefore still exploratory, but it is the cleanest structure-free witness search
+    among the upper-bound mechanisms we track.
+  </p>
+
+  <h2 id="decoder-fail-upper-bound">5. Decoder-Fail Upper Bound</h2>
   <p>
     The third bound is obtained from decoder-fail sampling at \(p=0.03\). We search for failure events in which the
     decoder output matches the observed syndrome but differs from the true error by a non-stabilizer logical residual.
@@ -149,12 +185,13 @@
     and conversely a decoder-fail witness can tighten a row beyond its original structural bound.
   </div>
 
-  <h2>4. Use in the Live Table</h2>
+  <h2>6. Use in the Live Table</h2>
   <p>
-    The live table retains all three columns because they serve different purposes.
-    The first two columns report algebraic upper bounds extracted from the code structure,
-    whereas the third reports simulation-based logical-error witnesses. The displayed row bound is therefore
-    updated whenever any one of the three mechanisms yields a strictly smaller valid upper bound.
+    The live table retains all five columns because they serve different purposes.
+    The latent, \(m\)-block, and CRT columns report algebraic upper bounds extracted from the code structure,
+    the direct-CSS column reports structure-free witness searches, and the decoder-fail column reports
+    simulation-based logical-error witnesses. The displayed row bound is therefore updated whenever any one
+    of these mechanisms yields a strictly smaller valid upper bound.
   </p>
   <ul>
     <li>A row such as \(P=288\) can have latent and \(m\)-block bounds equal to 24 while the best decoder-fail witness is still 28.</li>
