@@ -71,7 +71,7 @@
     Throughout, the reported code parameter \(\left[\left[n,k,\le u\right]\right]\) is obtained by taking the
     minimum among the currently available structural and simulation-based upper bounds for the same row.
     The latent, \(m\)-block, and decoder-fail columns are the three core columns used throughout the manuscript,
-    while the CRT and direct-CSS columns report two additional exploratory oracles that we now track in parallel.
+    while the CRT and direct-CSS columns report two additional exploratory methods that we now track in parallel.
   </p>
 
   <table>
@@ -100,7 +100,7 @@
       </tr>
       <tr>
         <td>Direct CSS UB</td>
-        <td>An exploratory upper bound obtained by directly searching for low-weight vectors in \(\Ker(H_Z)\setminus\Row(H_X)\) or \(\Ker(H_X)\setminus\Row(H_Z)\).</td>
+        <td>An exploratory upper bound obtained by directly searching for low-weight vectors in \(\operatorname{Ker}(H_Z)\setminus\operatorname{Row}(H_X)\) or \(\operatorname{Ker}(H_X)\setminus\operatorname{Row}(H_Z)\).</td>
         <td>Currently tracked in experimental logs rather than in the main parameter-file comments.</td>
       </tr>
       <tr>
@@ -142,14 +142,14 @@
 
   <h2 id="crt-upper-bound">3. CRT-Compression Upper Bound</h2>
   <p>
-    The CRT upper bound is an experimental extension of the block-compression oracle.
+    The CRT upper bound is an experimental extension of the block-compression method.
     Instead of requiring a witness to be constant on a single subgroup quotient, we search over
     coprime stripe subspaces coming from factorizations \(P=q_1q_2\) with \(\gcd(q_1,q_2)=1\).
     In practice, we restrict to the binary span of residue-class stripes modulo \(q_1\) and modulo \(q_2\),
     solve the induced quotient kernel problem, and lift the resulting witness back to the full code.
   </p>
   <p>
-    This column is currently used as an auxiliary oracle rather than as part of the parameter-file comments.
+    This column is currently used as an auxiliary method rather than as part of the parameter-file comments.
     It is included in the live table because it can sometimes produce witnesses that are structurally different
     from ordinary \(m\)-block-constant ones.
   </p>
@@ -157,12 +157,12 @@
   <h2 id="direct-css-upper-bound">4. Direct CSS-Search Upper Bound</h2>
   <p>
     The direct CSS upper bound dispenses with quotient structure altogether and searches directly for a low-weight
-    vector in \(\Ker(H_Z)\setminus\Row(H_X)\) or in \(\Ker(H_X)\setminus\Row(H_Z)\).
+    vector in \(\operatorname{Ker}(H_Z)\setminus\operatorname{Row}(H_X)\) or in \(\operatorname{Ker}(H_X)\setminus\operatorname{Row}(H_Z)\).
     The current implementation is randomized: it samples low-combination vectors in a nullspace basis and rejects
     those that fall back into the opposite row space.
   </p>
   <p>
-    This oracle is expensive and therefore still exploratory, but it is the cleanest structure-free witness search
+    This method is expensive and therefore still exploratory, but it is the cleanest structure-free witness search
     among the upper-bound mechanisms we track.
   </p>
 
@@ -187,7 +187,7 @@
 
   <h2>6. Use in the Live Table</h2>
   <p>
-    The live table retains all five columns because they serve different purposes.
+    The live table retains all six upper-bound columns because they serve different purposes.
     The latent, \(m\)-block, and CRT columns report algebraic upper bounds extracted from the code structure,
     the direct-CSS column reports structure-free witness searches, and the decoder-fail column reports
     simulation-based logical-error witnesses. The displayed row bound is therefore updated whenever any one
