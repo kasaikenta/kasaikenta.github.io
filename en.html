@@ -317,7 +317,7 @@ body {
   in particular, we are not tuning the decoder for best low-FER behavior before reporting these bounds.
 </p>
 <p class="code-note">
-  In the trials column, each entry counts completed decoder-fail trials at <code>p=0.03</code> only.
+  In the trials columns, each entry counts completed decoder-fail trials at the indicated physical error rate only.
   Ongoing or merely submitted batches are not included.
 </p>
 
@@ -334,6 +334,7 @@ body {
         <th><a href="distance_upper_bounds.html#direct-css-upper-bound">Direct CSS UB</a></th>
         <th><a href="distance_upper_bounds.html#decoder-fail-upper-bound">Decoder-fail UB</a></th>
         <th>Completed at \(p=0.03\)</th>
+        <th>Completed at \(p=0.04\)</th>
       </tr>
     </thead>
     <tbody>
@@ -347,6 +348,7 @@ body {
         <td>54</td>
         <td class="ub-best">14</td>
         <td>&gt;10.55M</td>
+        <td>--</td>
       </tr>
       <tr>
         <td>240</td>
@@ -358,6 +360,7 @@ body {
         <td>50</td>
         <td class="ub-best">16</td>
         <td>&gt;15.8M</td>
+        <td>--</td>
       </tr>
       <tr>
         <td>264</td>
@@ -369,6 +372,7 @@ body {
         <td>44</td>
         <td class="ub-best">22</td>
         <td>128.00M</td>
+        <td>--</td>
       </tr>
       <tr>
         <td>288</td>
@@ -380,6 +384,7 @@ body {
         <td>32</td>
         <td>28</td>
         <td>&gt;448M</td>
+        <td>--</td>
       </tr>
       <tr>
         <td>384</td>
@@ -391,6 +396,7 @@ body {
         <td>128</td>
         <td>28</td>
         <td>84.00M</td>
+        <td>--</td>
       </tr>
       <tr>
         <td>576</td>
@@ -402,6 +408,7 @@ body {
         <td>72</td>
         <td>--</td>
         <td>49.81M</td>
+        <td>0</td>
       </tr>
       <tr>
         <td>768</td>
@@ -413,6 +420,7 @@ body {
         <td>74</td>
         <td>--</td>
         <td>62.24M</td>
+        <td>0</td>
       </tr>
       <tr class="paper-code-row">
         <td>768 (paper code)</td>
@@ -422,6 +430,7 @@ body {
         <td>96</td>
         <td>NE</td>
         <td>128</td>
+        <td>--</td>
         <td>--</td>
         <td>--</td>
       </tr>
@@ -435,6 +444,7 @@ body {
         <td>512</td>
         <td>--</td>
         <td>--</td>
+        <td>0</td>
       </tr>
       <tr>
         <td>1920</td>
@@ -446,6 +456,7 @@ body {
         <td>96</td>
         <td>--</td>
         <td>--</td>
+        <td>0</td>
       </tr>
       <tr>
         <td>2688</td>
@@ -457,6 +468,7 @@ body {
         <td>128</td>
         <td>--</td>
         <td>--</td>
+        <td>0</td>
       </tr>
       <tr>
         <td>3072</td>
@@ -468,6 +480,7 @@ body {
         <td>640</td>
         <td>--</td>
         <td>--</td>
+        <td>0</td>
       </tr>
       <tr>
         <td>3840</td>
@@ -479,6 +492,7 @@ body {
         <td>240</td>
         <td>--</td>
         <td>--</td>
+        <td>4.00M</td>
       </tr>
     </tbody>
   </table>
@@ -491,6 +505,9 @@ body {
 </p>
 <p class="code-note">
   For \(P \ge 1536\), the historical TSUBAME wave at <code>p=0.03</code> is currently excluded from the completed-trial counts because those jobs did not execute correctly.
+</p>
+<p class="code-note">
+  In the <code>Completed at \(p=0.04\)</code> column, <code>0</code> means that a <code>p=0.04</code> campaign has been launched but no seed has completed yet, whereas <code>--</code> means that no such campaign has been launched for that row.
 </p>
 
 <h3>Non-binary LDPC-based quantum codes</h3>
