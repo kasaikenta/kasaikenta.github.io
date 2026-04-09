@@ -487,7 +487,7 @@ body {
         <td>2.00M</td>
       </tr>
       <tr class="paper-code-row">
-        <td>2688 (candidate)</td>
+        <td>2688 (candidate, structural)</td>
         <td><a href="files/2601.08824_codes/H_P2688_J3_L12_dmax3_nc0-3_seed2688040913_best1_ub32_att350.txt">\(\left[\left[32256,16132,\leq 32\right]\right]\)</a></td>
         <td><code>2688040913</code></td>
         <td>84</td>
@@ -498,6 +498,19 @@ body {
         <td>--</td>
         <td>--</td>
         <td>--</td>
+      </tr>
+      <tr class="paper-code-row">
+        <td>2688 (candidate, screened)</td>
+        <td><a href="files/2601.08824_codes/H_P2688_J3_L12_dmax3_nc0-3_seed2688045021_best1_ub64_att317.txt">\(\left[\left[32256,16132,\leq 12\right]\right]\)</a></td>
+        <td><code>2688045021</code></td>
+        <td>84</td>
+        <td>64</td>
+        <td>--</td>
+        <td>--</td>
+        <td>--</td>
+        <td class="ub-best">12</td>
+        <td>--</td>
+        <td>0.20M</td>
       </tr>
       <tr>
         <td>3072</td>
@@ -541,10 +554,10 @@ body {
   In the <code>Completed at \(p=0.04\)</code> column, <code>0</code> means that a <code>p=0.04</code> campaign has been launched but no seed has completed yet, whereas <code>--</code> means that no such campaign has been launched for that row.
 </p>
 <p class="code-note">
-  For \(P=2688\), ongoing candidate searches are already producing additional rows with structural bound at least \(48\); the current search logs already contain examples at \(48\), \(64\), \(72\), \(84\), \(96\), and \(128\), but those rows are not listed in the table until the same screening pipeline has finished for them.
+  For \(P=2688\), one screened comparison row is now listed: the candidate with seed <code>2688045021</code> attains decoder-fail UB \(12\) after a fresh <code>p=0.04</code> screen of <code>0.20M</code> trials. Ongoing searches are still producing additional rows with structural bound at least \(48\); the current search logs already contain further examples at \(48\), \(64\), \(72\), \(84\), \(96\), and \(128\), but those rows are not listed until the same screening pipeline has finished for them.
 </p>
 <p class="code-note">
-  A graph-motif library built from valid decoder-failure witnesses at \(P=216\), \(240\), and \(2688\) already rederives the known \(P=2688\) decoder-fail upper bound \(18\) on the reported row, but the current motif-transfer runs have not yet produced a smaller witness for the candidate rows. Because no additional <code>p=0.04</code> seeds have been confirmed complete since the previous refresh, the completed-trial totals above are unchanged in this update.
+  A graph-motif library built from valid decoder-failure witnesses at \(P=216\), \(240\), and \(2688\) already rederives the known \(P=2688\) decoder-fail upper bound \(18\) on the reported row, but the current motif-transfer runs have not yet reproduced the new weight-\(12\) witness on the candidate rows. The reported-row completed-trial totals above are otherwise unchanged in this update.
 </p>
 
 <h3>Non-binary LDPC-based quantum codes</h3>
