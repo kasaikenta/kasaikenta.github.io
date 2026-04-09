@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-YY8X0H44J2"></script>
+  <script src="p2688_candidates_manifest.js"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
@@ -300,12 +301,11 @@
       document.getElementById('summary-cards').innerHTML = html;
     }
 
-    async function loadCatalog() {
-      const response = await fetch('p2688_candidates_manifest.json', { cache: 'no-store' });
-      if (!response.ok) {
-        throw new Error(`failed to load manifest: ${response.status}`);
+    function loadCatalog() {
+      const data = window.P2688_CANDIDATES;
+      if (!Array.isArray(data)) {
+        throw new Error('embedded manifest is missing');
       }
-      const data = await response.json();
       buildSummary(data);
 
       const liveRows = data
@@ -327,7 +327,9 @@
       document.getElementById('pool-body').innerHTML = poolRows.map(renderPoolRow).join('');
     }
 
-    loadCatalog().catch((error) => {
+    try {
+      loadCatalog();
+    } catch (error) {
       document.getElementById('summary-cards').innerHTML = `
         <div class="stat-card">
           <div class="stat-label">Catalog status</div>
@@ -335,7 +337,7 @@
           <div class="stat-detail">${escapeHtml(error.message)}</div>
         </div>
       `;
-    });
+    }
   </script>
 </body>
 </html>
