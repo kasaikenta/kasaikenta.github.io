@@ -63,61 +63,42 @@
       font-size: 0.88rem;
       color: #6a7783;
     }
-    .table-wrap {
+    .code-table-wrap {
       overflow-x: auto;
       margin: 16px 0 28px;
     }
-    table {
+    .code-table {
       border-collapse: collapse;
       width: 100%;
-      min-width: 980px;
+      min-width: 1120px;
       background: #fff;
     }
-    th, td {
+    .code-table th,
+    .code-table td {
       border: 1px solid #d7dde3;
       padding: 10px 12px;
       text-align: left;
       vertical-align: top;
     }
-    th {
-      background: #eef5fb;
+    .code-table th {
+      background-color: #eef5fb;
       color: #2c3e50;
-      position: sticky;
-      top: 0;
-      z-index: 1;
     }
-    tr.live-row td {
-      background: #f8fbff;
+    .code-table td.ub-best {
+      background-color: #e9f3ea;
+      font-weight: 600;
     }
-    tr.pool-row.promising td {
-      background: #f9fcf5;
+    .code-table tr.paper-code-row td {
+      background-color: #efe9e3;
+      color: #5f5850;
     }
-    tr.pool-row.extreme td {
-      background: #f4faed;
+    .code-table tr.paper-code-row td.ub-best {
+      background-color: #ddd2c6;
+      color: #4f463d;
     }
     .mono {
       font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
       font-size: 0.93em;
-    }
-    .pill {
-      display: inline-block;
-      border-radius: 999px;
-      padding: 3px 10px;
-      font-size: 0.82rem;
-      font-weight: 600;
-      white-space: nowrap;
-    }
-    .pill.live {
-      background: #e9f2fb;
-      color: #24567a;
-    }
-    .pill.screened {
-      background: #efe9e3;
-      color: #5f5850;
-    }
-    .pill.pool {
-      background: #eef5ea;
-      color: #435f3d;
     }
     .table-note {
       margin-top: 6px;
@@ -134,7 +115,7 @@
 
   <h1>P=2688 Candidate Catalog</h1>
   <p>
-    The main page keeps only the currently curated live rows for \(P=2688\).
+    The main page keeps only the currently curated live rows for P=2688.
     This companion page mirrors the broader candidate pool that is useful for follow-up screening,
     together with the three live rows already promoted into the main table.
   </p>
@@ -146,55 +127,63 @@
 
   <div class="stats-grid" id="summary-cards" aria-live="polite"></div>
 
-  <h2>Live Comparison Rows</h2>
+  <h2>Candidate Table</h2>
   <p class="muted">
-    These are the rows already exposed on the main page.
-    For the reported row and the screened row, the current live-row bound can be tighter than the raw bound
-    written inside the mirrored parameter file because decoder-fail evidence was added afterwards.
+    This page uses the same table structure as the main live table.
+    Columns not yet evaluated for a candidate are shown as <code>--</code>.
   </p>
-  <div class="table-wrap">
-    <table>
+  <div class="code-table-wrap">
+    <table class="code-table">
       <thead>
         <tr>
-          <th>Status</th>
-          <th>Current Row UB</th>
-          <th>File Overall UB</th>
+          <th>P</th>
+          <th>Current best code</th>
           <th>Seed</th>
           <th>Latent UB</th>
           <th>m-block UB</th>
+          <th>CRT UB</th>
+          <th>Cycle-8 ETS UB</th>
+          <th>Direct CSS UB</th>
           <th>Decoder-fail UB</th>
+          <th>Completed at p=0.03</th>
           <th>Completed at p=0.04</th>
-          <th>Parameter File</th>
         </tr>
       </thead>
-      <tbody id="live-body"></tbody>
-    </table>
-  </div>
-
-  <h2>Mirrored Structural Candidate Pool</h2>
-  <p class="muted">
-    These rows are sorted by the current structural upper bound recorded in the mirrored parameter file.
-    Larger values are structurally less constrained and therefore more interesting as screening targets.
-  </p>
-  <div class="table-wrap">
-    <table>
-      <thead>
-        <tr>
-          <th>Source</th>
-          <th>Structural UB</th>
-          <th>Seed</th>
-          <th>Latent UB</th>
-          <th>m-block UB</th>
-          <th>Best Rank</th>
-          <th>Attempt</th>
-          <th>Parameter File</th>
-        </tr>
-      </thead>
-      <tbody id="pool-body"></tbody>
+      <tbody id="candidate-body"></tbody>
     </table>
   </div>
 
   <script>
+    const ROW_OVERRIDES = {
+      '17715147614460666': {
+        pLabel: '2688',
+        crt: 256,
+        cycle8: 'NF',
+        directCss: 128,
+        p003: '--',
+        p004: '4.00M',
+        rowClass: '',
+      },
+      '2688040913': {
+        pLabel: '2688 (candidate, structural)',
+        crt: 54,
+        cycle8: 'NE',
+        directCss: 32,
+        p003: '--',
+        p004: '--',
+        rowClass: 'paper-code-row',
+      },
+      '2688045021': {
+        pLabel: '2688 (candidate, screened)',
+        crt: '--',
+        cycle8: '--',
+        directCss: '--',
+        p003: '--',
+        p004: '0.20M',
+        rowClass: 'paper-code-row',
+      },
+    };
+
     function escapeHtml(value) {
       return String(value)
         .replaceAll('&', '&amp;')
@@ -212,6 +201,14 @@
       return value === null || value === undefined ? '--' : `${Number(value).toFixed(2)}M`;
     }
 
+    function formatCodeLink(row, bound) {
+      return `<a href="${escapeHtml(row.link)}">[[32256,16132,≤${escapeHtml(bound)}]]</a>`;
+    }
+
+    function numericValue(value) {
+      return typeof value === 'number' && Number.isFinite(value) ? value : null;
+    }
+
     function summaryCard(label, value, detail) {
       return `
         <div class="stat-card">
@@ -219,61 +216,6 @@
           <div class="stat-value">${escapeHtml(value)}</div>
           <div class="stat-detail">${escapeHtml(detail)}</div>
         </div>
-      `;
-    }
-
-    function sourcePill(text, tone) {
-      return `<span class="pill ${tone}">${escapeHtml(text)}</span>`;
-    }
-
-    function liveSortKey(row) {
-      const order = {
-        'reported row': 0,
-        'candidate, screened': 1,
-        'candidate, structural': 2,
-      };
-      return order[row.status] ?? 99;
-    }
-
-    function renderLiveRow(row) {
-      const note = row.note ? `<div class="table-note">${escapeHtml(row.note)}</div>` : '';
-      return `
-        <tr class="live-row">
-          <td>${sourcePill(row.status, row.status === 'candidate, screened' ? 'screened' : 'live')}</td>
-          <td><strong>${fmtValue(row.live_overall)}</strong></td>
-          <td>${fmtValue(row.overall)}</td>
-          <td class="mono">${escapeHtml(row.seed)}</td>
-          <td>${fmtValue(row.latent)}</td>
-          <td>${fmtValue(row.mblock)}</td>
-          <td>${fmtValue(row.decoder)}</td>
-          <td>${fmtMillion(row.completed_p004_million)}</td>
-          <td><a href="${escapeHtml(row.link)}">${escapeHtml(row.filename)}</a>${note}</td>
-        </tr>
-      `;
-    }
-
-    function poolRowClass(row) {
-      if ((row.live_overall || 0) >= 96) {
-        return 'pool-row extreme';
-      }
-      if ((row.live_overall || 0) >= 64) {
-        return 'pool-row promising';
-      }
-      return 'pool-row';
-    }
-
-    function renderPoolRow(row) {
-      return `
-        <tr class="${poolRowClass(row)}">
-          <td>${sourcePill(row.source, 'pool')}</td>
-          <td><strong>${fmtValue(row.live_overall)}</strong></td>
-          <td class="mono">${escapeHtml(row.seed)}</td>
-          <td>${fmtValue(row.latent)}</td>
-          <td>${fmtValue(row.mblock)}</td>
-          <td>${fmtValue(row.best_rank)}</td>
-          <td>${fmtValue(row.attempt)}</td>
-          <td><a href="${escapeHtml(row.link)}">${escapeHtml(row.filename)}</a></td>
-        </tr>
       `;
     }
 
@@ -299,30 +241,78 @@
       document.getElementById('summary-cards').innerHTML = html;
     }
 
+    function displayMeta(row) {
+      const override = ROW_OVERRIDES[row.seed] || {};
+      const pLabel = override.pLabel || `2688 (pool: ${row.source})`;
+      const crt = override.crt ?? '--';
+      const cycle8 = override.cycle8 ?? '--';
+      const directCss = override.directCss ?? '--';
+      const p003 = override.p003 ?? '--';
+      const p004 = override.p004 ?? fmtMillion(row.completed_p004_million);
+      const rowClass = override.rowClass ?? 'paper-code-row';
+      return { pLabel, crt, cycle8, directCss, p003, p004, rowClass };
+    }
+
+    function cellHtml(value, best) {
+      const cls = best ? ' class="ub-best"' : '';
+      return `<td${cls}>${fmtValue(value)}</td>`;
+    }
+
+    function renderCandidateRow(row) {
+      const meta = displayMeta(row);
+      const note = row.note ? `<div class="table-note">${escapeHtml(row.note)}</div>` : '';
+      const boundMap = {
+        latent: numericValue(row.latent),
+        mblock: numericValue(row.mblock),
+        crt: numericValue(meta.crt),
+        directCss: numericValue(meta.directCss),
+        decoder: numericValue(row.decoder),
+      };
+      const numericBounds = Object.values(boundMap).filter((value) => value !== null);
+      const best = numericBounds.length ? Math.min(...numericBounds) : null;
+      return `
+        <tr class="${meta.rowClass}">
+          <td>${escapeHtml(meta.pLabel)}</td>
+          <td>${formatCodeLink(row, row.live_overall)}${note}</td>
+          <td><code>${escapeHtml(row.seed)}</code></td>
+          ${cellHtml(row.latent, best !== null && boundMap.latent === best)}
+          ${cellHtml(row.mblock, best !== null && boundMap.mblock === best)}
+          ${cellHtml(meta.crt, best !== null && boundMap.crt === best)}
+          <td>${fmtValue(meta.cycle8)}</td>
+          ${cellHtml(meta.directCss, best !== null && boundMap.directCss === best)}
+          ${cellHtml(row.decoder, best !== null && boundMap.decoder === best)}
+          <td>${meta.p003}</td>
+          <td>${meta.p004}</td>
+        </tr>
+      `;
+    }
+
     function loadCatalog() {
       const data = window.P2688_CANDIDATES;
       if (!Array.isArray(data)) {
         throw new Error('embedded manifest is missing');
       }
       buildSummary(data);
-
-      const liveRows = data
-        .filter((row) => row.source === 'live table')
-        .sort((a, b) => liveSortKey(a) - liveSortKey(b));
-      document.getElementById('live-body').innerHTML = liveRows.map(renderLiveRow).join('');
-
-      const poolRows = data
-        .filter((row) => row.source !== 'live table')
-        .sort((a, b) => {
-          if ((b.live_overall || 0) !== (a.live_overall || 0)) {
-            return (b.live_overall || 0) - (a.live_overall || 0);
-          }
-          if ((a.attempt || 0) !== (b.attempt || 0)) {
-            return (a.attempt || 0) - (b.attempt || 0);
-          }
-          return String(a.seed).localeCompare(String(b.seed));
-        });
-      document.getElementById('pool-body').innerHTML = poolRows.map(renderPoolRow).join('');
+      const order = {
+        'reported row': 0,
+        'candidate, screened': 1,
+        'candidate, structural': 2,
+      };
+      const rows = [...data].sort((a, b) => {
+        const ao = order[a.status];
+        const bo = order[b.status];
+        if (ao !== undefined || bo !== undefined) {
+          return (ao ?? 99) - (bo ?? 99);
+        }
+        if ((b.live_overall || 0) !== (a.live_overall || 0)) {
+          return (b.live_overall || 0) - (a.live_overall || 0);
+        }
+        if (String(a.source) !== String(b.source)) {
+          return String(a.source).localeCompare(String(b.source));
+        }
+        return String(a.seed).localeCompare(String(b.seed));
+      });
+      document.getElementById('candidate-body').innerHTML = rows.map(renderCandidateRow).join('');
     }
 
     try {
