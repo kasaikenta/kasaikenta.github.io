@@ -486,7 +486,7 @@ body {
         <td>128</td>
         <td class="ub-best">18</td>
         <td>--</td>
-        <td>2.00M</td>
+        <td>4.00M</td>
       </tr>
       <tr class="paper-code-row">
         <td>2688 (candidate, structural)</td>
@@ -556,10 +556,10 @@ body {
   In the <code>Completed at \(p=0.04\)</code> column, <code>0</code> means that a <code>p=0.04</code> campaign has been launched but no seed has completed yet, whereas <code>--</code> means that no such campaign has been launched for that row.
 </p>
 <p class="code-note">
-  For \(P=2688\), one screened comparison row is now listed: the candidate with seed <code>2688045021</code> attains decoder-fail UB \(12\) after a fresh <code>p=0.04</code> screen of <code>0.20M</code> trials. Ongoing searches are still producing additional rows with structural bound at least \(48\); the current search logs already contain further examples at \(48\), \(64\), \(72\), \(84\), \(96\), and \(128\), but those rows are not listed until the same screening pipeline has finished for them.
+  For \(P=2688\), one screened comparison row is now listed: the candidate with seed <code>2688045021</code> attains decoder-fail UB \(12\) after a fresh <code>p=0.04</code> screen of <code>0.20M</code> trials, which produced eleven valid logical witnesses of weight \(12\). Ongoing searches are still producing additional rows with structural bound at least \(48\); the current search logs already contain further examples at \(48\), \(64\), \(72\), \(84\), \(96\), and \(128\), but those rows are not listed until the same screening pipeline has finished for them.
 </p>
 <p class="code-note">
-  A graph-motif library built from valid decoder-failure witnesses at \(P=216\), \(240\), and \(2688\) already rederives the known \(P=2688\) decoder-fail upper bound \(18\) on the reported row, but the current motif-transfer runs have not yet reproduced the new weight-\(12\) witness on the candidate rows. The reported-row completed-trial totals above are otherwise unchanged in this update.
+  A graph-motif library built from valid decoder-failure witnesses at \(P=216\), \(240\), and \(2688\) already rederives the known \(P=2688\) decoder-fail upper bound \(18\) on the reported row, but the current motif-transfer runs have not yet reproduced the new weight-\(12\) witness on the candidate rows. In this update, the reported-row completed-trial total for \(P=2688\) is corrected to <code>4.00M</code>; the new TSUBAME \(P=768\) waves are still running and are not counted yet.
 </p>
 
 <h3>Non-binary LDPC-based quantum codes</h3>
