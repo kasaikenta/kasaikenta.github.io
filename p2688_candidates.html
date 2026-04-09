@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-YY8X0H44J2"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-YY8X0H44J2');
+  </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>P=2688 Candidate Catalog</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 40px;
+      line-height: 1.7;
+      color: #1f2933;
+      background: #ffffff;
+    }
+    h1, h2 {
+      color: #2c3e50;
+    }
+    a {
+      color: #2980b9;
+      text-decoration: none;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+    .note {
+      background: #f7f9fb;
+      border-left: 4px solid #7f8c8d;
+      padding: 12px 14px;
+      margin: 18px 0;
+    }
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+      gap: 14px;
+      margin: 22px 0 26px;
+    }
+    .stat-card {
+      border: 1px solid #d7dde3;
+      border-radius: 10px;
+      padding: 14px 16px;
+      background: #fbfcfd;
+    }
+    .stat-label {
+      font-size: 0.92rem;
+      color: #5b6570;
+      margin-bottom: 6px;
+    }
+    .stat-value {
+      font-size: 1.55rem;
+      font-weight: 700;
+      color: #2c3e50;
+    }
+    .stat-detail {
+      margin-top: 4px;
+      font-size: 0.88rem;
+      color: #6a7783;
+    }
+    .table-wrap {
+      overflow-x: auto;
+      margin: 16px 0 28px;
+    }
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      min-width: 980px;
+      background: #fff;
+    }
+    th, td {
+      border: 1px solid #d7dde3;
+      padding: 10px 12px;
+      text-align: left;
+      vertical-align: top;
+    }
+    th {
+      background: #eef5fb;
+      color: #2c3e50;
+      position: sticky;
+      top: 0;
+      z-index: 1;
+    }
+    tr.live-row td {
+      background: #f8fbff;
+    }
+    tr.pool-row.promising td {
+      background: #f9fcf5;
+    }
+    tr.pool-row.extreme td {
+      background: #f4faed;
+    }
+    .mono {
+      font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+      font-size: 0.93em;
+    }
+    .pill {
+      display: inline-block;
+      border-radius: 999px;
+      padding: 3px 10px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+    .pill.live {
+      background: #e9f2fb;
+      color: #24567a;
+    }
+    .pill.screened {
+      background: #efe9e3;
+      color: #5f5850;
+    }
+    .pill.pool {
+      background: #eef5ea;
+      color: #435f3d;
+    }
+    .table-note {
+      margin-top: 6px;
+      font-size: 0.88rem;
+      color: #66727e;
+    }
+    .muted {
+      color: #66727e;
+    }
+  </style>
+</head>
+<body>
+  <p><a href="en.html#live-upper-bound-table">Back to the live upper-bound table</a></p>
+
+  <h1>P=2688 Candidate Catalog</h1>
+  <p>
+    The main page keeps only the currently curated live rows for \(P=2688\).
+    This companion page mirrors the broader candidate pool that is useful for follow-up screening,
+    together with the three live rows already promoted into the main table.
+  </p>
+  <div class="note">
+    The current mirror covers the curated live rows and the structural waves copied from
+    <span class="mono">home-pro</span> and <span class="mono">lab-mini</span>.
+    The archived TSUBAME-only pool is not mirrored into this page yet.
+  </div>
+
+  <div class="stats-grid" id="summary-cards" aria-live="polite"></div>
+
+  <h2>Live Comparison Rows</h2>
+  <p class="muted">
+    These are the rows already exposed on the main page.
+    For the reported row and the screened row, the current live-row bound can be tighter than the raw bound
+    written inside the mirrored parameter file because decoder-fail evidence was added afterwards.
+  </p>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Status</th>
+          <th>Current Row UB</th>
+          <th>File Overall UB</th>
+          <th>Seed</th>
+          <th>Latent UB</th>
+          <th>m-block UB</th>
+          <th>Decoder-fail UB</th>
+          <th>Completed at p=0.04</th>
+          <th>Parameter File</th>
+        </tr>
+      </thead>
+      <tbody id="live-body"></tbody>
+    </table>
+  </div>
+
+  <h2>Mirrored Structural Candidate Pool</h2>
+  <p class="muted">
+    These rows are sorted by the current structural upper bound recorded in the mirrored parameter file.
+    Larger values are structurally less constrained and therefore more interesting as screening targets.
+  </p>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Source</th>
+          <th>Wave</th>
+          <th>Structural UB</th>
+          <th>Seed</th>
+          <th>Latent UB</th>
+          <th>m-block UB</th>
+          <th>Best Rank</th>
+          <th>Attempt</th>
+          <th>Parameter File</th>
+        </tr>
+      </thead>
+      <tbody id="pool-body"></tbody>
+    </table>
+  </div>
+
+  <script>
+    function escapeHtml(value) {
+      return String(value)
+        .replaceAll('&', '&amp;')
+        .replaceAll('<', '&lt;')
+        .replaceAll('>', '&gt;')
+        .replaceAll('"', '&quot;')
+        .replaceAll("'", '&#39;');
+    }
+
+    function fmtValue(value) {
+      return value === null || value === undefined ? '--' : escapeHtml(value);
+    }
+
+    function fmtMillion(value) {
+      return value === null || value === undefined ? '--' : `${Number(value).toFixed(2)}M`;
+    }
+
+    function summaryCard(label, value, detail) {
+      return `
+        <div class="stat-card">
+          <div class="stat-label">${escapeHtml(label)}</div>
+          <div class="stat-value">${escapeHtml(value)}</div>
+          <div class="stat-detail">${escapeHtml(detail)}</div>
+        </div>
+      `;
+    }
+
+    function sourcePill(text, tone) {
+      return `<span class="pill ${tone}">${escapeHtml(text)}</span>`;
+    }
+
+    function liveSortKey(row) {
+      const order = {
+        'reported row': 0,
+        'candidate, screened': 1,
+        'candidate, structural': 2,
+      };
+      return order[row.status] ?? 99;
+    }
+
+    function renderLiveRow(row) {
+      const note = row.note ? `<div class="table-note">${escapeHtml(row.note)}</div>` : '';
+      return `
+        <tr class="live-row">
+          <td>${sourcePill(row.status, row.status === 'candidate, screened' ? 'screened' : 'live')}</td>
+          <td><strong>${fmtValue(row.live_overall)}</strong></td>
+          <td>${fmtValue(row.overall)}</td>
+          <td class="mono">${escapeHtml(row.seed)}</td>
+          <td>${fmtValue(row.latent)}</td>
+          <td>${fmtValue(row.mblock)}</td>
+          <td>${fmtValue(row.decoder)}</td>
+          <td>${fmtMillion(row.completed_p004_million)}</td>
+          <td><a href="${escapeHtml(row.link)}">${escapeHtml(row.filename)}</a>${note}</td>
+        </tr>
+      `;
+    }
+
+    function poolRowClass(row) {
+      if ((row.live_overall || 0) >= 96) {
+        return 'pool-row extreme';
+      }
+      if ((row.live_overall || 0) >= 64) {
+        return 'pool-row promising';
+      }
+      return 'pool-row';
+    }
+
+    function renderPoolRow(row) {
+      return `
+        <tr class="${poolRowClass(row)}">
+          <td>${sourcePill(row.source, 'pool')}</td>
+          <td class="mono">${escapeHtml(row.wave)}</td>
+          <td><strong>${fmtValue(row.live_overall)}</strong></td>
+          <td class="mono">${escapeHtml(row.seed)}</td>
+          <td>${fmtValue(row.latent)}</td>
+          <td>${fmtValue(row.mblock)}</td>
+          <td>${fmtValue(row.best_rank)}</td>
+          <td>${fmtValue(row.attempt)}</td>
+          <td><a href="${escapeHtml(row.link)}">${escapeHtml(row.filename)}</a></td>
+        </tr>
+      `;
+    }
+
+    function buildSummary(data) {
+      const liveRows = data.filter((row) => row.source === 'live table');
+      const poolRows = data.filter((row) => row.source !== 'live table');
+      const bySource = {};
+      for (const row of poolRows) {
+        bySource[row.source] = (bySource[row.source] || 0) + 1;
+      }
+      const structural64 = poolRows.filter((row) => (row.live_overall || 0) >= 64).length;
+      const structural48 = poolRows.filter((row) => (row.live_overall || 0) >= 48).length;
+      const bestStructural = poolRows.length ? Math.max(...poolRows.map((row) => row.live_overall || 0)) : 0;
+      const liveBest = liveRows.length ? Math.min(...liveRows.map((row) => row.live_overall || 10 ** 9)) : '--';
+      const homeProCount = bySource['home-pro'] || 0;
+      const labMiniCount = bySource['lab-mini'] || 0;
+      const html = [
+        summaryCard('Live rows', String(liveRows.length), `best live-row UB = ${liveBest}`),
+        summaryCard('Mirrored pool', String(poolRows.length), `home-pro ${homeProCount}, lab-mini ${labMiniCount}`),
+        summaryCard('Structural UB >= 64', String(structural64), 'highest mirrored structural UB'),
+        summaryCard('Structural UB >= 48', String(structural48), `top mirrored UB = ${bestStructural}`),
+      ].join('');
+      document.getElementById('summary-cards').innerHTML = html;
+    }
+
+    async function loadCatalog() {
+      const response = await fetch('p2688_candidates_manifest.json', { cache: 'no-store' });
+      if (!response.ok) {
+        throw new Error(`failed to load manifest: ${response.status}`);
+      }
+      const data = await response.json();
+      buildSummary(data);
+
+      const liveRows = data
+        .filter((row) => row.source === 'live table')
+        .sort((a, b) => liveSortKey(a) - liveSortKey(b));
+      document.getElementById('live-body').innerHTML = liveRows.map(renderLiveRow).join('');
+
+      const poolRows = data
+        .filter((row) => row.source !== 'live table')
+        .sort((a, b) => {
+          if ((b.live_overall || 0) !== (a.live_overall || 0)) {
+            return (b.live_overall || 0) - (a.live_overall || 0);
+          }
+          if ((a.attempt || 0) !== (b.attempt || 0)) {
+            return (a.attempt || 0) - (b.attempt || 0);
+          }
+          return String(a.seed).localeCompare(String(b.seed));
+        });
+      document.getElementById('pool-body').innerHTML = poolRows.map(renderPoolRow).join('');
+    }
+
+    loadCatalog().catch((error) => {
+      document.getElementById('summary-cards').innerHTML = `
+        <div class="stat-card">
+          <div class="stat-label">Catalog status</div>
+          <div class="stat-value">Load failed</div>
+          <div class="stat-detail">${escapeHtml(error.message)}</div>
+        </div>
+      `;
+    });
+  </script>
+</body>
+</html>
