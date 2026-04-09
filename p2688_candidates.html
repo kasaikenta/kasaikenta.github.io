@@ -139,7 +139,7 @@
     together with the three live rows already promoted into the main table.
   </p>
   <div class="note">
-    The current mirror covers the curated live rows and the structural waves copied from
+    The current mirror covers the curated live rows and the structural candidate pools copied from
     <span class="mono">home-pro</span> and <span class="mono">lab-mini</span>.
     The archived TSUBAME-only pool is not mirrored into this page yet.
   </div>
@@ -181,7 +181,6 @@
       <thead>
         <tr>
           <th>Source</th>
-          <th>Wave</th>
           <th>Structural UB</th>
           <th>Seed</th>
           <th>Latent UB</th>
@@ -267,7 +266,6 @@
       return `
         <tr class="${poolRowClass(row)}">
           <td>${sourcePill(row.source, 'pool')}</td>
-          <td class="mono">${escapeHtml(row.wave)}</td>
           <td><strong>${fmtValue(row.live_overall)}</strong></td>
           <td class="mono">${escapeHtml(row.seed)}</td>
           <td>${fmtValue(row.latent)}</td>
