@@ -1,0 +1,36 @@
+216 3 12
+17265494505985345
+55 1 109 1 1 109
+183 66 147 69 162 126
+73 145 73 73 1 73
+108 52 128 210 52 212
+# distance_bound_overall 12
+# latent_method exact commutation-table search
+# latent_min_upper 24
+# d_lat_est 24
+# d_lat_note recovered by the P=216 exact commutation-table search
+# nonlatent_method m-block-constant compression kernel -> lift
+# nonlatent_min_upper 12
+# direct_css_x_upper 12
+# direct_css_z_upper 36
+# direct_css_min_upper 12
+# crt_x_upper 32
+# crt_z_upper 32
+# crt_min_upper 32
+# crt_x_note q1=8, q2=27
+# crt_z_note q1=27, q2=8
+# cycle8_ets_status not completed; light local run was stopped after about 3 minutes
+# cycles8_hx=28512
+# cycles8_hz=29250
+# direct_x_support [(0,16) (0,52) (0,88) (0,124) (0,160) (0,196) (2,0) (2,36) (2,72) (2,108) (2,144) (2,180)]
+# actual_commute_table (C=commute, N=noncomm)
+#       g0 g1 g2 g3 g4 g5
+# -----+-----------------
+#   f0 | C  C  C  N  C  C
+#   f1 | C  C  C  C  C  C
+#   f2 | C  C  C  C  C  C
+#   f3 | C  C  C  C  C  C
+#   f4 | C  C  C  C  C  C
+#   f5 | C  C  C  C  C  C
+# source_job 20260412-commtable-033523 home-pro
+# source_full_file /Users/kasaikenta/p216_candidate_cpp_20260412-commtable-033523_home-pro/out/candidates/H_P216_J3_L12_dmax3_nc0-3_seed17265494505985345_ub24_autoswept.txt

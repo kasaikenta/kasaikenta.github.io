@@ -13,6 +13,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>P=2688 Candidate Catalog</title>
+  <link rel="icon" href="favicon-32.png" type="image/png" sizes="32x32">
+  <link rel="icon" href="favicon-16.png" type="image/png" sizes="16x16">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -116,13 +119,15 @@
 
   <h1>P=2688 Candidate Catalog</h1>
   <p>
-    The main page keeps only the currently curated live rows for P=2688.
+    The main page now keeps only the currently most promising P=2688 row by certified structural bounds.
     This companion page mirrors the broader candidate pool that is useful for follow-up screening,
-    together with the three live rows already promoted into the main table.
+    together with archived curated rows that were previously shown on the main table.
   </p>
   <div class="note">
-    The current mirror covers the curated live rows and the structural candidate pools copied from
-    <span class="mono">home-pro</span> and <span class="mono">lab-mini</span>.
+    The current best-UB row on this page is seed <span class="mono">2688047043</span>.
+    The current catalog covers the active main-table row, the archived curated comparison rows,
+    and the structural candidate pools copied from <span class="mono">home-pro</span> and
+    <span class="mono">lab-mini</span>.
     The archived TSUBAME-only pool is not mirrored into this page yet.
   </div>
 
@@ -157,16 +162,16 @@
   <script>
     const ROW_OVERRIDES = {
       '17715147614460666': {
-        pLabel: '2688',
+        pLabel: '2688 (archived reported row)',
         crt: 256,
         cycle8: 'NF',
         directCss: 128,
         p003: '--',
         p004: '4.00M',
-        rowClass: '',
+        rowClass: 'paper-code-row',
       },
       '2688040913': {
-        pLabel: '2688 (candidate, structural)',
+        pLabel: '2688 (archived structural comparison)',
         crt: 54,
         cycle8: 'NE',
         directCss: 32,
@@ -175,13 +180,126 @@
         rowClass: 'paper-code-row',
       },
       '2688045021': {
-        pLabel: '2688 (candidate, screened)',
-        crt: '--',
+        pLabel: '2688 (archived screened candidate)',
+        crt: 256,
         cycle8: '--',
-        directCss: '--',
+        directCss: 172,
         p003: '--',
         p004: '0.20M',
         rowClass: 'paper-code-row',
+      },
+      '2688047043': {
+        pLabel: '2688 (best UB row)',
+        crt: 224,
+        cycle8: '--',
+        directCss: 224,
+        p003: '--',
+        rowClass: '',
+      },
+      '2688045031': {
+        pLabel: '2688 (pool: lab-mini-waveA)',
+        crt: 48,
+        cycle8: '--',
+        directCss: 16,
+        p003: '--',
+        p004: '--',
+        rowClass: 'paper-code-row',
+      },
+      '2688045010': {
+        crt: 256,
+        directCss: 128,
+      },
+      '2688045035': {
+        crt: 258,
+        directCss: 268,
+      },
+      '2688046017': {
+        crt: 192,
+        directCss: 64,
+      },
+      '2688047018': {
+        crt: 126,
+        directCss: 128,
+      },
+      '2688045029': {
+        crt: 256,
+        directCss: 128,
+      },
+      '2688045042': {
+        crt: 112,
+        directCss: 112,
+      },
+      '2688047042': {
+        crt: 48,
+        directCss: 56,
+      },
+      '2688045038': {
+        crt: 78,
+        directCss: 128,
+      },
+      '2688047030': {
+        crt: 60,
+        directCss: 64,
+      },
+      '2688045048': {
+        crt: 384,
+        directCss: 384,
+      },
+      '2688046024': {
+        crt: 510,
+        directCss: 534,
+      },
+      '2688047019': {
+        crt: 384,
+        directCss: 384,
+      },
+      '2688047009': {
+        crt: 266,
+        directCss: 336,
+      },
+      '2688045020': {
+        crt: 256,
+        directCss: 128,
+      },
+      '2688045054': {
+        crt: 150,
+        directCss: 64,
+      },
+      '2688047007': {
+        crt: 192,
+        directCss: 128,
+      },
+      '2688045016': {
+        crt: 150,
+        directCss: 136,
+      },
+      '2688045041': {
+        crt: 56,
+        directCss: 98,
+      },
+      '2688047028': {
+        crt: 192,
+        directCss: 64,
+      },
+      '2688047031': {
+        crt: 56,
+        directCss: 56,
+      },
+      '2688045022': {
+        crt: 126,
+        directCss: 128,
+      },
+      '2688045012': {
+        crt: 256,
+        directCss: 128,
+      },
+      '2688046023': {
+        crt: 96,
+        directCss: 96,
+      },
+      '2688047006': {
+        crt: 24,
+        directCss: 24,
       },
     };
 
@@ -231,11 +349,12 @@
       const structural48 = poolRows.filter((row) => (row.live_overall || 0) >= 48).length;
       const bestStructural = poolRows.length ? Math.max(...poolRows.map((row) => row.live_overall || 0)) : 0;
       const liveBest = liveRows.length ? Math.min(...liveRows.map((row) => row.live_overall || 10 ** 9)) : '--';
+      const curatedArchiveCount = bySource['curated archive'] || 0;
       const homeProCount = bySource['home-pro'] || 0;
       const labMiniCount = bySource['lab-mini'] || 0;
       const html = [
         summaryCard('Live rows', String(liveRows.length), `best live-row UB = ${liveBest}`),
-        summaryCard('Mirrored pool', String(poolRows.length), `home-pro ${homeProCount}, lab-mini ${labMiniCount}`),
+        summaryCard('Catalog pool', String(poolRows.length), `curated ${curatedArchiveCount}, home-pro ${homeProCount}, lab-mini ${labMiniCount}`),
         summaryCard('Structural UB >= 64', String(structural64), 'highest mirrored structural UB'),
         summaryCard('Structural UB >= 48', String(structural48), `top mirrored UB = ${bestStructural}`),
       ].join('');
@@ -296,8 +415,11 @@
       buildSummary(data);
       const order = {
         'reported row': 0,
-        'candidate, screened': 1,
-        'candidate, structural': 2,
+        'archived screened candidate': 1,
+        'archived reported row': 2,
+        'archived structural comparison': 3,
+        'candidate, screened': 4,
+        'candidate, structural': 5,
       };
       const rows = [...data].sort((a, b) => {
         const ao = order[a.status];

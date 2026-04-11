@@ -1,6 +1,27 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
+  <script>
+    (() => {
+      const params = new URLSearchParams(window.location.search);
+      if (params.get("lang") === "ja") {
+        return;
+      }
+
+      const browserLang =
+        (navigator.languages && navigator.languages[0]) ||
+        navigator.language ||
+        "";
+
+      if (!/^ja\b/i.test(browserLang)) {
+        params.delete("lang");
+        const target = new URL("en.html", window.location.href);
+        target.search = params.toString();
+        target.hash = window.location.hash;
+        window.location.replace(target.toString());
+      }
+    })();
+  </script>
 
   <!-- Google tag (gtag.js) -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-YY8X0H44J2"></script>

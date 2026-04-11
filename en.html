@@ -174,7 +174,6 @@ body {
       padding: 4px 0;
       color: #2980b9;
     }
-
 </style>
 </head>
 <body id="top">
@@ -348,6 +347,19 @@ body {
     <tbody>
       <tr>
         <td>216</td>
+        <td><a href="files/2601.08824_codes/H_P216_J3_L12_dmax3_nc0-3_seed17265494505985185_best1_ub18_att16.txt">\(\left[\left[2592,1300,\leq 18\right]\right]\)</a></td>
+        <td><code>17265494505985185</code></td>
+        <td>36</td>
+        <td class="ub-best">18</td>
+        <td>64</td>
+        <td>NE</td>
+        <td>54</td>
+        <td>--</td>
+        <td>--</td>
+        <td>--</td>
+      </tr>
+      <tr class="paper-code-row">
+        <td>216 (decoder-fail)</td>
         <td><a href="files/2601.08824_codes/H_P216_J3_L12_dmax3_nc0-3_seed17265506054090875_ub14.txt">\(\left[\left[2592,1300,\leq 14\right]\right]\)</a></td>
         <td><code>17265506054090875</code></td>
         <td>24</td>
@@ -357,6 +369,19 @@ body {
         <td>54</td>
         <td class="ub-best">14</td>
         <td>&gt;10.55M</td>
+        <td>--</td>
+      </tr>
+      <tr class="paper-code-row">
+        <td>216 (latent-only candidate)</td>
+        <td><a href="files/2601.08824_codes/H_P216_J3_L12_dmax3_nc0-3_seed17265494505985345_ub12.txt">\(\left[\left[2592,1300,\leq 12\right]\right]\)</a></td>
+        <td><code>17265494505985345</code></td>
+        <td>24</td>
+        <td class="ub-best">12</td>
+        <td>32</td>
+        <td>NE</td>
+        <td class="ub-best">12</td>
+        <td>--</td>
+        <td>--</td>
         <td>--</td>
       </tr>
       <tr>
@@ -435,7 +460,7 @@ body {
         <td>74</td>
         <td>--</td>
         <td>62.24M</td>
-        <td>0</td>
+        <td>40.00M</td>
       </tr>
       <tr class="paper-code-row">
         <td>768 (paper code)</td>
@@ -448,7 +473,7 @@ body {
         <td>128</td>
         <td>--</td>
         <td>--</td>
-        <td>--</td>
+        <td>40.00M</td>
       </tr>
       <tr>
         <td>1536</td>
@@ -478,42 +503,16 @@ body {
       </tr>
       <tr>
         <td>2688</td>
-        <td><a href="files/2601.08824_codes/H_P2688_J3_L12_dmax3_nc0-3_seed17715147614460666_best10_ub84_att26174.txt">\(\left[\left[32256,16132,\leq 18\right]\right]\)</a></td>
-        <td><code>17715147614460666</code></td>
-        <td>84</td>
-        <td>128</td>
-        <td>256</td>
-        <td>NF</td>
-        <td>128</td>
-        <td class="ub-best">18</td>
-        <td>--</td>
-        <td>4.00M</td>
-      </tr>
-      <tr class="paper-code-row">
-        <td>2688 (candidate, structural)</td>
-        <td><a href="files/2601.08824_codes/H_P2688_J3_L12_dmax3_nc0-3_seed2688040913_best1_ub32_att350.txt">\(\left[\left[32256,16132,\leq 32\right]\right]\)</a></td>
-        <td><code>2688040913</code></td>
-        <td>84</td>
-        <td class="ub-best">32</td>
-        <td>54</td>
+        <td><a href="files/2601.08824_codes/p2688_candidates/lab-mini-waveB/H_P2688_J3_L12_dmax3_nc0-3_seed2688047043_best1_ub128_att302.txt">\(\left[\left[32256,16132,\leq 128\right]\right]\)</a></td>
+        <td><code>2688047043</code></td>
+        <td>336</td>
+        <td class="ub-best">128</td>
+        <td>224</td>
         <td>NE</td>
-        <td class="ub-best">32</td>
+        <td>224</td>
         <td>--</td>
         <td>--</td>
-        <td>--</td>
-      </tr>
-      <tr class="paper-code-row">
-        <td>2688 (candidate, screened)</td>
-        <td><a href="files/2601.08824_codes/H_P2688_J3_L12_dmax3_nc0-3_seed2688045021_best1_ub64_att317.txt">\(\left[\left[32256,16132,\leq 12\right]\right]\)</a></td>
-        <td><code>2688045021</code></td>
-        <td>84</td>
-        <td>64</td>
-        <td>--</td>
-        <td>--</td>
-        <td>--</td>
-        <td class="ub-best">12</td>
-        <td>--</td>
-        <td>0.20M</td>
+        <td>5.28M</td>
       </tr>
       <tr>
         <td>3072</td>
@@ -557,13 +556,13 @@ body {
   In the <code>Completed at \(p=0.04\)</code> column, <code>0</code> means that a <code>p=0.04</code> campaign has been launched but no seed has completed yet, whereas <code>--</code> means that no such campaign has been launched for that row.
 </p>
 <p class="code-note">
-  For \(P=2688\), one screened comparison row is now listed: the candidate with seed <code>2688045021</code> attains decoder-fail UB \(12\) after a fresh <code>p=0.04</code> screen of <code>0.20M</code> trials, which produced eleven valid logical witnesses of weight \(12\). Ongoing searches are still producing additional rows with structural bound at least \(48\); the current search logs already contain further examples at \(48\), \(64\), \(72\), \(84\), \(96\), and \(128\), but those rows are not listed until the same screening pipeline has finished for them.
+  For \(P=2688\), the main-table row is the currently most promising candidate by certified structural bounds: seed <code>2688047043</code> has latent UB <code>336</code>, m-block UB <code>128</code>, CRT UB <code>224</code>, and direct CSS UB <code>224</code>. Recovered TSUBAME live summaries currently give <code>5.28M</code> completed <code>p=0.04</code> trials and <code>42.43M</code> accounted trials for this row, still without a valid logical witness.
 </p>
 <p class="code-note">
-  A separate <a href="p2688_candidates.html">P=2688 candidate catalog</a> now mirrors the broader structural candidate pool from the current local, home-pro, and lab-mini waves, together with the curated live rows already shown above.
+  The screened row with seed <code>2688045021</code> and decoder-fail UB <code>12</code>, the former reported row, the archived structural comparison row, and the broader candidate pool are collected in the separate <a href="p2688_candidates.html">P=2688 candidate catalog</a>. That catalog also tracks recovered TSUBAME live-summary totals for other seeds, including <code>41.81M</code> accounted <code>p=0.04</code> trials for seed <code>2688047009</code>, still without valid logical witnesses.
 </p>
 <p class="code-note">
-  A graph-motif library built from valid decoder-failure witnesses at \(P=216\), \(240\), and \(2688\) already rederives the known \(P=2688\) decoder-fail upper bound \(18\) on the reported row, but the current motif-transfer runs have not yet reproduced the new weight-\(12\) witness on the candidate rows. In this update, the reported-row completed-trial total for \(P=2688\) is corrected to <code>4.00M</code>; the new TSUBAME \(P=768\) waves are still running and are not counted yet.
+  A graph-motif library built from valid decoder-failure witnesses at \(P=216\), \(240\), and \(2688\) already rederives the older \(P=2688\) decoder-fail upper bound \(18\) on the archived reported row and the weight-\(12\) witness on the screened candidate row, but it has not yet produced a logical witness on the promoted main row or on the other structural candidates. The previously omitted TSUBAME \(P=768\) \(p=0.04\) dual-wave runs are now counted as <code>40.00M</code> completed trials for both the reported row and the paper-code row, with no logical failures found in those recovered summaries.
 </p>
 
 <h3>Non-binary LDPC-based quantum codes</h3>

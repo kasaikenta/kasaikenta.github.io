@@ -2,9 +2,9 @@ window.P2688_CANDIDATES = [
   {
     "filename": "H_P2688_J3_L12_dmax3_nc0-3_seed2688040913_best1_ub32_att350.txt",
     "link": "files/2601.08824_codes/p2688_candidates/live/H_P2688_J3_L12_dmax3_nc0-3_seed2688040913_best1_ub32_att350.txt",
-    "source": "live table",
+    "source": "curated archive",
     "wave": "curated",
-    "status": "candidate, structural",
+    "status": "archived structural comparison",
     "seed": "2688040913",
     "best_rank": 1,
     "file_ub": 32,
@@ -16,14 +16,14 @@ window.P2688_CANDIDATES = [
     "live_overall": 32,
     "completed_p003_million": null,
     "completed_p004_million": null,
-    "note": "Curated structural comparison row on the live table."
+    "note": "Archived structural comparison row formerly shown on the main live table."
   },
   {
     "filename": "H_P2688_J3_L12_dmax3_nc0-3_seed17715147614460666_best10_ub84_att26174.txt",
     "link": "files/2601.08824_codes/p2688_candidates/live/H_P2688_J3_L12_dmax3_nc0-3_seed17715147614460666_best10_ub84_att26174.txt",
-    "source": "live table",
+    "source": "curated archive",
     "wave": "curated",
-    "status": "reported row",
+    "status": "archived reported row",
     "seed": "17715147614460666",
     "best_rank": 10,
     "file_ub": 84,
@@ -35,14 +35,14 @@ window.P2688_CANDIDATES = [
     "live_overall": 18,
     "completed_p003_million": 10.0,
     "completed_p004_million": 4.0,
-    "note": "Main reported row on the live table; decoder-fail UB 18 is already certified from archived logical-fail logs."
+    "note": "Former main reported row; decoder-fail UB 18 is already certified from archived logical-fail logs."
   },
   {
     "filename": "H_P2688_J3_L12_dmax3_nc0-3_seed2688045021_best1_ub64_att317.txt",
     "link": "files/2601.08824_codes/p2688_candidates/live/H_P2688_J3_L12_dmax3_nc0-3_seed2688045021_best1_ub64_att317.txt",
-    "source": "live table",
+    "source": "curated archive",
     "wave": "curated",
-    "status": "candidate, screened",
+    "status": "archived screened candidate",
     "seed": "2688045021",
     "best_rank": 1,
     "file_ub": 64,
@@ -54,14 +54,14 @@ window.P2688_CANDIDATES = [
     "live_overall": 12,
     "completed_p003_million": null,
     "completed_p004_million": 0.2,
-    "note": "Screened candidate row; eleven valid logical witnesses of weight 12 were collected at p=0.04."
+    "note": "Archived screened candidate; eleven valid logical witnesses of weight 12 were collected at p=0.04."
   },
   {
     "filename": "H_P2688_J3_L12_dmax3_nc0-3_seed2688047043_best1_ub128_att302.txt",
     "link": "files/2601.08824_codes/p2688_candidates/lab-mini-waveB/H_P2688_J3_L12_dmax3_nc0-3_seed2688047043_best1_ub128_att302.txt",
-    "source": "lab-mini",
+    "source": "live table",
     "wave": "20260409-ub48b",
-    "status": "mirrored structural candidate",
+    "status": "reported row",
     "seed": "2688047043",
     "best_rank": 1,
     "file_ub": 128,
@@ -72,8 +72,8 @@ window.P2688_CANDIDATES = [
     "decoder": null,
     "live_overall": 128,
     "completed_p003_million": null,
-    "completed_p004_million": null,
-    "note": ""
+    "completed_p004_million": 5.275,
+    "note": "Current main-table row and best-UB row. Recovered TSUBAME live summaries account for 42.43M trials at p=0.04 (5.28M completed); no valid logical witness yet."
   },
   {
     "filename": "H_P2688_J3_L12_dmax3_nc0-3_seed2688047009_best1_ub96_att258.txt",
@@ -91,8 +91,8 @@ window.P2688_CANDIDATES = [
     "decoder": null,
     "live_overall": 96,
     "completed_p003_million": null,
-    "completed_p004_million": null,
-    "note": ""
+    "completed_p004_million": 5.725,
+    "note": "Recovered TSUBAME live summaries account for 41.81M trials at p=0.04 (5.73M completed); no valid logical witness yet."
   },
   {
     "filename": "H_P2688_J3_L12_dmax3_nc0-3_seed2688045010_best1_ub84_att41.txt",

@@ -1,0 +1,35 @@
+216 3 12
+17265494505985185
+145 1 163 1 1 163
+42 36 45 162 72 45
+205 121 85 49 121 85
+22 104 38 40 176 146
+# solutions_found 1
+# distance_bound_overall 18
+# latent_method Psi_3 kernel -> u^T H~X, v^T H~Z
+# latent_note probabilistic search over Psi_3 / Psi_3^T kernels
+# latent_x_upper 36
+# latent_z_upper 36
+# latent_min_upper 36
+# nonlatent_method m-block-constant compression kernel -> lift
+# nonlatent_note probabilistic search over all divisors m>=2 of P (best m_X=12, m_Z=3)
+# nonlatent_x_upper 24
+# nonlatent_z_upper 18
+# nonlatent_min_upper 18
+# nonlatent_x_m 12
+# nonlatent_z_m 3
+# direct_css_x_upper 128
+# direct_css_z_upper 54
+# direct_css_min_upper 54
+# crt_x_upper 64
+# crt_z_upper 64
+# crt_min_upper 64
+# crt_x_note q1=8, q2=27
+# crt_z_note q1=8, q2=27
+# cycle8_ets_method external enumerate_cycle8_ets
+# cycle8_ets_note disabled
+# cycle8_ets_x_upper n/a
+# cycle8_ets_z_upper n/a
+# cycle8_ets_min_upper n/a
+# source_job 20260412-024312 home-pro
+# source_full_file /Users/kasaikenta/p216_candidate_cpp_20260412-024312_home-pro/out/candidates/H_P216_J3_L12_dmax3_nc0-3_seed17265494505985185_best1_ub18_att16.txt
