@@ -105,8 +105,8 @@
       </tr>
       <tr>
         <td>Decoder-fail UB</td>
-        <td>A direct upper bound obtained from a syndrome-matched logical residual observed in simulation.</td>
-        <td><code>decoderlog_x_upper</code>, <code>decoderlog_z_upper</code></td>
+        <td>A simulation-based upper bound obtained from a verified logical residual, either directly syndrome-matched or recovered by a small coset-completion check.</td>
+        <td><code>decoderlog_x_upper</code>, <code>decoderlog_z_upper</code>, fail-log and completion summaries</td>
       </tr>
     </tbody>
   </table>
@@ -168,15 +168,31 @@
 
   <h2 id="decoder-fail-upper-bound">5. Decoder-Fail Upper Bound</h2>
   <p>
-    The third bound is obtained from decoder-fail sampling at \(p=0.03\). We search for failure events in which the
-    decoder output matches the observed syndrome but differs from the true error by a non-stabilizer logical residual.
-    If that residual has Hamming weight \(w\), then the corresponding logical distance is at most \(w\).
+    This simulation-based bound is obtained from decoder-fail sampling at the physical error rates shown in the
+    live table, currently mainly \(p=0.03\) and \(p=0.04\).  For a trial with true error \(e\) and decoder output
+    \(\hat e\), the primary witness is the residual \(r=e+\hat e\).  If \(r\) has zero syndrome and is outside the
+    relevant stabilizer row space, then \(r\) is a logical operator.  Its Hamming weight \(w=|r|\) certifies
+    \(d\le w\).
+  </p>
+  <p>
+    Current runs also allow a restricted <em>coset-completion</em> step for small residual-syndrome mismatches.
+    In that case we solve a small linear system for a correction \(c\) with the missing syndrome and test
+    \(r+c\) algebraically.  The completed vector is accepted only if it has zero syndrome and is verified to be
+    non-stabilizer.  Uncompleted mismatches, large residual records, and records that fail the logical check are
+    discarded rather than reported as upper bounds; in the current screening policy, residual records with
+    <code>residual_qubit_weight=10</code> are treated as rejects.
   </p>
   <p>
     This information is recorded in
     <code>decoderlog_x_upper</code>, <code>decoderlog_z_upper</code>, and, when available, the associated fail-log
-    support written into the parameter file. If no logical fail has been observed yet, the live table displays
-    <code>--</code> in the decoder-fail column.
+    or completion support written into the parameter file.  If no verified logical fail has been observed yet,
+    the live table displays <code>--</code> in the decoder-fail column.
+  </p>
+  <p>
+    Trial counts in the live table are intended to count work that produced recoverable summaries, not merely jobs
+    that were submitted.  For full runs this is the number of completed trials.  For interrupted h_rt-limited
+    TSUBAME jobs, append-only live summaries may allow us to report <em>accounted</em> partial trials.  Submitted
+    jobs with no recoverable summary are not counted.
   </p>
 
   <div class="note">
@@ -194,8 +210,9 @@
     of these mechanisms yields a strictly smaller valid upper bound.
   </p>
   <ul>
-    <li>A row such as \(P=288\) can have latent and \(m\)-block bounds equal to 24 while the best decoder-fail witness is still 28.</li>
-    <li>A row such as \(P=240\) was tightened by decoder-fail sampling from a structural value of 24 down to 16.</li>
+    <li>A row such as \(P=288\) can remain purely structural while the decoder-fail column is still <code>--</code>.</li>
+    <li>A row such as \(P=240\) can be tightened by decoder-fail or completion-verified witnesses after the structural bounds have already been computed.</li>
+    <li>A row such as \(P=384\) can accumulate accounted TSUBAME trials without improving the row if the only recovered failures are not useful small logical witnesses.</li>
     <li>The separate \(P=768\) paper-code reference row is an exact transcription of the printed Table 1 parameters in arXiv:2601.08824. Recomputing the latent side gives upper bound \(48\), while the standalone note certifies a 4-block-constant non-latent \(X\) logical operator of weight \(32\), so the current overall upper bound for that exact row is \(32\).</li>
   </ul>
 

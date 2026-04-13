@@ -331,8 +331,10 @@ body {
   in particular, we are not tuning the decoder for best low-FER behavior before reporting these bounds.
 </p>
 <p class="code-note">
-  In the trials columns, each entry counts completed decoder-fail trials at the indicated physical error rate only.
-  Ongoing or merely submitted batches are not included.
+  In the trials columns, each entry counts decoder-fail trials with recoverable summaries at the indicated
+  physical error rate.  Completed full runs are counted directly; interrupted h_rt-limited TSUBAME runs may be
+  counted as accounted partial trials when append-only live summaries were recovered.  Merely submitted batches
+  with no recoverable summary are not included.
 </p>
 <p class="code-note">
   Most rows below are the current best-by-\(P\) representatives in our workspace, but we occasionally include
@@ -630,7 +632,7 @@ body {
   For \(P \ge 1536\), the historical TSUBAME wave at <code>p=0.03</code> is currently excluded from the completed-trial counts because those jobs did not execute correctly.
 </p>
 <p class="code-note">
-  In the <code>Completed at \(p=0.04\)</code> column, <code>0</code> means that a <code>p=0.04</code> campaign has been launched but no seed has completed yet, whereas <code>--</code> means that no such campaign has been launched for that row.
+  In the <code>Completed at \(p=0.04\)</code> column, <code>0</code> means that a <code>p=0.04</code> campaign has been launched but no completed or accounted trials have been recovered yet, whereas <code>--</code> means that no such campaign has been launched for that row.
 </p>
 <p class="code-note">
   P=216 structural candidates that have not yet been ruled out below \(d=16\)
