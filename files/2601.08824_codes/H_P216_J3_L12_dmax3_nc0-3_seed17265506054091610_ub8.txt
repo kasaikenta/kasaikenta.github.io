@@ -1,0 +1,41 @@
+216 3 12
+17265506054091610
+181 163 1 109 199 181
+57 81 108 36 123 210
+49 169 1 13 169 73
+152 52 180 146 52 0
+# solutions_found 1
+# distance_bound_overall 8
+# source_candidate p216_commtable_keepalive/collected/home-mini/H_P216_J3_L12_dmax3_nc0-3_seed17265506054091610_ub24_autoswept.txt
+# source_note residual-weight-10 decoder candidate was discarded; this bound is structural.
+# active_set 0,1,2
+# noncommuting_pairs 0,3
+# latent_method Psi_3 kernel -> u^T H~X, v^T H~Z
+# latent_note computed by ./try_extra_upper_bounds on 2026-04-12
+# latent_x_upper 24
+# latent_z_upper 24
+# latent_min_upper 24
+# nonlatent_method m-block-constant compression kernel -> lift
+# nonlatent_note ./try_extra_upper_bounds reports nonlatent_min_upper=8
+# nonlatent_min_upper 8
+# crt_method Chinese-remainder block witness
+# crt_note q1=8, q2=27
+# crt_x_upper 16
+# crt_z_upper 48
+# crt_min_upper 16
+# directcss_method direct CSS kernel witness search
+# direct_x_upper 18
+# direct_z_upper 48
+# direct_min_upper 18
+# cycle8_ets_method external enumerate_cycle8_ets
+# cycle8_ets_note not evaluated for this promoted row
+# cycle8_ets_x_upper n/a
+# cycle8_ets_z_upper n/a
+# cycle8_ets_min_upper n/a
+# decoderlog_method not evaluated
+# decoderlog_min_upper n/a
+# d_lat_est 24
+# cycles8_hx 30150
+# cycles8_hz 30582
+# ets_b2_chain_hx_total 6138
+# ets_b2_chain_hz_total 5940

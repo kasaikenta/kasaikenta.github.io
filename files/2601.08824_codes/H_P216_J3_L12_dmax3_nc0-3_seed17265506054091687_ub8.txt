@@ -1,0 +1,20 @@
+216 3 12
+17265506054091687
+55 1 127 145 109 127
+72 54 111 24 72 57
+193 97 1 157 97 145
+140 124 48 170 16 48
+# source: p216_commtable_keepalive/collected/home-mini/H_P216_J3_L12_dmax3_nc0-3_seed17265506054091687_ub24_autoswept.txt
+# source_job: 20260412-commtable-033523 home-mini
+# active_set: 0,1,2
+# active_row: 0,1,2
+# distance_bound_overall: 8
+# latent_min_upper: 24
+# nonlatent_min_upper: 8
+# direct_css_x_upper: 18
+# direct_css_z_upper: 88
+# direct_css_min_upper: 18
+# crt_x_upper: 16
+# crt_z_upper: 16
+# crt_min_upper: 16
+# cycle8_ets_status: not evaluated

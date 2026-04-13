@@ -64,6 +64,10 @@
   background-color: #e9f3ea;
   font-weight: 600;
 }
+.code-table td.ub-pending {
+  background-color: #fff8e6;
+  font-weight: 600;
+}
 .code-table tr.paper-code-row td {
   background-color: #efe9e3;
   color: #5f5850;
@@ -71,6 +75,13 @@
 .code-table tr.paper-code-row td.ub-best {
   background-color: #ddd2c6;
   color: #4f463d;
+}
+.code-table tr.candidate-row td {
+  background-color: #fffaf0;
+}
+.code-table tr.candidate-row td.ub-best,
+.code-table tr.candidate-row td.ub-pending {
+  background-color: #f6eecb;
 }
 .code-note {
   font-size: 0.92em;
@@ -185,6 +196,7 @@ body {
       <a href="#research-direction">Research Direction</a>
       <a href="#software">Software and Code Data</a>
       <a href="distance_upper_bounds.html">Upper-Bound Notes</a>
+      <a href="p216_candidates.html">P=216 Candidate Catalog</a>
       <a href="p2688_candidates.html">P=2688 Candidate Catalog</a>
       <a href="supplementary_materials.html">Supplementary Materials</a>
       <a href="#live-upper-bound-table">Live Upper-Bound Table</a>
@@ -347,19 +359,6 @@ body {
     <tbody>
       <tr>
         <td>216</td>
-        <td><a href="files/2601.08824_codes/H_P216_J3_L12_dmax3_nc0-3_seed17265494505985185_best1_ub18_att16.txt">\(\left[\left[2592,1300,\leq 18\right]\right]\)</a></td>
-        <td><code>17265494505985185</code></td>
-        <td>36</td>
-        <td class="ub-best">18</td>
-        <td>64</td>
-        <td>NE</td>
-        <td>54</td>
-        <td>--</td>
-        <td>--</td>
-        <td>--</td>
-      </tr>
-      <tr class="paper-code-row">
-        <td>216 (decoder-fail)</td>
         <td><a href="files/2601.08824_codes/H_P216_J3_L12_dmax3_nc0-3_seed17265506054090875_ub14.txt">\(\left[\left[2592,1300,\leq 14\right]\right]\)</a></td>
         <td><code>17265506054090875</code></td>
         <td>24</td>
@@ -371,30 +370,43 @@ body {
         <td>&gt;10.55M</td>
         <td>--</td>
       </tr>
-      <tr class="paper-code-row">
-        <td>216 (latent-only candidate)</td>
-        <td><a href="files/2601.08824_codes/H_P216_J3_L12_dmax3_nc0-3_seed17265494505985345_ub12.txt">\(\left[\left[2592,1300,\leq 12\right]\right]\)</a></td>
-        <td><code>17265494505985345</code></td>
-        <td>24</td>
-        <td class="ub-best">12</td>
-        <td>32</td>
-        <td>NE</td>
-        <td class="ub-best">12</td>
-        <td>--</td>
-        <td>--</td>
-        <td>--</td>
-      </tr>
       <tr>
         <td>240</td>
-        <td><a href="files/2601.08824_codes/H_P240_J3_L12_dmax3_nc0-3_seed328021_best1_ub16_att125.txt">\(\left[\left[2880,1444,\leq 16\right]\right]\)</a></td>
-        <td><code>328021</code></td>
-        <td>24</td>
-        <td>24</td>
+        <td><a href="files/2601.08824_codes/H_P240_J3_L12_dmax3_nc0-3_seed2404844464_best1_ub24_att126.txt">\(\left[\left[2880,1444,\leq 24\right]\right]\)</a></td>
+        <td><code>2404844464</code></td>
+        <td class="ub-best">24</td>
         <td>40</td>
-        <td>NF</td>
-        <td>50</td>
-        <td class="ub-best">16</td>
-        <td>&gt;15.8M</td>
+        <td>40</td>
+        <td>NE</td>
+        <td>40</td>
+        <td class="ub-best">24</td>
+        <td>97.10M</td>
+        <td>--</td>
+      </tr>
+      <tr class="candidate-row">
+        <td>240 (candidate)</td>
+        <td><a href="files/2601.08824_codes/H_P240_J3_L12_dmax3_nc0-3_seed2404812381_best1_ub24_att27.txt">\(\left[\left[2880,1444,\leq 22\right]\right]\)</a></td>
+        <td><code>2404812381</code></td>
+        <td class="ub-best">24</td>
+        <td>36</td>
+        <td>30</td>
+        <td>NE</td>
+        <td>94</td>
+        <td class="ub-best">22</td>
+        <td>100.19M</td>
+        <td>--</td>
+      </tr>
+      <tr class="candidate-row">
+        <td>240 (candidate)</td>
+        <td><a href="files/2601.08824_codes/H_P240_J3_L12_dmax3_nc0-3_seed2404916086_best1_ub24_att239.txt">\(\left[\left[2880,1444,\leq 18\right]\right]\)</a></td>
+        <td><code>2404916086</code></td>
+        <td class="ub-best">24</td>
+        <td class="ub-best">24</td>
+        <td>42</td>
+        <td>NE</td>
+        <td>60</td>
+        <td class="ub-best">18</td>
+        <td>86.40M</td>
         <td>--</td>
       </tr>
       <tr>
@@ -423,6 +435,19 @@ body {
         <td>&gt;448M</td>
         <td>--</td>
       </tr>
+      <tr class="candidate-row">
+        <td>288 (candidate)</td>
+        <td><a href="files/2601.08824_codes/H_P288_J3_L12_dmax3_nc0-3_seed2881304846_best1_ub30_att288.txt">\(\left[\left[3456,1732,\leq 30\right]\right]\)</a></td>
+        <td><code>2881304846</code></td>
+        <td>36</td>
+        <td class="ub-best">30</td>
+        <td>90</td>
+        <td>NE</td>
+        <td>56</td>
+        <td>--</td>
+        <td>--</td>
+        <td>--</td>
+      </tr>
       <tr>
         <td>384</td>
         <td><a href="files/2601.08824_codes/H_P384_J3_L12_dmax3_nc0-3_seed17229885754182916_ub24.txt">\(\left[\left[4608,2308,\leq 24\right]\right]\)</a></td>
@@ -434,6 +459,58 @@ body {
         <td>128</td>
         <td>28</td>
         <td>84.00M</td>
+        <td>--</td>
+      </tr>
+      <tr class="candidate-row">
+        <td>384 (candidate)</td>
+        <td><a href="files/2601.08824_codes/H_P384_J3_L12_dmax3_nc0-3_seed3841304566_best1_ub48_att58.txt">\(\left[\left[4608,2308,\leq 48\right]\right]\)</a></td>
+        <td><code>3841304566</code></td>
+        <td class="ub-best">48</td>
+        <td>54</td>
+        <td>54</td>
+        <td>NE</td>
+        <td>96</td>
+        <td>--</td>
+        <td>207.09M</td>
+        <td>--</td>
+      </tr>
+      <tr class="candidate-row">
+        <td>384 (candidate)</td>
+        <td><a href="files/2601.08824_codes/H_P384_J3_L12_dmax3_nc0-3_seed3842304791_best1_ub48_att43.txt">\(\left[\left[4608,2308,\leq 48\right]\right]\)</a></td>
+        <td><code>3842304791</code></td>
+        <td class="ub-best">48</td>
+        <td>64</td>
+        <td>54</td>
+        <td>NE</td>
+        <td>64</td>
+        <td>--</td>
+        <td>159.83M</td>
+        <td>--</td>
+      </tr>
+      <tr class="candidate-row">
+        <td>384 (candidate)</td>
+        <td><a href="files/2601.08824_codes/H_P384_J3_L12_dmax3_nc0-3_seed3842304472_best1_ub32_att158.txt">\(\left[\left[4608,2308,\leq 32\right]\right]\)</a></td>
+        <td><code>3842304472</code></td>
+        <td>48</td>
+        <td class="ub-best">32</td>
+        <td>36</td>
+        <td>NE</td>
+        <td class="ub-best">32</td>
+        <td>--</td>
+        <td>208.03M</td>
+        <td>--</td>
+      </tr>
+      <tr class="candidate-row">
+        <td>384 (candidate)</td>
+        <td><a href="files/2601.08824_codes/H_P384_J3_L12_dmax3_nc0-3_seed3841304847_best1_ub32_att297.txt">\(\left[\left[4608,2308,\leq 32\right]\right]\)</a></td>
+        <td><code>3841304847</code></td>
+        <td>48</td>
+        <td class="ub-best">32</td>
+        <td>96</td>
+        <td>NE</td>
+        <td class="ub-best">32</td>
+        <td>--</td>
+        <td>156.45M</td>
         <td>--</td>
       </tr>
       <tr>
@@ -544,7 +621,7 @@ body {
   </table>
 </div>
 <p class="code-note">
-  This table records the strongest upper bounds currently certified in our workspace from completed experiments only.
+  This table records the strongest upper bounds currently certified in our workspace; explicitly marked candidate rows may also include in-progress decoder evidence.
 </p>
 <p class="code-note">
   In the <code>Cycle-8 ETS UB</code> column, <code>NF</code> means that the budgeted rerun completed on both sides but produced no CSS witness, whereas <code>NE</code> means that the row was not evaluated under that rerun protocol or that one side remained incomplete. Neither label should be read as an exhaustive proof of nonexistence.
@@ -554,6 +631,40 @@ body {
 </p>
 <p class="code-note">
   In the <code>Completed at \(p=0.04\)</code> column, <code>0</code> means that a <code>p=0.04</code> campaign has been launched but no seed has completed yet, whereas <code>--</code> means that no such campaign has been launched for that row.
+</p>
+<p class="code-note">
+  P=216 structural candidates that have not yet been ruled out below \(d=16\)
+  are included as comparison rows above and collected in the separate
+  <a href="p216_candidates.html">P=216 candidate catalog</a>.
+  The main row remains the UB6-screened seed <code>17265506054090875</code> with
+  decoder-fail UB <code>14</code>.
+</p>
+<p class="code-note">
+  For \(P=240\), newly found structural candidate rows are shown below the
+  current UB6-screened main row.  Seed <code>2404844464</code> has replaced the
+  older <code>328021</code> row as the \(P=240\) main entry after the current
+  TSUBAME decoder-failure screen.  Seeds <code>2404812381</code> and
+  <code>2404916086</code> remain as comparison candidates, while weaker screened
+  candidates have been removed from the table.
+</p>
+<p class="code-note">
+  For \(P=384\), newly found Mac-search structural candidates are shown below
+  the older UB6-screened row.  Seed <code>3841304566</code> has
+  <code>207.09M</code> accounted \(p=0.03\) trials from an interrupted
+  h_rt-limited run, with no useful small decoder-failure witness yet; seed
+  <code>3842304472</code> has <code>208.03M</code> accounted trials with one
+  fail log but still no logical or augmented logical witness.  Seed
+  <code>3842304791</code> is a newly found structural candidate with latent
+  UB <code>48</code>, m-block UB <code>64</code>, CRT UB <code>54</code>, and
+  direct CSS UB <code>64</code>.  The current TSUBAME \(p=0.03\) screen has
+  accounted <code>159.83M</code> trials for seed <code>3842304791</code> and
+  <code>156.45M</code> trials for seed <code>3841304847</code>.  Seed
+  <code>3842304021</code> was removed after an
+  early partial screen produced low-weight logical failures, and seed
+  <code>3842304037</code> was removed after an early screen produced a
+  weight-<code>16</code> logical witness.  Seed <code>3842304730</code> was
+  removed after the current TSUBAME screen produced a weight-<code>10</code>
+  logical witness.
 </p>
 <p class="code-note">
   For \(P=2688\), the main-table row is the currently most promising candidate by certified structural bounds: seed <code>2688047043</code> has latent UB <code>336</code>, m-block UB <code>128</code>, CRT UB <code>224</code>, and direct CSS UB <code>224</code>. Recovered TSUBAME live summaries currently give <code>5.28M</code> completed <code>p=0.04</code> trials and <code>42.43M</code> accounted trials for this row, still without a valid logical witness.

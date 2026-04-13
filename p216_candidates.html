@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-YY8X0H44J2"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-YY8X0H44J2');
+  </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>P=216 Candidate Catalog</title>
+  <link rel="icon" href="favicon-32.png" type="image/png" sizes="32x32">
+  <link rel="icon" href="favicon-16.png" type="image/png" sizes="16x16">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 40px;
+      line-height: 1.7;
+      color: #1f2933;
+      background: #ffffff;
+    }
+    h1, h2 {
+      color: #2c3e50;
+    }
+    a {
+      color: #2980b9;
+      text-decoration: none;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+    .note {
+      background: #f7f9fb;
+      border-left: 4px solid #7f8c8d;
+      padding: 12px 14px;
+      margin: 18px 0;
+    }
+    .code-table-wrap {
+      overflow-x: auto;
+      margin: 16px 0 28px;
+    }
+    .code-table {
+      border-collapse: collapse;
+      width: 100%;
+      min-width: 1120px;
+      background: #fff;
+    }
+    .code-table th,
+    .code-table td {
+      border: 1px solid #d7dde3;
+      padding: 10px 12px;
+      text-align: left;
+      vertical-align: top;
+    }
+    .code-table th {
+      background-color: #eef5fb;
+      color: #2c3e50;
+    }
+    .code-table tr.current-row td {
+      background-color: #f7f9fb;
+    }
+    .code-table tr.screened-row td {
+      background-color: #f8eeee;
+      color: #5f3d3d;
+    }
+    .code-table td.ub-best {
+      background-color: #e9f3ea;
+      font-weight: 600;
+    }
+    .code-table td.ub-screened {
+      background-color: #efd2d2;
+      font-weight: 600;
+    }
+    .code-table td.ub-pending {
+      background-color: #fff8e6;
+      font-weight: 600;
+    }
+    .mono {
+      font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+      font-size: 0.93em;
+    }
+    .muted {
+      color: #66727e;
+    }
+  </style>
+</head>
+<body>
+  <p><a href="en.html#live-upper-bound-table">Back to the live upper-bound table</a></p>
+
+  <h1>P=216 Candidate Catalog</h1>
+  <p>
+    This page records the P=216 candidates encountered during the structural
+    and decoder-failure screening runs.  Screened-out rows are retained here for
+    provenance, but they are not promoted to the main live table.  The main
+    P=216 row remains the UB6-screened seed <span class="mono">17265506054090875</span>
+    with decoder-fail UB <span class="mono">14</span>.
+  </p>
+  <div class="note">
+    April 13, 2026 update: a cheap structural recomputation of the six recently
+    collected 3Mac rows leaves only seed <span class="mono">17265494505985185</span>
+    structurally above the current P=216 best bound; however, existing
+    \(p=0.03\) 3Mac decoder-fail logs contain valid syndrome-matched logical
+    witnesses of weight <span class="mono">10</span> for that seed.  The other
+    five collected rows drop to \(12\) or \(8\) by \(m\)-block/direct
+    structural checks.  Existing UB6 logs already screen the remaining
+    catalogued rows to weights at most <span class="mono">14</span>, so no paid
+    TSUBAME UB6 job was launched from this filter step.
+  </div>
+
+  <h2>Candidate Table</h2>
+  <p class="muted">
+    This page uses the same table structure as the main live table.
+    Red-tinted rows are screened-out candidates; their small upper bounds are
+    useful negative evidence, not current best records.
+  </p>
+  <div class="code-table-wrap">
+    <table class="code-table">
+      <thead>
+        <tr>
+          <th>P</th>
+          <th>Current best code</th>
+          <th>Seed</th>
+          <th>Latent UB</th>
+          <th>m-block UB</th>
+          <th>CRT UB</th>
+          <th>Cycle-8 ETS UB</th>
+          <th>Direct CSS UB</th>
+          <th>Decoder-fail UB</th>
+          <th>Completed at p=0.03</th>
+          <th>Completed at p=0.04</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="current-row">
+          <td>216 (current best)</td>
+          <td><a href="files/2601.08824_codes/H_P216_J3_L12_dmax3_nc0-3_seed17265506054090875_ub14.txt">\(\left[\left[2592,1300,\leq 14\right]\right]\)</a></td>
+          <td><code>17265506054090875</code></td>
+          <td>24</td>
+          <td>36</td>
+          <td>54</td>
+          <td>NE</td>
+          <td>54</td>
+          <td class="ub-best">14</td>
+          <td>&gt;10.55M</td>
+          <td>--</td>
+        </tr>
+        <tr class="screened-row">
+          <td>216 (screened)</td>
+          <td><a href="files/2601.08824_codes/H_P216_J3_L12_dmax3_nc0-3_seed17265494505985185_best1_ub18_att16.txt">\(\left[\left[2592,1300,\leq 18\right]\right]\)</a></td>
+          <td><code>17265494505985185</code></td>
+          <td>36</td>
+          <td>18</td>
+          <td>64</td>
+          <td>NE</td>
+          <td>54</td>
+          <td class="ub-screened">10</td>
+          <td>valid 3Mac logical hits</td>
+          <td>--</td>
+        </tr>
+        <tr class="screened-row">
+          <td>216 (screened)</td>
+          <td><a href="files/2601.08824_codes/H_P216_J3_L12_dmax3_nc0-3_seed17265494505985345_ub12.txt">\(\left[\left[2592,1300,\leq 12\right]\right]\)</a></td>
+          <td><code>17265494505985345</code></td>
+          <td>24</td>
+          <td class="ub-screened">12</td>
+          <td>32</td>
+          <td>NE</td>
+          <td class="ub-screened">12</td>
+          <td>--</td>
+          <td>--</td>
+          <td>--</td>
+        </tr>
+        <tr class="screened-row">
+          <td>216 (screened)</td>
+          <td><a href="files/2601.08824_codes/H_P216_J3_L12_dmax3_nc0-3_seed17265506054091336_ub8.txt">\(\left[\left[2592,1300,\leq 8\right]\right]\)</a></td>
+          <td><code>17265506054091336</code></td>
+          <td>24</td>
+          <td class="ub-screened">8</td>
+          <td>16</td>
+          <td>NE</td>
+          <td>24</td>
+          <td>--</td>
+          <td>--</td>
+          <td>--</td>
+        </tr>
+        <tr class="screened-row">
+          <td>216 (screened)</td>
+          <td><a href="files/2601.08824_codes/H_P216_J3_L12_dmax3_nc0-3_seed17265506054091584_ub8.txt">\(\left[\left[2592,1300,\leq 8\right]\right]\)</a></td>
+          <td><code>17265506054091584</code></td>
+          <td>24</td>
+          <td class="ub-screened">8</td>
+          <td>16</td>
+          <td>NE</td>
+          <td>18</td>
+          <td>--</td>
+          <td>--</td>
+          <td>--</td>
+        </tr>
+        <tr class="screened-row">
+          <td>216 (screened)</td>
+          <td><a href="files/2601.08824_codes/H_P216_J3_L12_dmax3_nc0-3_seed17265506054091610_ub8.txt">\(\left[\left[2592,1300,\leq 8\right]\right]\)</a></td>
+          <td><code>17265506054091610</code></td>
+          <td>24</td>
+          <td class="ub-screened">8</td>
+          <td>--</td>
+          <td>NE</td>
+          <td>--</td>
+          <td>--</td>
+          <td>--</td>
+          <td>--</td>
+        </tr>
+        <tr class="screened-row">
+          <td>216 (screened)</td>
+          <td><a href="files/2601.08824_codes/H_P216_J3_L12_dmax3_nc0-3_seed17265506054091687_ub8.txt">\(\left[\left[2592,1300,\leq 8\right]\right]\)</a></td>
+          <td><code>17265506054091687</code></td>
+          <td>24</td>
+          <td class="ub-screened">8</td>
+          <td>16</td>
+          <td>NE</td>
+          <td>18</td>
+          <td>--</td>
+          <td>--</td>
+          <td>--</td>
+        </tr>
+        <tr class="screened-row">
+          <td>216 (screened)</td>
+          <td><a href="files/2601.08824_codes/H_P216_J3_L12_dmax3_nc0-3_seed17265506054377620_best1_ub18_att2.txt">\(\left[\left[2592,1300,\leq 18\right]\right]\)</a></td>
+          <td><code>17265506054377620</code></td>
+          <td>36</td>
+          <td>18</td>
+          <td>--</td>
+          <td>NE</td>
+          <td>--</td>
+          <td class="ub-screened">6</td>
+          <td>hit found</td>
+          <td>--</td>
+        </tr>
+        <tr class="screened-row">
+          <td>216 (screened)</td>
+          <td><a href="files/2601.08824_codes/H_P216_J3_L12_dmax3_nc0-3_seed17265506054449587_best1_ub18_att30.txt">\(\left[\left[2592,1300,\leq 18\right]\right]\)</a></td>
+          <td><code>17265506054449587</code></td>
+          <td>24</td>
+          <td>18</td>
+          <td>--</td>
+          <td>NE</td>
+          <td>--</td>
+          <td class="ub-screened">10</td>
+          <td>hit found</td>
+          <td>--</td>
+        </tr>
+        <tr class="screened-row">
+          <td>216 (screened)</td>
+          <td><a href="files/2601.08824_codes/H_P216_J3_L12_dmax3_nc0-3_seed17265506054737541_best1_ub18_att237.txt">\(\left[\left[2592,1300,\leq 18\right]\right]\)</a></td>
+          <td><code>17265506054737541</code></td>
+          <td>36</td>
+          <td>18</td>
+          <td>--</td>
+          <td>NE</td>
+          <td>--</td>
+          <td class="ub-screened">6</td>
+          <td>hit found</td>
+          <td>--</td>
+        </tr>
+        <tr class="screened-row">
+          <td>216 (screened)</td>
+          <td><a href="files/2601.08824_codes/H_P216_J3_L12_dmax3_nc0-3_seed17265506055137358_best1_ub18_att52.txt">\(\left[\left[2592,1300,\leq 18\right]\right]\)</a></td>
+          <td><code>17265506055137358</code></td>
+          <td>36</td>
+          <td>18</td>
+          <td>--</td>
+          <td>NE</td>
+          <td>--</td>
+          <td class="ub-screened">10</td>
+          <td>hit found</td>
+          <td>--</td>
+        </tr>
+        <tr class="screened-row">
+          <td>216 (screened)</td>
+          <td><a href="files/2601.08824_codes/H_P216_J3_L12_dmax3_nc0-3_seed17265506055177557_best1_ub18_att126.txt">\(\left[\left[2592,1300,\leq 18\right]\right]\)</a></td>
+          <td><code>17265506055177557</code></td>
+          <td>36</td>
+          <td>18</td>
+          <td>--</td>
+          <td>NE</td>
+          <td>--</td>
+          <td class="ub-screened">8</td>
+          <td>hit found</td>
+          <td>--</td>
+        </tr>
+        <tr class="screened-row">
+          <td>216 (screened)</td>
+          <td><a href="files/2601.08824_codes/H_P216_J3_L12_dmax3_nc0-3_seed17265506055217710_best1_ub16_att54.txt">\(\left[\left[2592,1300,\leq 16\right]\right]\)</a></td>
+          <td><code>17265506055217710</code></td>
+          <td>36</td>
+          <td>16</td>
+          <td>--</td>
+          <td>NE</td>
+          <td>--</td>
+          <td class="ub-screened">6</td>
+          <td>hit found</td>
+          <td>--</td>
+        </tr>
+        <tr class="screened-row">
+          <td>216 (screened)</td>
+          <td><a href="files/2601.08824_codes/H_P216_J3_L12_dmax3_nc0-3_seed17265506055393325_best1_ub18_att58.txt">\(\left[\left[2592,1300,\leq 18\right]\right]\)</a></td>
+          <td><code>17265506055393325</code></td>
+          <td>36</td>
+          <td>18</td>
+          <td>--</td>
+          <td>NE</td>
+          <td>--</td>
+          <td class="ub-screened">10</td>
+          <td>hit found</td>
+          <td>--</td>
+        </tr>
+        <tr class="screened-row">
+          <td>216 (screened)</td>
+          <td><a href="files/2601.08824_codes/H_P216_J3_L12_dmax3_nc0-3_seed17265506055505346_best1_ub18_att250.txt">\(\left[\left[2592,1300,\leq 18\right]\right]\)</a></td>
+          <td><code>17265506055505346</code></td>
+          <td>36</td>
+          <td>18</td>
+          <td>--</td>
+          <td>NE</td>
+          <td>--</td>
+          <td class="ub-screened">10</td>
+          <td>hit found</td>
+          <td>--</td>
+        </tr>
+        <tr class="screened-row">
+          <td>216 (screened)</td>
+          <td><a href="files/2601.08824_codes/H_P216_J3_L12_dmax3_nc0-3_seed17265506055545674_best1_ub24_att259.txt">\(\left[\left[2592,1300,\leq 24\right]\right]\)</a></td>
+          <td><code>17265506055545674</code></td>
+          <td>24</td>
+          <td>36</td>
+          <td>--</td>
+          <td>NE</td>
+          <td>--</td>
+          <td class="ub-screened">12</td>
+          <td>hit found</td>
+          <td>--</td>
+        </tr>
+        <tr class="screened-row">
+          <td>216 (screened)</td>
+          <td><a href="files/2601.08824_codes/H_P216_J3_L12_dmax3_nc0-3_seed17265506055945409_best1_ub18_att137.txt">\(\left[\left[2592,1300,\leq 18\right]\right]\)</a></td>
+          <td><code>17265506055945409</code></td>
+          <td>24</td>
+          <td>18</td>
+          <td>--</td>
+          <td>NE</td>
+          <td>--</td>
+          <td class="ub-screened">14</td>
+          <td>hit found</td>
+          <td>--</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</body>
+</html>

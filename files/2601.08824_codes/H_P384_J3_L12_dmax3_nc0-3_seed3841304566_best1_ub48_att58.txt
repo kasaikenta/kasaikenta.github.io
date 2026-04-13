@@ -1,0 +1,29 @@
+384 3 12
+3841304566
+25 313 193 1 361 145
+297 351 120 120 117 354
+193 257 193 145 257 193
+312 288 152 162 0 328
+# solutions_found 1
+# distance_bound_overall 48
+# latent_method Psi_3 kernel -> u^T H~X, v^T H~Z
+# latent_note probabilistic search over Psi_3 / Psi_3^T kernels
+# latent_x_upper 48
+# latent_z_upper 48
+# latent_min_upper 48
+# latent_x_support [(0,24) (0,120) (0,216) (0,312) (1,21) (1,117) (1,213) (1,309) (2,66) (2,162) (2,258) (2,354) (3,9) (3,105) (3,201) (3,297) (4,63) (4,159) (4,255) (4,351) (5,24) (5,120) (5,216) (5,312) ...]
+# latent_z_support [(0,30) (0,126) (0,222) (0,318) (1,40) (1,136) (1,232) (1,328) (2,0) (2,96) (2,192) (2,288) (3,72) (3,168) (3,264) (3,360) (4,56) (4,152) (4,248) (4,344) (5,0) (5,96) (5,192) (5,288) ...]
+# nonlatent_method m-block-constant compression kernel -> lift
+# nonlatent_note probabilistic search over all divisors m>=2 of P (best m_X=3, m_Z=4)
+# nonlatent_x_upper 54
+# nonlatent_z_upper 72
+# nonlatent_min_upper 54
+# nonlatent_x_m 3
+# nonlatent_z_m 4
+# nonlatent_x_support [(0,27) (0,89) (0,97) (0,99) (0,155) (0,217) (0,225) (0,227) (0,283) (0,345) (0,353) (0,355) (1,11) (1,25) (1,49) (1,73) (1,83) (1,105) (1,139) (1,153) (1,177) (1,201) (1,211) (1,233) ...]
+# nonlatent_z_support [(0,1) (0,10) (0,25) (0,34) (0,43) (0,91) (0,97) (0,106) (0,121) (0,130) (0,139) (0,187) (0,193) (0,202) (0,217) (0,226) (0,235) (0,283) (0,289) (0,298) (0,313) (0,322) (0,331) (0,379) ...]
+# cycle8_ets_method external enumerate_cycle8_ets
+# cycle8_ets_note disabled
+# cycle8_ets_x_upper n/a
+# cycle8_ets_z_upper n/a
+# cycle8_ets_min_upper n/a
