@@ -302,11 +302,10 @@ body {
 </p>
 
 <p>
-  We also maintain a living snapshot of our current best girth-8, \((J,L)=(3,12)\)-regular binary CSS LDPC codes.
-  The table below is updated on a near-daily basis as new search runs, structural certificates, and decoder-fail
-  witnesses become available, so individual entries may improve over time. Besides the current best-by-\(P\) rows,
-  we also include a small number of reference rows for historically important codes, such as the exact \(P=768\)
-  Table 1 code from <a href="https://arxiv.org/abs/2601.08824" target="_blank" rel="noopener">arXiv:2601.08824</a>.
+  The table below lists selected girth-8, \((J,L)=(3,12)\)-regular binary CSS LDPC codes together with
+  independently recorded upper-bound certificates.  Besides the representative rows for each \(P\), it also
+  includes a small number of comparison rows, such as the exact \(P=768\) Table 1 code from
+  <a href="https://arxiv.org/abs/2601.08824" target="_blank" rel="noopener">arXiv:2601.08824</a>.
 </p>
 <p class="code-note">
   The parameter files themselves are linked from the code entries below. See
@@ -320,25 +319,11 @@ body {
 </p>
 <h4 id="live-upper-bound-table" style="margin-bottom:0.3em;">Live Upper-Bound Table</h4>
 <p class="code-note">
-  We are actively trying to tighten these upper bounds as ongoing searches and decoder-fail campaigns accumulate.
-</p>
-<p class="code-note">
   A formal description of the upper-bound mechanisms used in this table is available on
   <a href="distance_upper_bounds.html">the dedicated upper-bound page</a>.
 </p>
 <p class="code-note">
-  The decoder-fail campaigns below are meant to collect logical-error witnesses, not to optimize error-floor performance;
-  in particular, we are not tuning the decoder for best low-FER behavior before reporting these bounds.
-</p>
-<p class="code-note">
-  In the trials columns, each entry counts decoder-fail trials with recoverable summaries at the indicated
-  physical error rate.  Completed full runs are counted directly; interrupted h_rt-limited TSUBAME runs may be
-  counted as accounted partial trials when append-only live summaries were recovered.  Merely submitted batches
-  with no recoverable summary are not included.
-</p>
-<p class="code-note">
-  Most rows below are the current best-by-\(P\) representatives in our workspace, but we occasionally include
-  selected comparison rows when a newly found candidate looks structurally promising.
+  Rows marked as candidates are comparison rows rather than the representative row for that \(P\).
 </p>
 
 <div id="live-upper-bound-table-body" class="code-table-wrap">
@@ -623,59 +608,16 @@ body {
   </table>
 </div>
 <p class="code-note">
-  This table records the strongest upper bounds currently certified in our workspace; explicitly marked candidate rows may also include in-progress decoder evidence.
+  This table records upper bounds certified by the mechanisms named in the column headers.
 </p>
 <p class="code-note">
-  In the <code>Cycle-8 ETS UB</code> column, <code>NF</code> means that the budgeted rerun completed on both sides but produced no CSS witness, whereas <code>NE</code> means that the row was not evaluated under that rerun protocol or that one side remained incomplete. Neither label should be read as an exhaustive proof of nonexistence.
+  In the <code>Cycle-8 ETS UB</code> column, <code>NF</code> means that the recorded evaluation produced no CSS witness,
+  whereas <code>NE</code> means that no evaluation is recorded for that row. Neither label should be read as an
+  exhaustive proof of nonexistence.
 </p>
 <p class="code-note">
-  For \(P \ge 1536\), the historical TSUBAME wave at <code>p=0.03</code> is currently excluded from the completed-trial counts because those jobs did not execute correctly.
-</p>
-<p class="code-note">
-  In the <code>Completed at \(p=0.04\)</code> column, <code>0</code> means that a <code>p=0.04</code> campaign has been launched but no completed or accounted trials have been recovered yet, whereas <code>--</code> means that no such campaign has been launched for that row.
-</p>
-<p class="code-note">
-  P=216 structural candidates that have not yet been ruled out below \(d=16\)
-  are included as comparison rows above and collected in the separate
-  <a href="p216_candidates.html">P=216 candidate catalog</a>.
-  The main row remains the UB6-screened seed <code>17265506054090875</code> with
-  decoder-fail UB <code>14</code>.
-</p>
-<p class="code-note">
-  For \(P=240\), newly found structural candidate rows are shown below the
-  current UB6-screened main row.  Seed <code>2404844464</code> has replaced the
-  older <code>328021</code> row as the \(P=240\) main entry after the current
-  TSUBAME decoder-failure screen.  Seeds <code>2404812381</code> and
-  <code>2404916086</code> remain as comparison candidates, while weaker screened
-  candidates have been removed from the table.
-</p>
-<p class="code-note">
-  For \(P=384\), newly found Mac-search structural candidates are shown below
-  the older UB6-screened row.  Seed <code>3841304566</code> has
-  <code>207.09M</code> accounted \(p=0.03\) trials from an interrupted
-  h_rt-limited run, with no useful small decoder-failure witness yet; seed
-  <code>3842304472</code> has <code>208.03M</code> accounted trials with one
-  fail log but still no logical or augmented logical witness.  Seed
-  <code>3842304791</code> is a newly found structural candidate with latent
-  UB <code>48</code>, m-block UB <code>64</code>, CRT UB <code>54</code>, and
-  direct CSS UB <code>64</code>.  The current TSUBAME \(p=0.03\) screen has
-  accounted <code>159.83M</code> trials for seed <code>3842304791</code> and
-  <code>156.45M</code> trials for seed <code>3841304847</code>.  Seed
-  <code>3842304021</code> was removed after an
-  early partial screen produced low-weight logical failures, and seed
-  <code>3842304037</code> was removed after an early screen produced a
-  weight-<code>16</code> logical witness.  Seed <code>3842304730</code> was
-  removed after the current TSUBAME screen produced a weight-<code>10</code>
-  logical witness.
-</p>
-<p class="code-note">
-  For \(P=2688\), the main-table row is the currently most promising candidate by certified structural bounds: seed <code>2688047043</code> has latent UB <code>336</code>, m-block UB <code>128</code>, CRT UB <code>224</code>, and direct CSS UB <code>224</code>. Recovered TSUBAME live summaries currently give <code>5.28M</code> completed <code>p=0.04</code> trials and <code>42.43M</code> accounted trials for this row, still without a valid logical witness.
-</p>
-<p class="code-note">
-  The screened row with seed <code>2688045021</code> and decoder-fail UB <code>12</code>, the former reported row, the archived structural comparison row, and the broader candidate pool are collected in the separate <a href="p2688_candidates.html">P=2688 candidate catalog</a>. That catalog also tracks recovered TSUBAME live-summary totals for other seeds, including <code>41.81M</code> accounted <code>p=0.04</code> trials for seed <code>2688047009</code>, still without valid logical witnesses.
-</p>
-<p class="code-note">
-  A graph-motif library built from valid decoder-failure witnesses at \(P=216\), \(240\), and \(2688\) already rederives the older \(P=2688\) decoder-fail upper bound \(18\) on the archived reported row and the weight-\(12\) witness on the screened candidate row, but it has not yet produced a logical witness on the promoted main row or on the other structural candidates. The previously omitted TSUBAME \(P=768\) \(p=0.04\) dual-wave runs are now counted as <code>40.00M</code> completed trials for both the reported row and the paper-code row, with no logical failures found in those recovered summaries.
+  In the trial-count columns, <code>--</code> means that no count is recorded for that row at the indicated
+  physical error rate.
 </p>
 
 <h3>Non-binary LDPC-based quantum codes</h3>
