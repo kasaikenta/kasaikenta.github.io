@@ -1,8 +1,25 @@
 # kasaikenta.github.io
 
+This GitHub Pages repository is now a redirect-only compatibility endpoint.
+The canonical homepage is:
+
+<https://kasai.ict.eng.isct.ac.jp/>
+
+All tracked HTML pages in this repository should stay as lightweight redirect
+pages that preserve the path, query string, and fragment identifier. The
+canonical content source is the local campus-site tree:
+
+`/Users/kasaikenta/Projects/kasaikenta_webpage`
+
+Do not restore full page contents in this repository unless intentionally
+rolling back the campus-site migration. Static assets may remain here for a
+while to avoid breaking old direct links.
+
 ## Google検索キーワードの確認方法（GA4）
 
-このリポジトリの `index.html` には GA4 タグ（`G-YY8X0H44J2`）を設定済みです。
+GA4/Search Console の本体確認対象は `https://kasai.ict.eng.isct.ac.jp/`
+です。GitHub Pages 側はリダイレクト専用なので、検索・アクセス解析の
+正規URLも学内サイト側に寄せます。
 
 Google検索キーワード（どの語句で流入したか）を見るには、GA4 と Search Console の連携が必要です。
 
