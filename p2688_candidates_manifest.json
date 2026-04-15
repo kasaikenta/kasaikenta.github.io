@@ -76,6 +76,25 @@
     "note": "Current main-table row and best-UB row. Recovered TSUBAME live summaries account for 42.43M trials at p=0.04 (5.28M completed); no valid logical witness yet."
   },
   {
+    "filename": "H_P2688_J3_L12_dmax3_nc0-3_seed2688612068_best2_ub128_att156.txt",
+    "link": "files/2601.08824_codes/p2688_candidates/tsubame-20260415/H_P2688_J3_L12_dmax3_nc0-3_seed2688612068_best2_ub128_att156.txt",
+    "source": "TSUBAME",
+    "wave": "20260415-top-per-P",
+    "status": "tied best structural candidate",
+    "seed": "2688612068",
+    "best_rank": 2,
+    "file_ub": 128,
+    "attempt": 156,
+    "overall": 128,
+    "latent": 168,
+    "mblock": 128,
+    "decoder": null,
+    "live_overall": 128,
+    "completed_p003_million": 7.698,
+    "completed_p004_million": null,
+    "note": "TSUBAME top-per-P follow-up candidate. The April 15 p=0.03 screening accounts for 7.698M trials and found no logical witness."
+  },
+  {
     "filename": "H_P2688_J3_L12_dmax3_nc0-3_seed2688047009_best1_ub96_att258.txt",
     "link": "files/2601.08824_codes/p2688_candidates/lab-mini-waveB/H_P2688_J3_L12_dmax3_nc0-3_seed2688047009_best1_ub96_att258.txt",
     "source": "lab-mini",

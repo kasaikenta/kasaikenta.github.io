@@ -355,8 +355,8 @@ body {
         <th><a href="distance_upper_bounds.html#cycle8-ets-upper-bound">Cycle-8 ETS UB</a></th>
         <th><a href="distance_upper_bounds.html#direct-css-upper-bound">Direct CSS UB</a></th>
         <th><a href="distance_upper_bounds.html#decoder-fail-upper-bound">Decoder-fail UB</a></th>
-        <th>Completed at \(p=0.03\)</th>
-        <th>Completed at \(p=0.04\)</th>
+        <th>Completed/accounted at \(p=0.03\)</th>
+        <th>Completed/accounted at \(p=0.04\)</th>
       </tr>
     </thead>
     <tbody>
@@ -477,6 +477,19 @@ body {
         <td>--</td>
         <td>4.00M</td>
       </tr>
+      <tr class="candidate-row">
+        <td>1536 (candidate)</td>
+        <td><a href="files/2601.08824_codes/H_P1536_J3_L12_dmax3_nc0-3_seed1536612105_best1_ub96_att9.txt">\(\left[\left[18432,9220,\leq 96\right]\right]\)</a></td>
+        <td><code>1536612105</code></td>
+        <td>192</td>
+        <td class="ub-best">96</td>
+        <td>--</td>
+        <td>NE</td>
+        <td>--</td>
+        <td>--</td>
+        <td>18.05M accounted</td>
+        <td>--</td>
+      </tr>
       <tr>
         <td>1920</td>
         <td><a href="files/2601.08824_codes/H_P1920_J3_L12_dmax3_nc0-3_seed17622415249116583_best41_ub64_att65735.txt">\(\left[\left[23040,11524,\leq 64\right]\right]\)</a></td>
@@ -489,6 +502,19 @@ body {
         <td>--</td>
         <td>--</td>
         <td>4.00M</td>
+      </tr>
+      <tr class="candidate-row">
+        <td>1920 (candidate)</td>
+        <td><a href="files/2601.08824_codes/H_P1920_J3_L12_dmax3_nc0-3_seed1920612082_best1_ub240_att117.txt">\(\left[\left[23040,11524,\leq 240\right]\right]\)</a></td>
+        <td><code>1920612082</code></td>
+        <td class="ub-best">240</td>
+        <td>256</td>
+        <td>--</td>
+        <td>NE</td>
+        <td>--</td>
+        <td>--</td>
+        <td>12.45M accounted</td>
+        <td>--</td>
       </tr>
       <tr>
         <td>2688</td>
@@ -655,7 +681,7 @@ body {
       fill="none"
       stroke="#1f5fa8"
       stroke-width="2.2"
-      points="115.5,321.0 119.2,310.3 122.9,312.4 126.6,310.3 141.5,310.3 171.3,284.6 201.0,284.6 320.1,284.6 379.6,267.4 498.6,198.9 558.2,130.3 677.2,61.7">
+      points="115.5,321.0 119.2,310.3 122.9,312.4 126.6,310.3 141.5,310.3 171.3,284.6 201.0,284.6 320.1,233.1 379.6,78.9 498.6,198.9 558.2,130.3 677.2,61.7">
     </polyline>
     <g fill="#1f5fa8" stroke="#ffffff" stroke-width="1.2">
       <circle cx="115.5" cy="321.0" r="4"></circle>
@@ -665,8 +691,8 @@ body {
       <circle cx="141.5" cy="310.3" r="4"></circle>
       <circle cx="171.3" cy="284.6" r="4"></circle>
       <circle cx="201.0" cy="284.6" r="4"></circle>
-      <circle cx="320.1" cy="284.6" r="4"></circle>
-      <circle cx="379.6" cy="267.4" r="4"></circle>
+      <circle cx="320.1" cy="233.1" r="4"></circle>
+      <circle cx="379.6" cy="78.9" r="4"></circle>
       <circle cx="498.6" cy="198.9" r="4"></circle>
       <circle cx="558.2" cy="130.3" r="4"></circle>
       <circle cx="677.2" cy="61.7" r="4"></circle>
@@ -696,8 +722,8 @@ body {
   exhaustive proof of nonexistence.
 </p>
 <p class="code-note">
-  In the trial-count columns, <code>--</code> means that no count is recorded for that row at the indicated
-  physical error rate.
+  In the trial-count columns, <code>accounted</code> includes partial progress recovered from time-limited
+  runs, and <code>--</code> means that no count is recorded for that row at the indicated physical error rate.
 </p>
 
 <h3>Non-binary LDPC-based quantum codes</h3>
