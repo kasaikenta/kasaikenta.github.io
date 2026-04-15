@@ -5,7 +5,7 @@
 2167 1861 2779 1699 2041 847
 1449 1206 1167 1035 2388 717
 # solutions_found 1
-# distance_bound_overall 192
+# distance_bound_overall 96
 # latent_method Psi_3 kernel -> u^T H~X, v^T H~Z
 # latent_note probabilistic search over Psi_3 / Psi_3^T kernels
 # latent_x_upper 192
@@ -14,11 +14,11 @@
 # latent_x_support [(0,128) (0,320) (0,512) (0,704) (0,896) (0,1088) (0,1280) (0,1472) (0,1664) (0,1856) (0,2048) (0,2240) (0,2432) (0,2624) (0,2816) (0,3008) (1,0) (1,192) (1,384) (1,576) (1,768) (1,960) (1,1152) (1,1344) ...]
 # latent_z_support [(0,135) (0,327) (0,519) (0,711) (0,903) (0,1095) (0,1287) (0,1479) (0,1671) (0,1863) (0,2055) (0,2247) (0,2439) (0,2631) (0,2823) (0,3015) (1,99) (1,291) (1,483) (1,675) (1,867) (1,1059) (1,1251) (1,1443) ...]
 # nonlatent_method m-block-constant compression kernel -> lift
-# nonlatent_note probabilistic search over all divisors m>=2 of P (best m_X=128, m_Z=48)
-# nonlatent_x_upper 256
-# nonlatent_z_upper 192
-# nonlatent_min_upper 192
-# nonlatent_x_m 128
+# nonlatent_note probabilistic search over all divisors m>=2 of P (best m_X=96, m_Z=48)
+# nonlatent_x_upper 192
+# nonlatent_z_upper 96
+# nonlatent_min_upper 96
+# nonlatent_x_m 96
 # nonlatent_z_m 48
 # nonlatent_x_support [(1,6) (1,30) (1,54) (1,78) (1,102) (1,126) (1,150) (1,174) (1,198) (1,222) (1,246) (1,270) (1,294) (1,318) (1,342) (1,366) (1,390) (1,414) (1,438) (1,462) (1,486) (1,510) (1,534) (1,558) ...]
 # nonlatent_z_support [(0,19) (0,83) (0,147) (0,211) (0,275) (0,339) (0,403) (0,467) (0,531) (0,595) (0,659) (0,723) (0,787) (0,851) (0,915) (0,979) (0,1043) (0,1107) (0,1171) (0,1235) (0,1299) (0,1363) (0,1427) (0,1491) ...]
@@ -27,3 +27,10 @@
 # cycle8_ets_x_upper n/a
 # cycle8_ets_z_upper n/a
 # cycle8_ets_min_upper n/a
+# recomputed_note numeric m-block fields were refreshed with try_extra_upper_bounds --base-only
+# crt_method CRT stripe subspace search via try_extra_upper_bounds --crt-only
+# crt_x_upper 2048
+# crt_z_upper 1896
+# crt_min_upper 1896
+# crt_x_note q1=3, q2=1024
+# crt_z_note q1=3, q2=1024

@@ -27,3 +27,9 @@
 # cycle8_ets_x_upper n/a
 # cycle8_ets_z_upper n/a
 # cycle8_ets_min_upper n/a
+# crt_method CRT stripe subspace search via try_extra_upper_bounds --crt-only
+# crt_x_upper 1536
+# crt_z_upper 486
+# crt_min_upper 486
+# crt_x_note q1=3, q2=1024
+# crt_z_note q1=3, q2=1024
