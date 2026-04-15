@@ -83,6 +83,12 @@
 .code-table tr.candidate-row td.ub-pending {
   background-color: #f6eecb;
 }
+.ub-stage {
+  color: #667;
+  font-size: 0.88em;
+  font-weight: 600;
+  margin-right: 0.25em;
+}
 .code-note {
   font-size: 0.92em;
   color: #555;
@@ -368,7 +374,7 @@ body {
         <td>24</td>
         <td>36</td>
         <td>54</td>
-        <td>NE</td>
+        <td><span class="ub-stage">S0</span> NE</td>
         <td>54</td>
         <td class="ub-best">14</td>
         <td>&gt;10.55M</td>
@@ -381,7 +387,7 @@ body {
         <td class="ub-best">24</td>
         <td>40</td>
         <td>40</td>
-        <td>NE</td>
+        <td><span class="ub-stage">S0</span> NE</td>
         <td>40</td>
         <td class="ub-best">24</td>
         <td>97.10M</td>
@@ -394,7 +400,7 @@ body {
         <td>24</td>
         <td>44</td>
         <td>44</td>
-        <td>NE</td>
+        <td><span class="ub-stage">S0</span> NE</td>
         <td>44</td>
         <td class="ub-best">22</td>
         <td>128.00M</td>
@@ -407,7 +413,7 @@ body {
         <td class="ub-best">24</td>
         <td class="ub-best">24</td>
         <td>64</td>
-        <td>NF</td>
+        <td><span class="ub-stage">S5</span> NF</td>
         <td>32</td>
         <td>28</td>
         <td>&gt;448M</td>
@@ -420,7 +426,7 @@ body {
         <td class="ub-best">24</td>
         <td>48</td>
         <td>204</td>
-        <td>NE</td>
+        <td><span class="ub-stage">S0</span> NE</td>
         <td>128</td>
         <td>28</td>
         <td>84.00M</td>
@@ -433,7 +439,7 @@ body {
         <td class="ub-best">48</td>
         <td>64</td>
         <td>72</td>
-        <td>NF</td>
+        <td><span class="ub-stage">S5</span> NF</td>
         <td>72</td>
         <td>--</td>
         <td>49.81M</td>
@@ -446,7 +452,7 @@ body {
         <td class="ub-best">48</td>
         <td>108</td>
         <td>222</td>
-        <td>NF</td>
+        <td><span class="ub-stage">S5</span> NF</td>
         <td>74</td>
         <td>--</td>
         <td>62.24M</td>
@@ -459,7 +465,7 @@ body {
         <td>48</td>
         <td class="ub-best">32</td>
         <td>96</td>
-        <td>NE</td>
+        <td><span class="ub-stage">S0</span> NE</td>
         <td>128</td>
         <td>--</td>
         <td>--</td>
@@ -472,7 +478,7 @@ body {
         <td class="ub-best">48</td>
         <td>256</td>
         <td>978</td>
-        <td>NF</td>
+        <td><span class="ub-stage">S5</span> NF</td>
         <td>512</td>
         <td>--</td>
         <td>--</td>
@@ -485,7 +491,7 @@ body {
         <td>192</td>
         <td class="ub-best">96</td>
         <td>--</td>
-        <td>NE</td>
+        <td><span class="ub-stage">S0</span> NE</td>
         <td>--</td>
         <td>--</td>
         <td>18.05M accounted</td>
@@ -498,7 +504,7 @@ body {
         <td>120</td>
         <td class="ub-best">64</td>
         <td>96</td>
-        <td>NF</td>
+        <td><span class="ub-stage">S5</span> NF</td>
         <td>96</td>
         <td>--</td>
         <td>--</td>
@@ -510,9 +516,9 @@ body {
         <td><code>1920612082</code></td>
         <td class="ub-best">240</td>
         <td>256</td>
-        <td>--</td>
-        <td>NE</td>
-        <td>--</td>
+        <td>256</td>
+        <td><span class="ub-stage">S0</span> NE</td>
+        <td>256</td>
         <td>--</td>
         <td>12.45M accounted</td>
         <td>--</td>
@@ -524,7 +530,7 @@ body {
         <td>336</td>
         <td class="ub-best">128</td>
         <td>224</td>
-        <td>NE</td>
+        <td><span class="ub-stage">S0</span> NE</td>
         <td>224</td>
         <td>--</td>
         <td>--</td>
@@ -537,7 +543,7 @@ body {
         <td class="ub-best">96</td>
         <td>192</td>
         <td>2048</td>
-        <td>NF</td>
+        <td><span class="ub-stage">S5</span> NF</td>
         <td>640</td>
         <td>--</td>
         <td>--</td>
@@ -550,7 +556,7 @@ body {
         <td class="ub-best">192</td>
         <td class="ub-best">192</td>
         <td>--</td>
-        <td>NE</td>
+        <td><span class="ub-stage">S0</span> NE</td>
         <td>--</td>
         <td>--</td>
         <td>4.92M</td>
@@ -563,7 +569,7 @@ body {
         <td class="ub-best">192</td>
         <td class="ub-best">192</td>
         <td>--</td>
-        <td>NE</td>
+        <td><span class="ub-stage">S0</span> NE</td>
         <td>--</td>
         <td>--</td>
         <td>5.73M</td>
@@ -576,7 +582,7 @@ body {
         <td class="ub-best">192</td>
         <td class="ub-best">192</td>
         <td>--</td>
-        <td>NE</td>
+        <td><span class="ub-stage">S0</span> NE</td>
         <td>--</td>
         <td>--</td>
         <td>5.69M</td>
@@ -589,7 +595,7 @@ body {
         <td class="ub-best">192</td>
         <td class="ub-best">192</td>
         <td>--</td>
-        <td>NE</td>
+        <td><span class="ub-stage">S0</span> NE</td>
         <td>--</td>
         <td>--</td>
         <td>5.62M</td>
@@ -602,7 +608,7 @@ body {
         <td>480</td>
         <td class="ub-best">128</td>
         <td>240</td>
-        <td>NF</td>
+        <td><span class="ub-stage">S5</span> NF</td>
         <td>240</td>
         <td>--</td>
         <td>--</td>
@@ -615,7 +621,7 @@ body {
         <td>480</td>
         <td class="ub-best">256</td>
         <td>--</td>
-        <td>NE</td>
+        <td><span class="ub-stage">S0</span> NE</td>
         <td>--</td>
         <td>--</td>
         <td>5.28M</td>
@@ -628,7 +634,7 @@ body {
         <td class="ub-best">192</td>
         <td>256</td>
         <td>--</td>
-        <td>NE</td>
+        <td><span class="ub-stage">S0</span> NE</td>
         <td>--</td>
         <td>--</td>
         <td>4.27M</td>
@@ -653,8 +659,12 @@ body {
   This table records upper bounds certified by the mechanisms named in the column headers.
 </p>
 <p class="code-note">
-  In the <code>Cycle-8 ETS UB</code> column, <code>NF</code> means that the recorded evaluation produced no CSS witness,
-  whereas <code>NE</code> means that no evaluation is recorded for that row. Neither label should be read as an
+  In the <code>Cycle-8 ETS UB</code> column, the <code>S0</code>..<code>S5</code> prefix records the achieved
+  evaluation stage: <code>S0</code> no recorded evaluation, <code>S1</code> 8-cycle enumeration done,
+  <code>S2</code> bounded cycle-union DFS done, <code>S3</code> cycle-union witness check done,
+  <code>S4</code> library ETS candidates built, and <code>S5</code> library witness check done.
+  <code>NF</code> means that the recorded completed evaluation produced no CSS witness, whereas
+  <code>NE</code> means that no evaluation is recorded for that row. Neither label should be read as an
   exhaustive proof of nonexistence.
 </p>
 <p class="code-note">
