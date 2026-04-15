@@ -91,7 +91,8 @@
   margin: 24px 0;
   text-align: center;
 }
-.ub-figure svg {
+.ub-figure svg,
+.ub-figure img {
   width: min(100%, 840px);
   height: auto;
   background: #fff;
@@ -637,75 +638,10 @@ body {
   </table>
 </div>
 <figure class="ub-figure" id="current-best-upper-bound-figure">
-  <svg viewBox="0 0 760 430" role="img" aria-labelledby="ub-figure-title ub-figure-desc">
-    <title id="ub-figure-title">Current best upper bounds as a function of code length</title>
-    <desc id="ub-figure-desc">A blue polyline shows current best upper bounds for code lengths from 2592 to 46080. A red triangle marks the P equals 768 reference row.</desc>
-    <rect x="0" y="0" width="760" height="430" fill="#ffffff"></rect>
-    <g stroke="#edf1f4" stroke-width="1">
-      <line x1="82" y1="336" x2="702" y2="336"></line>
-      <line x1="82" y1="293.1" x2="702" y2="293.1"></line>
-      <line x1="82" y1="250.3" x2="702" y2="250.3"></line>
-      <line x1="82" y1="207.4" x2="702" y2="207.4"></line>
-      <line x1="82" y1="164.6" x2="702" y2="164.6"></line>
-      <line x1="82" y1="121.7" x2="702" y2="121.7"></line>
-      <line x1="82" y1="78.9" x2="702" y2="78.9"></line>
-      <line x1="82" y1="36" x2="702" y2="36"></line>
-      <line x1="82" y1="36" x2="82" y2="336"></line>
-      <line x1="211.2" y1="36" x2="211.2" y2="336"></line>
-      <line x1="340.3" y1="36" x2="340.3" y2="336"></line>
-      <line x1="469.5" y1="36" x2="469.5" y2="336"></line>
-      <line x1="598.7" y1="36" x2="598.7" y2="336"></line>
-    </g>
-    <g stroke="#9aa7b2" stroke-width="1.2" fill="none">
-      <line x1="82" y1="336" x2="702" y2="336"></line>
-      <line x1="82" y1="36" x2="82" y2="336"></line>
-    </g>
-    <g fill="#5f6f7c" font-size="12" font-family="Arial, sans-serif">
-      <text x="82" y="356" text-anchor="middle">0</text>
-      <text x="211.2" y="356" text-anchor="middle">10000</text>
-      <text x="340.3" y="356" text-anchor="middle">20000</text>
-      <text x="469.5" y="356" text-anchor="middle">30000</text>
-      <text x="598.7" y="356" text-anchor="middle">40000</text>
-      <text x="74" y="340" text-anchor="end">0</text>
-      <text x="74" y="297.1" text-anchor="end">40</text>
-      <text x="74" y="254.3" text-anchor="end">80</text>
-      <text x="74" y="211.4" text-anchor="end">120</text>
-      <text x="74" y="168.6" text-anchor="end">160</text>
-      <text x="74" y="125.7" text-anchor="end">200</text>
-      <text x="74" y="82.9" text-anchor="end">240</text>
-      <text x="74" y="40" text-anchor="end">280</text>
-    </g>
-    <text x="392" y="396" fill="#34495e" font-size="14" text-anchor="middle" font-family="Arial, sans-serif">code length n</text>
-    <text x="22" y="186" fill="#34495e" font-size="14" text-anchor="middle" font-family="Arial, sans-serif" transform="rotate(-90 22 186)">minimum-distance upper bound</text>
-    <polyline
-      fill="none"
-      stroke="#1f5fa8"
-      stroke-width="2.2"
-      points="115.5,321.0 119.2,310.3 122.9,312.4 126.6,310.3 141.5,310.3 171.3,284.6 201.0,284.6 320.1,233.1 379.6,78.9 498.6,198.9 558.2,130.3 677.2,61.7">
-    </polyline>
-    <g fill="#1f5fa8" stroke="#ffffff" stroke-width="1.2">
-      <circle cx="115.5" cy="321.0" r="4"></circle>
-      <circle cx="119.2" cy="310.3" r="4"></circle>
-      <circle cx="122.9" cy="312.4" r="4"></circle>
-      <circle cx="126.6" cy="310.3" r="4"></circle>
-      <circle cx="141.5" cy="310.3" r="4"></circle>
-      <circle cx="171.3" cy="284.6" r="4"></circle>
-      <circle cx="201.0" cy="284.6" r="4"></circle>
-      <circle cx="320.1" cy="233.1" r="4"></circle>
-      <circle cx="379.6" cy="78.9" r="4"></circle>
-      <circle cx="498.6" cy="198.9" r="4"></circle>
-      <circle cx="558.2" cy="130.3" r="4"></circle>
-      <circle cx="677.2" cy="61.7" r="4"></circle>
-    </g>
-    <polygon points="201.0,293.7 192.5,309.7 209.5,309.7" fill="#c7362f" stroke="#ffffff" stroke-width="1.2"></polygon>
-    <g font-family="Arial, sans-serif" font-size="13" fill="#34495e">
-      <line x1="104" y1="54" x2="144" y2="54" stroke="#1f5fa8" stroke-width="2.2"></line>
-      <circle cx="124" cy="54" r="4" fill="#1f5fa8" stroke="#ffffff" stroke-width="1"></circle>
-      <text x="154" y="58">current best</text>
-      <polygon points="124,73 116,89 132,89" fill="#c7362f" stroke="#ffffff" stroke-width="1"></polygon>
-      <text x="154" y="86">reference row</text>
-    </g>
-  </svg>
+  <img
+    src="files/ub_vs_n_current_best.svg"
+    alt="Figure 2. Current best upper bounds as a function of the code length n."
+    loading="lazy">
   <figcaption>
     Figure 2. Current best upper bounds as a function of the code length \(n\).
     The blue polyline follows the best available row for each \(P\), including the high-\(P\)
