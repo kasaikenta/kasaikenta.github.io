@@ -1,0 +1,29 @@
+3072 3 12
+3072444078
+209 1153 2305 1025 385 257
+1096 1088 2176 1024 2240 1664
+205 1417 337 1675 193 2053
+2862 1524 2376 957 2592 1626
+# solutions_found 1
+# distance_bound_overall 192
+# latent_method Psi_3 kernel -> u^T H~X, v^T H~Z
+# latent_note probabilistic search over Psi_3 / Psi_3^T kernels
+# latent_x_upper 192
+# latent_z_upper 192
+# latent_min_upper 192
+# latent_x_support [(0,64) (0,256) (0,448) (0,640) (0,832) (0,1024) (0,1216) (0,1408) (0,1600) (0,1792) (0,1984) (0,2176) (0,2368) (0,2560) (0,2752) (0,2944) (1,128) (1,320) (1,512) (1,704) (1,896) (1,1088) (1,1280) (1,1472) ...]
+# latent_z_support [(0,105) (0,297) (0,489) (0,681) (0,873) (0,1065) (0,1257) (0,1449) (0,1641) (0,1833) (0,2025) (0,2217) (0,2409) (0,2601) (0,2793) (0,2985) (1,120) (1,312) (1,504) (1,696) (1,888) (1,1080) (1,1272) (1,1464) ...]
+# nonlatent_method m-block-constant compression kernel -> lift
+# nonlatent_note probabilistic search over all divisors m>=2 of P (best m_X=96, m_Z=48)
+# nonlatent_x_upper 192
+# nonlatent_z_upper 192
+# nonlatent_min_upper 192
+# nonlatent_x_m 96
+# nonlatent_z_m 48
+# nonlatent_x_support [(9,25) (9,57) (9,89) (9,121) (9,153) (9,185) (9,217) (9,249) (9,281) (9,313) (9,345) (9,377) (9,409) (9,441) (9,473) (9,505) (9,537) (9,569) (9,601) (9,633) (9,665) (9,697) (9,729) (9,761) ...]
+# nonlatent_z_support [(0,8) (0,72) (0,136) (0,200) (0,264) (0,328) (0,392) (0,456) (0,520) (0,584) (0,648) (0,712) (0,776) (0,840) (0,904) (0,968) (0,1032) (0,1096) (0,1160) (0,1224) (0,1288) (0,1352) (0,1416) (0,1480) ...]
+# cycle8_ets_method external enumerate_cycle8_ets
+# cycle8_ets_note disabled
+# cycle8_ets_x_upper n/a
+# cycle8_ets_z_upper n/a
+# cycle8_ets_min_upper n/a
